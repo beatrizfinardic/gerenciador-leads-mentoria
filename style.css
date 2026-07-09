@@ -42,6 +42,15 @@ body {
   width: 56px;
   height: 56px;
   flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--preto);
+  color: var(--branco);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: 0.02em;
 }
 
 header h1 {
@@ -77,6 +86,48 @@ header h1 {
   color: var(--texto);
 }
 
+.subsection-title {
+  margin: 28px 0 16px;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--texto);
+}
+
+/* ---------- Resumo hoje ---------- */
+
+.summary-grid {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.summary-tile {
+  flex: 1;
+  min-width: 140px;
+  background: var(--fundo);
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+}
+
+.summary-tile .label {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  color: var(--cinza-medio);
+}
+
+.summary-tile .value {
+  display: block;
+  font-size: 32px;
+  font-weight: 700;
+  margin-top: 4px;
+  color: var(--texto);
+}
+
 /* ---------- Dashboard ---------- */
 
 .dashboard-grid {
@@ -107,36 +158,6 @@ header h1 {
   font-size: 40px;
   font-weight: 700;
   line-height: 1;
-}
-
-.dashboard-card.status-prospect {
-  background: #dcfce7;
-  color: #14532d;
-}
-
-.dashboard-card.status-qualificado {
-  background: #dbeafe;
-  color: #1e3a8a;
-}
-
-.dashboard-card.status-em_conversa {
-  background: #fef9c3;
-  color: #713f12;
-}
-
-.dashboard-card.status-apresentacao {
-  background: #ffedd5;
-  color: #7c2d12;
-}
-
-.dashboard-card.status-convertido {
-  background: #166534;
-  color: #ffffff;
-}
-
-.dashboard-card.status-perdido {
-  background: var(--destaque);
-  color: #374151;
 }
 
 /* ---------- Form ---------- */
@@ -327,36 +348,6 @@ tbody tr:hover {
   white-space: nowrap;
 }
 
-.status-prospect {
-  background: #86efac;
-  color: #14532d;
-}
-
-.status-qualificado {
-  background: #3b82f6;
-  color: #ffffff;
-}
-
-.status-em_conversa {
-  background: #facc15;
-  color: #1a1a1a;
-}
-
-.status-apresentacao {
-  background: #f97316;
-  color: #ffffff;
-}
-
-.status-convertido {
-  background: #166534;
-  color: #ffffff;
-}
-
-.status-perdido {
-  background: #9ca3af;
-  color: #1a1a1a;
-}
-
 /* ---------- Status select (formulário) ---------- */
 
 #status {
@@ -364,42 +355,7 @@ tbody tr:hover {
   transition: background-color 0.15s ease, color 0.15s ease;
 }
 
-#status.color-prospect {
-  background: #86efac;
-  color: #14532d;
-}
-
-#status.color-qualificado {
-  background: #3b82f6;
-  color: #ffffff;
-}
-
-#status.color-em_conversa {
-  background: #facc15;
-  color: #1a1a1a;
-}
-
-#status.color-apresentacao {
-  background: #f97316;
-  color: #ffffff;
-}
-
-#status.color-convertido {
-  background: #166534;
-  color: #ffffff;
-}
-
-#status.color-perdido {
-  background: #9ca3af;
-  color: #1a1a1a;
-}
-
-#status.color-prospect option,
-#status.color-qualificado option,
-#status.color-em_conversa option,
-#status.color-apresentacao option,
-#status.color-convertido option,
-#status.color-perdido option {
+#status option {
   background: var(--branco);
   color: var(--texto);
   font-weight: 400;

@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Gerenciador de Leads — Mentoria Titulares</title>
-  <link rel="icon" type="image/png" href="assets/logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -13,17 +12,17 @@
 <body>
   <div class="container">
     <header class="brand-header">
-      <img src="assets/logo.png" alt="Mentoria Titulares" class="brand-logo" />
+      <div class="brand-logo" aria-hidden="true">MT</div>
       <div>
         <h1>Gerenciador de Leads</h1>
         <p class="subtitle">Mentoria Titulares</p>
       </div>
     </header>
 
-    <!-- DASHBOARD -->
+    <!-- RESUMO HOJE -->
     <section class="card">
-      <h2 class="section-title">Dashboard</h2>
-      <div id="dashboard" class="dashboard-grid"></div>
+      <h2 class="section-title">Resumo hoje</h2>
+      <div id="summary-today" class="summary-grid"></div>
     </section>
 
     <!-- FORMULÁRIO -->
@@ -68,7 +67,6 @@
               <option value="Webinar">Webinar</option>
               <option value="Email sequence">Email sequence</option>
               <option value="Fluxo">Fluxo</option>
-              <option value="Mentoria Eméritos">Mentoria Eméritos</option>
             </select>
           </div>
           <div class="field">
@@ -81,14 +79,7 @@
           </div>
           <div class="field">
             <label for="status">Status</label>
-            <select id="status">
-              <option value="prospect">Prospect</option>
-              <option value="qualificado">Qualificado</option>
-              <option value="em_conversa">Em conversa</option>
-              <option value="apresentacao">Apresentação</option>
-              <option value="convertido">Convertido</option>
-              <option value="perdido">Perdido</option>
-            </select>
+            <select id="status"></select>
           </div>
           <div class="field">
             <label for="dificuldade">Dificuldade principal</label>
@@ -123,14 +114,13 @@
           <option value="Webinar">Webinar</option>
           <option value="Email sequence">Email sequence</option>
           <option value="Fluxo">Fluxo</option>
-          <option value="Mentoria Eméritos">Mentoria Eméritos</option>
         </select>
         <select id="status-filter">
           <option value="">Todos os status</option>
           <option value="prospect">Prospect</option>
-          <option value="qualificado">Qualificado</option>
-          <option value="em_conversa">Em conversa</option>
-          <option value="apresentacao">Apresentação</option>
+          <option value="abordado">Abordado</option>
+          <option value="agendado">Agendado</option>
+          <option value="confirmado">Confirmado</option>
           <option value="convertido">Convertido</option>
           <option value="perdido">Perdido</option>
         </select>
@@ -163,6 +153,45 @@
       </div>
     </section>
 
+    <!-- RASTREAMENTO DIÁRIO GABI -->
+    <section class="card">
+      <h2 class="section-title">Rastreamento diário — Gabi</h2>
+      <form id="tracking-form">
+        <div class="form-grid">
+          <div class="field">
+            <label for="trk-date">Data</label>
+            <input type="date" id="trk-date" required />
+          </div>
+          <div class="field">
+            <label for="trk-abordados">Leads abordados</label>
+            <input type="number" id="trk-abordados" min="0" step="1" placeholder="0" />
+          </div>
+          <div class="field">
+            <label for="trk-agendamentos">Agendamentos conseguidos</label>
+            <input type="number" id="trk-agendamentos" min="0" step="1" placeholder="0" />
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Salvar dados</button>
+        </div>
+      </form>
+
+      <h3 class="subsection-title">Últimos 7 dias</h3>
+      <div class="table-wrapper">
+        <table id="tracking-table">
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Leads abordados</th>
+              <th>Agendamentos conseguidos</th>
+            </tr>
+          </thead>
+          <tbody id="tracking-tbody"></tbody>
+        </table>
+        <p id="tracking-empty-state" class="empty-state" hidden>Nenhum registro ainda.</p>
+      </div>
+    </section>
+
     <!-- RELATÓRIO DE CONVERSÃO -->
     <section class="card">
       <h2 class="section-title">Relatório de conversão</h2>
@@ -179,6 +208,18 @@
           <tbody id="report-tbody"></tbody>
         </table>
       </div>
+    </section>
+
+    <!-- DASHBOARD ORGÂNICO -->
+    <section class="card">
+      <h2 class="section-title">Dashboard orgânico</h2>
+      <div id="dashboard-organico" class="dashboard-grid"></div>
+    </section>
+
+    <!-- DASHBOARD FLUXO -->
+    <section class="card">
+      <h2 class="section-title">Dashboard fluxo</h2>
+      <div id="dashboard-fluxo" class="dashboard-grid"></div>
     </section>
   </div>
 
