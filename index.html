@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gerenciador de Leads — Mentoria Titulares</title>
+  <link rel="icon" type="image/png" href="assets/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <header class="brand-header">
+      <img src="assets/logo.png" alt="Mentoria Titulares" class="brand-logo" />
+      <div>
+        <h1>Gerenciador de Leads</h1>
+        <p class="subtitle">Mentoria Titulares</p>
+      </div>
+    </header>
+
+    <!-- DASHBOARD -->
+    <section class="card">
+      <h2 class="section-title">Dashboard</h2>
+      <div id="dashboard" class="dashboard-grid"></div>
+    </section>
+
+    <!-- FORMULÁRIO -->
+    <section class="card">
+      <h2 class="section-title">Adicionar lead</h2>
+      <form id="lead-form">
+        <input type="hidden" id="lead-id" />
+        <div class="form-grid">
+          <div class="field">
+            <label for="nome">Nome *</label>
+            <input type="text" id="nome" placeholder="Nome do lead" required />
+          </div>
+          <div class="field">
+            <label for="email">E-mail *</label>
+            <input type="email" id="email" placeholder="email@exemplo.com" required />
+          </div>
+          <div class="field">
+            <label for="whatsapp">WhatsApp</label>
+            <input type="tel" id="whatsapp" placeholder="(00) 00000-0000" />
+          </div>
+          <div class="field">
+            <label for="profissao">Profissão</label>
+            <select id="profissao">
+              <option value="Profissional de Educação Física">Profissional de Educação Física</option>
+              <option value="Fisioterapeuta">Fisioterapeuta</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="contexto">Contexto</label>
+            <select id="contexto">
+              <option value="Studio próprio">Studio próprio</option>
+              <option value="Trabalha em academia">Trabalha em academia</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="origem">Origem</label>
+            <select id="origem">
+              <option value="Instagram">Instagram</option>
+              <option value="E-mail/Especial Hub">E-mail/Especial Hub</option>
+              <option value="E-book">E-book</option>
+              <option value="Comunidade GE">Comunidade GE</option>
+              <option value="Webinar">Webinar</option>
+              <option value="Email sequence">Email sequence</option>
+              <option value="Fluxo">Fluxo</option>
+              <option value="Mentoria Eméritos">Mentoria Eméritos</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="abordado-por">Abordado por</label>
+            <select id="abordado-por">
+              <option value="Gabi">Gabi</option>
+              <option value="Paulo">Paulo</option>
+              <option value="Manual">Manual</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="status">Status</label>
+            <select id="status">
+              <option value="prospect">Prospect</option>
+              <option value="qualificado">Qualificado</option>
+              <option value="em_conversa">Em conversa</option>
+              <option value="apresentacao">Apresentação</option>
+              <option value="convertido">Convertido</option>
+              <option value="perdido">Perdido</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="dificuldade">Dificuldade principal</label>
+            <input type="text" id="dificuldade" placeholder="Ex: Não sabe estruturar aulas online" />
+          </div>
+          <div class="field">
+            <label for="online">Online?</label>
+            <select id="online">
+              <option value="Sim">Sim</option>
+              <option value="Não">Não</option>
+              <option value="Parcial">Parcial</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" id="submit-btn" class="btn btn-primary">Cadastrar lead</button>
+          <button type="button" id="cancel-edit-btn" class="btn btn-secondary" hidden>Cancelar edição</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- FILTROS + TABELA -->
+    <section class="card">
+      <h2 class="section-title">Leads</h2>
+      <div class="filters">
+        <select id="origem-filter">
+          <option value="">Todas as origens</option>
+          <option value="Instagram">Instagram</option>
+          <option value="E-mail/Especial Hub">E-mail/Especial Hub</option>
+          <option value="E-book">E-book</option>
+          <option value="Comunidade GE">Comunidade GE</option>
+          <option value="Webinar">Webinar</option>
+          <option value="Email sequence">Email sequence</option>
+          <option value="Fluxo">Fluxo</option>
+          <option value="Mentoria Eméritos">Mentoria Eméritos</option>
+        </select>
+        <select id="status-filter">
+          <option value="">Todos os status</option>
+          <option value="prospect">Prospect</option>
+          <option value="qualificado">Qualificado</option>
+          <option value="em_conversa">Em conversa</option>
+          <option value="apresentacao">Apresentação</option>
+          <option value="convertido">Convertido</option>
+          <option value="perdido">Perdido</option>
+        </select>
+        <select id="abordado-filter">
+          <option value="">Todos (abordado por)</option>
+          <option value="Gabi">Gabi</option>
+          <option value="Paulo">Paulo</option>
+          <option value="Manual">Manual</option>
+        </select>
+      </div>
+
+      <div class="table-wrapper">
+        <table id="leads-table">
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Email</th>
+              <th>WhatsApp</th>
+              <th>Profissão</th>
+              <th>Contexto</th>
+              <th>Origem</th>
+              <th>Status</th>
+              <th>Abordado por</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="leads-tbody"></tbody>
+        </table>
+        <p id="empty-state" class="empty-state" hidden>Nenhum lead encontrado.</p>
+      </div>
+    </section>
+
+    <!-- RELATÓRIO DE CONVERSÃO -->
+    <section class="card">
+      <h2 class="section-title">Relatório de conversão</h2>
+      <div class="table-wrapper">
+        <table id="report-table">
+          <thead>
+            <tr>
+              <th>Período</th>
+              <th>Total Leads</th>
+              <th>Convertidos</th>
+              <th>Taxa</th>
+            </tr>
+          </thead>
+          <tbody id="report-tbody"></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
