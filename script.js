@@ -28,7 +28,6 @@ const emailInput = document.getElementById("email");
 const instagramInput = document.getElementById("instagram");
 const whatsappInput = document.getElementById("whatsapp");
 const profissaoInput = document.getElementById("profissao");
-const contextoInput = document.getElementById("contexto");
 const origemInput = document.getElementById("origem");
 const abordadoPorInput = document.getElementById("abordado-por");
 const statusInput = document.getElementById("status");
@@ -385,7 +384,6 @@ function renderLeadsToday(leads) {
           <td>${escapeHtml(l.email || "-")}</td>
           <td>${escapeHtml(l.whatsapp || "-")}</td>
           <td>${escapeHtml(l.profissao)}</td>
-          <td>${escapeHtml(l.contexto)}</td>
           <td>${formatDateTimeBR(l.agendamento_em)}</td>
           <td>${escapeHtml(l.abordado_por)}</td>
         </tr>
@@ -652,7 +650,6 @@ function renderTable(leads) {
         <td>${escapeHtml(lead.email)}</td>
         <td>${escapeHtml(lead.whatsapp || "-")}</td>
         <td>${escapeHtml(lead.profissao)}</td>
-        <td>${escapeHtml(lead.contexto)}</td>
         <td>${escapeHtml(lead.origem)}</td>
         <td><span class="badge" style="background:${meta.bg};color:${meta.text}">${escapeHtml(meta.label)}</span></td>
         <td>${formatDateTimeBR(lead.agendamento_em)}</td>
@@ -699,7 +696,6 @@ form.addEventListener("submit", async (e) => {
     instagram: instagramInput.value.trim(),
     whatsapp,
     profissao: profissaoInput.value,
-    contexto: contextoInput.value,
     origem: origemInput.value,
     abordado_por: abordadoPorInput.value,
     status: statusInput.value,
@@ -769,7 +765,6 @@ tbody.addEventListener("click", async (e) => {
     instagramInput.value = lead.instagram || "";
     whatsappInput.value = lead.whatsapp || "";
     profissaoInput.value = lead.profissao;
-    contextoInput.value = lead.contexto;
     origemInput.value = lead.origem;
     abordadoPorInput.value = lead.abordado_por;
     renderStatusOptions(lead.status);
