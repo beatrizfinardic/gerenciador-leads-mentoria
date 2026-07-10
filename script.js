@@ -12,7 +12,7 @@ const STATUS_META = {
 };
 
 const ORGANICO_STATUSES = ["prospect", "abordado", "agendado", "confirmado", "convertido", "perdido"];
-const FLUXO_STATUSES = ["prospect", "confirmado", "convertido", "perdido"];
+const FLUXO_STATUSES = ["agendado", "confirmado", "convertido", "perdido"];
 
 const form = document.getElementById("lead-form");
 const leadIdInput = document.getElementById("lead-id");
@@ -26,8 +26,12 @@ const abordadoPorInput = document.getElementById("abordado-por");
 const statusInput = document.getElementById("status");
 const dificuldadeInput = document.getElementById("dificuldade");
 const onlineInput = document.getElementById("online");
+const cadastroDataInput = document.getElementById("cadastro-data");
+const agendamentoEmInput = document.getElementById("agendamento-em");
 const pagamentoFormaInput = document.getElementById("pagamento-forma");
 const pagamentoParcelasInput = document.getElementById("pagamento-parcelas");
+const perdidoMotivoInput = document.getElementById("perdido-motivo");
+const perdidoFollowupInput = document.getElementById("perdido-followup");
 const submitBtn = document.getElementById("submit-btn");
 const cancelEditBtn = document.getElementById("cancel-edit-btn");
 
@@ -55,6 +59,12 @@ const modalParcelasField = document.getElementById("modal-parcelas-field");
 const modalParcelasSelect = document.getElementById("modal-parcelas");
 const modalConfirmBtn = document.getElementById("modal-confirm-btn");
 const modalCancelBtn = document.getElementById("modal-cancel-btn");
+
+const lostModal = document.getElementById("lost-modal");
+const lostMotivoSelect = document.getElementById("lost-motivo");
+const lostFollowupSelect = document.getElementById("lost-followup");
+const lostConfirmBtn = document.getElementById("lost-confirm-btn");
+const lostCancelBtn = document.getElementById("lost-cancel-btn");
 
 let leadsCache = [];
 let trackingCache = [];
@@ -134,6 +144,28 @@ function isToday(isoTimestamp) {
   return `${yyyy}-${mm}-${dd}` === todayISO();
 }
 
+function toDatetimeLocalValue(isoTimestamp) {
+  const d = parseTimestamp(isoTimestamp);
+  if (!d) return "";
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  const hh = String(d.getHours()).padStart(2, "0");
+  const min = String(d.getMinutes()).padStart(2, "0");
+  return `${yyyy}-${mm}-${dd}T${hh}:${min}`;
+}
+
+function formatDateTimeBR(isoTimestamp) {
+  const d = parseTimestamp(isoTimestamp);
+  if (!d) return "-";
+  const dd = String(d.getDate()).padStart(2, "0");
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const yyyy = d.getFullYear();
+  const hh = String(d.getHours()).padStart(2, "0");
+  const min = String(d.getMinutes()).padStart(2, "0");
+  return `${dd}/${mm}/${yyyy} ${hh}:${min}`;
+}
+
 /* ---------- Status dinâmico (depende da origem) ---------- */
 
 function statusKeysForOrigem(origem) {
@@ -159,6 +191,10 @@ function renderStatusOptions(preferredStatus) {
     pagamentoFormaInput.value = "";
     pagamentoParcelasInput.value = "";
   }
+  if (value !== "perdido") {
+    perdidoMotivoInput.value = "";
+    perdidoFollowupInput.value = "";
+  }
   updateStatusSelectColor();
 }
 
@@ -167,10 +203,14 @@ origemInput.addEventListener("change", () => renderStatusOptions(statusInput.val
 statusInput.addEventListener("change", () => {
   if (statusInput.value === "convertido") {
     openPaymentModal();
+  } else if (statusInput.value === "perdido") {
+    openLostModal();
   } else {
     confirmedStatusValue = statusInput.value;
     pagamentoFormaInput.value = "";
     pagamentoParcelasInput.value = "";
+    perdidoMotivoInput.value = "";
+    perdidoFollowupInput.value = "";
     updateStatusSelectColor();
   }
 });
@@ -207,11 +247,42 @@ modalCancelBtn.addEventListener("click", () => {
   closePaymentModal();
 });
 
+/* ---------- Modal de motivo da perda (ao marcar Perdido) ---------- */
+
+function openLostModal() {
+  lostMotivoSelect.value = perdidoMotivoInput.value || "Sem orçamento";
+  lostFollowupSelect.value = perdidoFollowupInput.value || "Não";
+  lostModal.hidden = false;
+}
+
+function closeLostModal() {
+  lostModal.hidden = true;
+}
+
+lostConfirmBtn.addEventListener("click", () => {
+  perdidoMotivoInput.value = lostMotivoSelect.value;
+  perdidoFollowupInput.value = lostFollowupSelect.value;
+  confirmedStatusValue = "perdido";
+  statusInput.value = "perdido";
+  updateStatusSelectColor();
+  closeLostModal();
+});
+
+lostCancelBtn.addEventListener("click", () => {
+  statusInput.value = confirmedStatusValue;
+  updateStatusSelectColor();
+  closeLostModal();
+});
+
 function resetForm() {
   form.reset();
   leadIdInput.value = "";
+  cadastroDataInput.value = todayISO();
+  agendamentoEmInput.value = "";
   pagamentoFormaInput.value = "";
   pagamentoParcelasInput.value = "";
+  perdidoMotivoInput.value = "";
+  perdidoFollowupInput.value = "";
   renderStatusOptions("prospect");
   submitBtn.textContent = "Cadastrar lead";
   cancelEditBtn.hidden = true;
@@ -278,12 +349,13 @@ function getPeriodStarts() {
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
   const startOfYear = new Date(now.getFullYear(), 0, 1);
 
-  return { semana: startOfWeek, mes: startOfMonth, ano: startOfYear };
+  return { hoje: startOfToday, semana: startOfWeek, mes: startOfMonth, ano: startOfYear };
 }
 
 function renderReport(leads) {
   const starts = getPeriodStarts();
   const periods = [
+    { key: "hoje", label: "Hoje" },
     { key: "semana", label: "Semana" },
     { key: "mes", label: "Mês" },
     { key: "ano", label: "Ano" },
@@ -292,12 +364,14 @@ function renderReport(leads) {
   reportTbody.innerHTML = periods
     .map((period) => {
       const leadsPeriodo = leads.filter((l) => l.created_at && parseTimestamp(l.created_at) >= starts[period.key]);
+      const compareceram = leadsPeriodo.filter((l) => l.status === "confirmado" || l.status === "convertido").length;
       const convertidos = leadsPeriodo.filter((l) => l.status === "convertido").length;
       const taxa = leadsPeriodo.length ? ((convertidos / leadsPeriodo.length) * 100).toFixed(1) : "0.0";
       return `
         <tr>
           <td>${period.label}</td>
           <td>${leadsPeriodo.length}</td>
+          <td>${compareceram}</td>
           <td>${convertidos}</td>
           <td>${taxa}%</td>
         </tr>
@@ -378,6 +452,7 @@ function renderTable(leads) {
         <td>${escapeHtml(lead.contexto)}</td>
         <td>${escapeHtml(lead.origem)}</td>
         <td><span class="badge" style="background:${meta.bg};color:${meta.text}">${escapeHtml(meta.label)}</span></td>
+        <td>${formatDateTimeBR(lead.agendamento_em)}</td>
         <td>${escapeHtml(lead.abordado_por)}</td>
         <td class="actions-cell">
           <button class="btn btn-secondary btn-small" data-action="edit" data-id="${lead.id}">Editar</button>
@@ -422,9 +497,12 @@ form.addEventListener("submit", async (e) => {
     status: statusInput.value,
     dificuldade: dificuldadeInput.value.trim(),
     online: onlineInput.value,
+    agendamento_em: agendamentoEmInput.value ? new Date(agendamentoEmInput.value).toISOString() : null,
     pagamento_forma: statusInput.value === "convertido" ? pagamentoFormaInput.value || null : null,
     pagamento_parcelas:
       statusInput.value === "convertido" && pagamentoParcelasInput.value ? Number(pagamentoParcelasInput.value) : null,
+    perdido_motivo: statusInput.value === "perdido" ? perdidoMotivoInput.value || null : null,
+    perdido_followup: statusInput.value === "perdido" ? perdidoFollowupInput.value || null : null,
   };
 
   if (editingId) {
@@ -482,8 +560,12 @@ tbody.addEventListener("click", async (e) => {
     origemInput.value = lead.origem;
     abordadoPorInput.value = lead.abordado_por;
     renderStatusOptions(lead.status);
+    cadastroDataInput.value = lead.created_at ? toDatetimeLocalValue(lead.created_at).slice(0, 10) : todayISO();
+    agendamentoEmInput.value = toDatetimeLocalValue(lead.agendamento_em);
     pagamentoFormaInput.value = lead.pagamento_forma || "";
     pagamentoParcelasInput.value = lead.pagamento_parcelas || "";
+    perdidoMotivoInput.value = lead.perdido_motivo || "";
+    perdidoFollowupInput.value = lead.perdido_followup || "";
     dificuldadeInput.value = lead.dificuldade || "";
     onlineInput.value = lead.online;
 

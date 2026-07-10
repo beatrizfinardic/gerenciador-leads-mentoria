@@ -8,11 +8,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
+  <link rel="icon" type="image/png" href="assets/logo.png" />
 </head>
 <body>
   <div class="container">
     <header class="brand-header">
-      <div class="brand-logo" aria-hidden="true">MT</div>
+      <img src="assets/logo.png" alt="Mentoria Titulares" class="brand-logo" />
       <div>
         <h1>Gerenciador de Leads</h1>
         <p class="subtitle">Mentoria Titulares</p>
@@ -32,7 +33,13 @@
         <input type="hidden" id="lead-id" />
         <input type="hidden" id="pagamento-forma" />
         <input type="hidden" id="pagamento-parcelas" />
+        <input type="hidden" id="perdido-motivo" />
+        <input type="hidden" id="perdido-followup" />
         <div class="form-grid">
+          <div class="field">
+            <label for="cadastro-data">Data de cadastro</label>
+            <input type="date" id="cadastro-data" disabled />
+          </div>
           <div class="field">
             <label for="nome">Nome *</label>
             <input type="text" id="nome" placeholder="Nome do lead" required />
@@ -62,12 +69,10 @@
           <div class="field">
             <label for="origem">Origem</label>
             <select id="origem">
-              <option value="Instagram">Instagram</option>
-              <option value="E-mail/Especial Hub">E-mail/Especial Hub</option>
-              <option value="E-book">E-book</option>
               <option value="Comunidade GE">Comunidade GE</option>
-              <option value="Webinar">Webinar</option>
-              <option value="Email sequence">Email sequence</option>
+              <option value="Livros/especial hub">Livros/especial hub</option>
+              <option value="Instagram">Instagram</option>
+              <option value="Workshop">Workshop</option>
               <option value="Fluxo">Fluxo</option>
             </select>
           </div>
@@ -84,8 +89,8 @@
             <select id="status"></select>
           </div>
           <div class="field">
-            <label for="dificuldade">Dificuldade principal</label>
-            <input type="text" id="dificuldade" placeholder="Ex: Não sabe estruturar aulas online" />
+            <label for="agendamento-em">Data e horário do agendamento</label>
+            <input type="datetime-local" id="agendamento-em" />
           </div>
           <div class="field">
             <label for="online">Online?</label>
@@ -94,6 +99,10 @@
               <option value="Não">Não</option>
               <option value="Parcial">Parcial</option>
             </select>
+          </div>
+          <div class="field field-wide">
+            <label for="dificuldade">Observações</label>
+            <textarea id="dificuldade" rows="4" placeholder="Ex: Não sabe estruturar aulas online"></textarea>
           </div>
         </div>
         <div class="form-actions">
@@ -109,12 +118,10 @@
       <div class="filters">
         <select id="origem-filter">
           <option value="">Todas as origens</option>
-          <option value="Instagram">Instagram</option>
-          <option value="E-mail/Especial Hub">E-mail/Especial Hub</option>
-          <option value="E-book">E-book</option>
           <option value="Comunidade GE">Comunidade GE</option>
-          <option value="Webinar">Webinar</option>
-          <option value="Email sequence">Email sequence</option>
+          <option value="Livros/especial hub">Livros/especial hub</option>
+          <option value="Instagram">Instagram</option>
+          <option value="Workshop">Workshop</option>
           <option value="Fluxo">Fluxo</option>
         </select>
         <select id="status-filter">
@@ -145,6 +152,7 @@
               <th>Contexto</th>
               <th>Origem</th>
               <th>Status</th>
+              <th>Data Agendamento</th>
               <th>Abordado por</th>
               <th>Ações</th>
             </tr>
@@ -157,7 +165,7 @@
 
     <!-- RASTREAMENTO DIÁRIO GABI -->
     <section class="card">
-      <h2 class="section-title">Rastreamento diário — Gabi</h2>
+      <h2 class="section-title">Rastreamento diário</h2>
       <form id="tracking-form">
         <div class="form-grid">
           <div class="field">
@@ -203,6 +211,7 @@
             <tr>
               <th>Período</th>
               <th>Total Leads</th>
+              <th>Compareceram</th>
               <th>Convertidos</th>
               <th>Taxa</th>
             </tr>
@@ -256,6 +265,34 @@
       <div class="form-actions">
         <button type="button" id="modal-confirm-btn" class="btn btn-primary">Confirmar</button>
         <button type="button" id="modal-cancel-btn" class="btn btn-secondary">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: motivo da perda -->
+  <div id="lost-modal" class="modal-overlay" hidden>
+    <div class="modal">
+      <h3 class="section-title">Motivo da perda</h3>
+      <div class="field">
+        <label for="lost-motivo">Motivo</label>
+        <select id="lost-motivo">
+          <option value="Sem orçamento">Sem orçamento</option>
+          <option value="Não é público-alvo">Não é público-alvo</option>
+          <option value="Concorrência">Concorrência</option>
+          <option value="Desistiu">Desistiu</option>
+          <option value="Outro">Outro</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="lost-followup">Follow up</label>
+        <select id="lost-followup">
+          <option value="Sim">Sim</option>
+          <option value="Não">Não</option>
+        </select>
+      </div>
+      <div class="form-actions">
+        <button type="button" id="lost-confirm-btn" class="btn btn-primary">Confirmar</button>
+        <button type="button" id="lost-cancel-btn" class="btn btn-secondary">Cancelar</button>
       </div>
     </div>
   </div>
