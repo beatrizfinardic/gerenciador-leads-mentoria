@@ -12,8 +12,8 @@ const STATUS_META = {
   perdido: { label: "Perdido", bg: "#9ca3af", text: "#1a1a1a", cardBg: "#e5e7eb", cardText: "#374151" },
 };
 
-const ORGANICO_STATUSES = ["abordado", "agendado", "confirmado", "convertido", "nao_compareceu", "perdido"];
-const FLUXO_STATUSES = ["agendado", "confirmado", "convertido", "perdido"];
+const ORGANICO_STATUSES = ["agendado", "convertido", "nao_compareceu", "perdido"];
+const FLUXO_STATUSES = ["agendado", "convertido", "nao_compareceu", "perdido"];
 
 const form = document.getElementById("lead-form");
 const leadIdInput = document.getElementById("lead-id");
@@ -110,6 +110,7 @@ async function fetchTracking() {
 async function refreshTracking() {
   trackingCache = await fetchTracking();
   renderTracking();
+  renderSummaryToday(leadsCache);
 }
 
 function escapeHtml(str) {
@@ -305,9 +306,12 @@ function resetForm() {
 /* ---------- Resumo hoje ---------- */
 
 function renderSummaryToday(leads) {
-  const leadsAbordadosHoje = leads.filter((l) => l.status === "abordado" && isToday(l.status_changed_at)).length;
+  const trackingHoje = trackingCache.find((r) => r.data === todayISO());
+  const leadsAbordadosHoje = trackingHoje ? trackingHoje.leads_abordados : 0;
   const reunioesAgendadasHoje = leads.filter((l) => l.status === "agendado" && isToday(l.status_changed_at)).length;
-  const reunioesFeitasHoje = leads.filter((l) => l.status === "confirmado" && isToday(l.status_changed_at)).length;
+  const reunioesFeitasHoje = leads.filter(
+    (l) => (l.status === "convertido" || l.status === "perdido") && isToday(l.status_changed_at)
+  ).length;
   const vendasConvertidasHoje = leads.filter((l) => l.status === "convertido" && isToday(l.status_changed_at)).length;
 
   const tiles = [
@@ -491,10 +495,11 @@ form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const nome = nomeInput.value.trim();
+  const whatsapp = whatsappInput.value.trim();
   const email = emailInput.value.trim();
 
-  if (!nome || !email) {
-    alert("Nome e e-mail são obrigatórios.");
+  if (!nome || !whatsapp) {
+    alert("Nome e WhatsApp são obrigatórios.");
     return;
   }
 
@@ -503,7 +508,7 @@ form.addEventListener("submit", async (e) => {
   const leadData = {
     nome,
     email,
-    whatsapp: whatsappInput.value.trim(),
+    whatsapp,
     profissao: profissaoInput.value,
     contexto: contextoInput.value,
     origem: origemInput.value,

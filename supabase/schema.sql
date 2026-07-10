@@ -11,6 +11,12 @@ alter table leads add column if not exists perdido_followup_data date;
 alter table daily_tracking add column if not exists leads_abordados int not null default 0;
 alter table daily_tracking add column if not exists agendamentos_conseguidos int not null default 0;
 
+do $$
+begin
+  alter table daily_tracking add constraint daily_tracking_data_key unique (data);
+exception when duplicate_object then null;
+end $$;
+
 alter table leads enable row level security;
 alter table daily_tracking enable row level security;
 
