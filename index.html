@@ -30,6 +30,8 @@
       <h2 class="section-title">Adicionar lead</h2>
       <form id="lead-form">
         <input type="hidden" id="lead-id" />
+        <input type="hidden" id="pagamento-forma" />
+        <input type="hidden" id="pagamento-parcelas" />
         <div class="form-grid">
           <div class="field">
             <label for="nome">Nome *</label>
@@ -223,6 +225,42 @@
     </section>
   </div>
 
+  <!-- MODAL: forma de pagamento ao converter -->
+  <div id="payment-modal" class="modal-overlay" hidden>
+    <div class="modal">
+      <h3 class="section-title">Confirmar conversão</h3>
+      <div class="field">
+        <label for="modal-forma-pagamento">Forma de pagamento</label>
+        <select id="modal-forma-pagamento">
+          <option value="a_vista">À vista</option>
+          <option value="parcelado_eduzz">Parcelado Eduzz</option>
+          <option value="parcelado_sumup">Parcelado Sumup</option>
+        </select>
+      </div>
+      <div class="field" id="modal-parcelas-field">
+        <label for="modal-parcelas">Parcelas</label>
+        <select id="modal-parcelas">
+          <option value="2">2x</option>
+          <option value="3">3x</option>
+          <option value="4">4x</option>
+          <option value="5">5x</option>
+          <option value="6">6x</option>
+          <option value="7">7x</option>
+          <option value="8">8x</option>
+          <option value="9">9x</option>
+          <option value="10">10x</option>
+          <option value="11">11x</option>
+          <option value="12">12x</option>
+        </select>
+      </div>
+      <div class="form-actions">
+        <button type="button" id="modal-confirm-btn" class="btn btn-primary">Confirmar</button>
+        <button type="button" id="modal-cancel-btn" class="btn btn-secondary">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="script.js"></script>
 </body>
 </html>
