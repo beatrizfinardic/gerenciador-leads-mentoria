@@ -29,6 +29,7 @@
         <input type="hidden" id="pagamento-parcelas" />
         <input type="hidden" id="perdido-motivo" />
         <input type="hidden" id="perdido-followup" />
+        <input type="hidden" id="perdido-followup-data" />
         <div class="form-grid">
           <div class="field">
             <label for="cadastro-data">Data de cadastro</label>
@@ -91,9 +92,9 @@
           <div class="field">
             <label for="online">Online?</label>
             <select id="online">
-              <option value="Sim">Sim</option>
-              <option value="Não">Não</option>
-              <option value="Parcial">Parcial</option>
+              <option value="Só presencial">Só presencial</option>
+              <option value="Só online">Só online</option>
+              <option value="Híbrido">Híbrido</option>
             </select>
           </div>
           <div class="field field-wide">
@@ -128,6 +129,7 @@
           <option value="agendado">Agendado</option>
           <option value="confirmado">Confirmado</option>
           <option value="convertido">Convertido</option>
+          <option value="nao_compareceu">Não compareceu</option>
           <option value="perdido">Perdido</option>
         </select>
         <select id="abordado-filter">
@@ -215,7 +217,7 @@
             <tr>
               <th>Período</th>
               <th>Total Leads</th>
-              <th>Compareceram</th>
+              <th>Não compareceram</th>
               <th>Convertidos</th>
               <th>Taxa</th>
             </tr>
@@ -293,6 +295,10 @@
           <option value="Sim">Sim</option>
           <option value="Não">Não</option>
         </select>
+      </div>
+      <div class="field" id="lost-followup-data-field">
+        <label for="lost-followup-data">Data do próximo follow up</label>
+        <input type="date" id="lost-followup-data" />
       </div>
       <div class="form-actions">
         <button type="button" id="lost-confirm-btn" class="btn btn-primary">Confirmar</button>

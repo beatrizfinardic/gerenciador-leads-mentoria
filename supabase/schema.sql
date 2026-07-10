@@ -6,6 +6,7 @@ alter table leads add column if not exists pagamento_parcelas int;
 alter table leads add column if not exists agendamento_em timestamptz;
 alter table leads add column if not exists perdido_motivo text;
 alter table leads add column if not exists perdido_followup text;
+alter table leads add column if not exists perdido_followup_data date;
 
 alter table daily_tracking add column if not exists leads_abordados int not null default 0;
 alter table daily_tracking add column if not exists agendamentos_conseguidos int not null default 0;
