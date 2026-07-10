@@ -20,12 +20,6 @@
       </div>
     </header>
 
-    <!-- RESUMO HOJE -->
-    <section class="card">
-      <h2 class="section-title">Resumo hoje</h2>
-      <div id="summary-today" class="summary-grid"></div>
-    </section>
-
     <!-- FORMULÁRIO -->
     <section class="card">
       <h2 class="section-title">Adicionar lead</h2>
@@ -74,14 +68,16 @@
               <option value="Instagram">Instagram</option>
               <option value="Workshop">Workshop</option>
               <option value="Fluxo">Fluxo</option>
+              <option value="Evento">Evento</option>
             </select>
           </div>
           <div class="field">
-            <label for="abordado-por">Abordado por</label>
+            <label for="abordado-por">Agendado por</label>
             <select id="abordado-por">
               <option value="Gabi">Gabi</option>
               <option value="Paulo">Paulo</option>
-              <option value="Manual">Manual</option>
+              <option value="Liah">Liah</option>
+              <option value="Igor">Igor</option>
             </select>
           </div>
           <div class="field">
@@ -123,6 +119,7 @@
           <option value="Instagram">Instagram</option>
           <option value="Workshop">Workshop</option>
           <option value="Fluxo">Fluxo</option>
+          <option value="Evento">Evento</option>
         </select>
         <select id="status-filter">
           <option value="">Todos os status</option>
@@ -134,10 +131,11 @@
           <option value="perdido">Perdido</option>
         </select>
         <select id="abordado-filter">
-          <option value="">Todos (abordado por)</option>
+          <option value="">Todos (agendado por)</option>
           <option value="Gabi">Gabi</option>
           <option value="Paulo">Paulo</option>
-          <option value="Manual">Manual</option>
+          <option value="Liah">Liah</option>
+          <option value="Igor">Igor</option>
         </select>
       </div>
 
@@ -153,7 +151,7 @@
               <th>Origem</th>
               <th>Status</th>
               <th>Data Agendamento</th>
-              <th>Abordado por</th>
+              <th>Agendado por</th>
               <th>Ações</th>
             </tr>
           </thead>
@@ -200,6 +198,12 @@
         </table>
         <p id="tracking-empty-state" class="empty-state" hidden>Nenhum registro ainda.</p>
       </div>
+    </section>
+
+    <!-- RESUMO HOJE -->
+    <section class="card">
+      <h2 class="section-title">Resumo hoje</h2>
+      <div id="summary-today" class="summary-grid"></div>
     </section>
 
     <!-- RELATÓRIO DE CONVERSÃO -->

@@ -12,6 +12,7 @@ const STATUS_META = {
 };
 
 const ORGANICO_STATUSES = ["prospect", "abordado", "agendado", "confirmado", "convertido", "perdido"];
+const ORGANICO_DASHBOARD_STATUSES = ["abordado", "agendado", "confirmado", "convertido", "perdido"];
 const FLUXO_STATUSES = ["agendado", "confirmado", "convertido", "perdido"];
 
 const form = document.getElementById("lead-form");
@@ -332,7 +333,7 @@ function renderDashboards(leads) {
   const organico = leads.filter((l) => l.origem !== "Fluxo");
   const fluxo = leads.filter((l) => l.origem === "Fluxo");
 
-  dashboardOrganicoEl.innerHTML = ORGANICO_STATUSES.map((key) => dashboardCardHtml(key, organico)).join("");
+  dashboardOrganicoEl.innerHTML = ORGANICO_DASHBOARD_STATUSES.map((key) => dashboardCardHtml(key, organico)).join("");
   dashboardFluxoEl.innerHTML = FLUXO_STATUSES.map((key) => dashboardCardHtml(key, fluxo)).join("");
 }
 
@@ -355,7 +356,7 @@ function getPeriodStarts() {
 function renderReport(leads) {
   const starts = getPeriodStarts();
   const periods = [
-    { key: "hoje", label: "Hoje" },
+    { key: "hoje", label: "Diário" },
     { key: "semana", label: "Semana" },
     { key: "mes", label: "Mês" },
     { key: "ano", label: "Ano" },
