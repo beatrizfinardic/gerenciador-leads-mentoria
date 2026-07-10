@@ -15,10 +15,17 @@ const STATUS_META = {
 const ORGANICO_STATUSES = ["agendado", "convertido", "nao_compareceu", "perdido"];
 const FLUXO_STATUSES = ["agendado", "convertido", "nao_compareceu", "perdido"];
 
+const FORMA_PAGAMENTO_META = {
+  a_vista: { label: "PIX", taxa: 0 },
+  parcelado_eduzz: { label: "Eduzz", taxa: 0.0466 },
+  parcelado_sumup: { label: "Sumup", taxa: 0 },
+};
+
 const form = document.getElementById("lead-form");
 const leadIdInput = document.getElementById("lead-id");
 const nomeInput = document.getElementById("nome");
 const emailInput = document.getElementById("email");
+const instagramInput = document.getElementById("instagram");
 const whatsappInput = document.getElementById("whatsapp");
 const profissaoInput = document.getElementById("profissao");
 const contextoInput = document.getElementById("contexto");
@@ -31,6 +38,8 @@ const cadastroDataInput = document.getElementById("cadastro-data");
 const agendamentoEmInput = document.getElementById("agendamento-em");
 const pagamentoFormaInput = document.getElementById("pagamento-forma");
 const pagamentoParcelasInput = document.getElementById("pagamento-parcelas");
+const valorFechadoInput = document.getElementById("valor-fechado");
+const dataVencimentoInput = document.getElementById("data-vencimento");
 const perdidoMotivoInput = document.getElementById("perdido-motivo");
 const perdidoFollowupInput = document.getElementById("perdido-followup");
 const perdidoFollowupDataInput = document.getElementById("perdido-followup-data");
@@ -47,6 +56,18 @@ const reportTbody = document.getElementById("report-tbody");
 const dashboardOrganicoEl = document.getElementById("dashboard-organico");
 const dashboardFluxoEl = document.getElementById("dashboard-fluxo");
 const summaryTodayEl = document.getElementById("summary-today");
+const renewalsTbody = document.getElementById("renewals-tbody");
+const renewalsEmptyState = document.getElementById("renewals-empty-state");
+const leadsTodayTbody = document.getElementById("leads-today-tbody");
+const leadsTodayEmptyState = document.getElementById("leads-today-empty-state");
+
+const fatDataInicialInput = document.getElementById("fat-data-inicial");
+const fatDataFinalInput = document.getElementById("fat-data-final");
+const fatAtualizarBtn = document.getElementById("fat-atualizar-btn");
+const fatResumoEl = document.getElementById("fat-resumo");
+const fatFormasTbody = document.getElementById("fat-formas-tbody");
+const fatTransacoesTbody = document.getElementById("fat-transacoes-tbody");
+const fatTransacoesEmptyState = document.getElementById("fat-transacoes-empty-state");
 
 const trackingForm = document.getElementById("tracking-form");
 const trkDateInput = document.getElementById("trk-date");
@@ -56,6 +77,8 @@ const trackingTbody = document.getElementById("tracking-tbody");
 const trackingEmptyState = document.getElementById("tracking-empty-state");
 
 const paymentModal = document.getElementById("payment-modal");
+const modalValorFechadoInput = document.getElementById("modal-valor-fechado");
+const modalDataVencimentoInput = document.getElementById("modal-data-vencimento");
 const modalFormaSelect = document.getElementById("modal-forma-pagamento");
 const modalParcelasField = document.getElementById("modal-parcelas-field");
 const modalParcelasSelect = document.getElementById("modal-parcelas");
@@ -160,6 +183,10 @@ function toDatetimeLocalValue(isoTimestamp) {
   return `${yyyy}-${mm}-${dd}T${hh}:${min}`;
 }
 
+function formatBRL(value) {
+  return (value || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+}
+
 function formatDateTimeBR(isoTimestamp) {
   const d = parseTimestamp(isoTimestamp);
   if (!d) return "-";
@@ -195,6 +222,8 @@ function renderStatusOptions(preferredStatus) {
   if (value !== "convertido") {
     pagamentoFormaInput.value = "";
     pagamentoParcelasInput.value = "";
+    valorFechadoInput.value = "";
+    dataVencimentoInput.value = "";
   }
   if (value !== "perdido") {
     perdidoMotivoInput.value = "";
@@ -215,6 +244,8 @@ statusInput.addEventListener("change", () => {
     confirmedStatusValue = statusInput.value;
     pagamentoFormaInput.value = "";
     pagamentoParcelasInput.value = "";
+    valorFechadoInput.value = "";
+    dataVencimentoInput.value = "";
     perdidoMotivoInput.value = "";
     perdidoFollowupInput.value = "";
     perdidoFollowupDataInput.value = "";
@@ -225,6 +256,8 @@ statusInput.addEventListener("change", () => {
 /* ---------- Modal de pagamento (ao converter) ---------- */
 
 function openPaymentModal() {
+  modalValorFechadoInput.value = valorFechadoInput.value || "";
+  modalDataVencimentoInput.value = dataVencimentoInput.value || "";
   modalFormaSelect.value = pagamentoFormaInput.value || "a_vista";
   modalParcelasSelect.value = pagamentoParcelasInput.value || "2";
   modalParcelasField.hidden = modalFormaSelect.value === "a_vista";
@@ -240,6 +273,8 @@ modalFormaSelect.addEventListener("change", () => {
 });
 
 modalConfirmBtn.addEventListener("click", () => {
+  valorFechadoInput.value = modalValorFechadoInput.value;
+  dataVencimentoInput.value = modalDataVencimentoInput.value;
   pagamentoFormaInput.value = modalFormaSelect.value;
   pagamentoParcelasInput.value = modalFormaSelect.value === "a_vista" ? "" : modalParcelasSelect.value;
   confirmedStatusValue = "convertido";
@@ -295,6 +330,8 @@ function resetForm() {
   agendamentoEmInput.value = "";
   pagamentoFormaInput.value = "";
   pagamentoParcelasInput.value = "";
+  valorFechadoInput.value = "";
+  dataVencimentoInput.value = "";
   perdidoMotivoInput.value = "";
   perdidoFollowupInput.value = "";
   perdidoFollowupDataInput.value = "";
@@ -330,6 +367,154 @@ function renderSummaryToday(leads) {
         </div>
       `
     )
+    .join("");
+}
+
+/* ---------- Leads do dia ---------- */
+
+function renderLeadsToday(leads) {
+  const todayLeads = leads.filter((l) => isToday(l.created_at));
+  leadsTodayEmptyState.hidden = todayLeads.length !== 0;
+
+  leadsTodayTbody.innerHTML = todayLeads
+    .map(
+      (l) => `
+        <tr>
+          <td>${escapeHtml(l.nome)}</td>
+          <td>${escapeHtml(l.instagram || "-")}</td>
+          <td>${escapeHtml(l.email || "-")}</td>
+          <td>${escapeHtml(l.whatsapp || "-")}</td>
+          <td>${escapeHtml(l.profissao)}</td>
+          <td>${escapeHtml(l.contexto)}</td>
+          <td>${formatDateTimeBR(l.agendamento_em)}</td>
+          <td>${escapeHtml(l.abordado_por)}</td>
+        </tr>
+      `
+    )
+    .join("");
+}
+
+/* ---------- Faturamento ---------- */
+
+function renderFaturamento(leads) {
+  const startDate = fatDataInicialInput.value;
+  const endDate = fatDataFinalInput.value;
+  if (!startDate || !endDate) return;
+
+  const start = new Date(startDate + "T00:00:00");
+  const end = new Date(endDate + "T23:59:59");
+
+  const vendas = leads
+    .filter((l) => l.status === "convertido" && typeof l.valor_fechado === "number")
+    .filter((l) => {
+      const d = parseTimestamp(l.status_changed_at);
+      return d && d >= start && d <= end;
+    })
+    .map((l) => {
+      const formaKey = l.pagamento_forma || "a_vista";
+      const meta = FORMA_PAGAMENTO_META[formaKey] || FORMA_PAGAMENTO_META.a_vista;
+      const bruto = l.valor_fechado;
+      const liquido = bruto * (1 - meta.taxa);
+      return { ...l, formaKey, formaLabel: meta.label, taxa: meta.taxa, bruto, liquido };
+    })
+    .sort((a, b) => parseTimestamp(b.status_changed_at) - parseTimestamp(a.status_changed_at));
+
+  const faturamentoBruto = vendas.reduce((sum, v) => sum + v.bruto, 0);
+  const faturamentoLiquido = vendas.reduce((sum, v) => sum + v.liquido, 0);
+  const quantidadeVendas = vendas.length;
+  const ticketMedio = quantidadeVendas ? faturamentoBruto / quantidadeVendas : 0;
+
+  fatResumoEl.innerHTML = [
+    { label: "Faturamento Bruto", value: formatBRL(faturamentoBruto) },
+    { label: "Faturamento Líquido", value: formatBRL(faturamentoLiquido) },
+    { label: "Quantidade de Vendas", value: quantidadeVendas },
+    { label: "Ticket Médio", value: formatBRL(ticketMedio) },
+  ]
+    .map(
+      (t) => `
+        <div class="summary-tile">
+          <span class="label">${t.label}</span>
+          <span class="value">${t.value}</span>
+        </div>
+      `
+    )
+    .join("");
+
+  fatFormasTbody.innerHTML = Object.keys(FORMA_PAGAMENTO_META)
+    .map((key) => {
+      const meta = FORMA_PAGAMENTO_META[key];
+      const grupo = vendas.filter((v) => v.formaKey === key);
+      const quantidade = grupo.length;
+      const bruto = grupo.reduce((sum, v) => sum + v.bruto, 0);
+      const liquido = grupo.reduce((sum, v) => sum + v.liquido, 0);
+      const mediaParcelas =
+        key === "a_vista"
+          ? "-"
+          : quantidade
+          ? (grupo.reduce((sum, v) => sum + (v.pagamento_parcelas || 1), 0) / quantidade).toFixed(1) + "x"
+          : "-";
+      return `
+        <tr>
+          <td>${meta.label}</td>
+          <td>${quantidade}</td>
+          <td>${formatBRL(bruto)}</td>
+          <td>${formatBRL(liquido)}</td>
+          <td>${mediaParcelas}</td>
+        </tr>
+      `;
+    })
+    .join("");
+
+  fatTransacoesEmptyState.hidden = vendas.length !== 0;
+  fatTransacoesTbody.innerHTML = vendas
+    .map(
+      (v) => `
+        <tr>
+          <td>${escapeHtml(v.nome)}</td>
+          <td>${formatBRL(v.bruto)}</td>
+          <td>${v.formaLabel}</td>
+          <td>${v.pagamento_parcelas || "-"}</td>
+          <td>${(v.taxa * 100).toFixed(2)}%</td>
+          <td>${formatBRL(v.liquido)}</td>
+          <td>${formatDateTimeBR(v.status_changed_at)}</td>
+        </tr>
+      `
+    )
+    .join("");
+}
+
+fatAtualizarBtn.addEventListener("click", () => renderFaturamento(leadsCache));
+
+/* ---------- Renovações próximas ---------- */
+
+function daysUntil(dateStr) {
+  const today = new Date(todayISO() + "T00:00:00");
+  const target = new Date(dateStr + "T00:00:00");
+  return Math.round((target - today) / 86400000);
+}
+
+function renderRenewals(leads) {
+  const upcoming = leads
+    .filter((l) => l.status === "convertido" && l.data_vencimento)
+    .map((l) => ({ ...l, diasRestantes: daysUntil(l.data_vencimento) }))
+    .filter((l) => l.diasRestantes <= 15)
+    .sort((a, b) => a.diasRestantes - b.diasRestantes);
+
+  renewalsEmptyState.hidden = upcoming.length !== 0;
+
+  renewalsTbody.innerHTML = upcoming
+    .map((l) => {
+      const urgente = l.diasRestantes <= 5;
+      return `
+        <tr>
+          <td>${escapeHtml(l.nome)}</td>
+          <td>${escapeHtml(l.email || "-")}</td>
+          <td>${escapeHtml(l.whatsapp || "-")}</td>
+          <td>${formatDateBR(l.data_vencimento)}</td>
+          <td><span class="badge" style="background:${urgente ? "#ef4444" : "#fb923c"};color:#ffffff">${l.diasRestantes}</span></td>
+        </tr>
+      `;
+    })
     .join("");
 }
 
@@ -487,6 +672,9 @@ function renderAll() {
   renderDashboards(leadsCache);
   renderReport(leadsCache);
   renderTable(leadsCache);
+  renderRenewals(leadsCache);
+  renderLeadsToday(leadsCache);
+  renderFaturamento(leadsCache);
 }
 
 /* ---------- Form submit (criar / editar) ---------- */
@@ -508,6 +696,7 @@ form.addEventListener("submit", async (e) => {
   const leadData = {
     nome,
     email,
+    instagram: instagramInput.value.trim(),
     whatsapp,
     profissao: profissaoInput.value,
     contexto: contextoInput.value,
@@ -517,6 +706,8 @@ form.addEventListener("submit", async (e) => {
     dificuldade: dificuldadeInput.value.trim(),
     online: onlineInput.value,
     agendamento_em: agendamentoEmInput.value ? new Date(agendamentoEmInput.value).toISOString() : null,
+    valor_fechado: statusInput.value === "convertido" && valorFechadoInput.value ? Number(valorFechadoInput.value) : null,
+    data_vencimento: statusInput.value === "convertido" ? dataVencimentoInput.value || null : null,
     pagamento_forma: statusInput.value === "convertido" ? pagamentoFormaInput.value || null : null,
     pagamento_parcelas:
       statusInput.value === "convertido" && pagamentoParcelasInput.value ? Number(pagamentoParcelasInput.value) : null,
@@ -575,6 +766,7 @@ tbody.addEventListener("click", async (e) => {
     leadIdInput.value = lead.id;
     nomeInput.value = lead.nome;
     emailInput.value = lead.email;
+    instagramInput.value = lead.instagram || "";
     whatsappInput.value = lead.whatsapp || "";
     profissaoInput.value = lead.profissao;
     contextoInput.value = lead.contexto;
@@ -583,6 +775,8 @@ tbody.addEventListener("click", async (e) => {
     renderStatusOptions(lead.status);
     cadastroDataInput.value = lead.created_at ? toDatetimeLocalValue(lead.created_at).slice(0, 10) : todayISO();
     agendamentoEmInput.value = toDatetimeLocalValue(lead.agendamento_em);
+    valorFechadoInput.value = lead.valor_fechado || "";
+    dataVencimentoInput.value = lead.data_vencimento || "";
     pagamentoFormaInput.value = lead.pagamento_forma || "";
     pagamentoParcelasInput.value = lead.pagamento_parcelas || "";
     perdidoMotivoInput.value = lead.perdido_motivo || "";
@@ -623,6 +817,9 @@ function setupRealtime() {
 (async function init() {
   resetForm();
   trkDateInput.value = todayISO();
+  const now = new Date();
+  fatDataInicialInput.value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-01`;
+  fatDataFinalInput.value = todayISO();
   await refreshLeads();
   await refreshTracking();
   setupRealtime();

@@ -85,6 +85,34 @@ header h1 {
   color: var(--texto);
 }
 
+/* ---------- Leads do dia ---------- */
+
+.leads-today-card {
+  border: 1px solid #93c5fd;
+  border-left: 4px solid #3b82f6;
+  background: #eff6ff;
+}
+
+.leads-today-card .section-title {
+  color: #1e40af;
+}
+
+/* ---------- Renovações próximas ---------- */
+
+.renewals-card {
+  border: 1px solid #fca5a5;
+  border-left: 4px solid #ef4444;
+  background: #fef2f2;
+}
+
+.renewals-card .section-title {
+  color: #b91c1c;
+}
+
+.renewals-card tbody td {
+  color: var(--texto);
+}
+
 /* ---------- Resumo hoje ---------- */
 
 .summary-grid {

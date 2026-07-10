@@ -3,6 +3,9 @@
 alter table leads add column if not exists status_changed_at timestamptz not null default now();
 alter table leads add column if not exists pagamento_forma text;
 alter table leads add column if not exists pagamento_parcelas int;
+alter table leads add column if not exists valor_fechado numeric;
+alter table leads add column if not exists data_vencimento date;
+alter table leads add column if not exists instagram text;
 alter table leads add column if not exists agendamento_em timestamptz;
 alter table leads add column if not exists perdido_motivo text;
 alter table leads add column if not exists perdido_followup text;

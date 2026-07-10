@@ -27,6 +27,8 @@
         <input type="hidden" id="lead-id" />
         <input type="hidden" id="pagamento-forma" />
         <input type="hidden" id="pagamento-parcelas" />
+        <input type="hidden" id="valor-fechado" />
+        <input type="hidden" id="data-vencimento" />
         <input type="hidden" id="perdido-motivo" />
         <input type="hidden" id="perdido-followup" />
         <input type="hidden" id="perdido-followup-data" />
@@ -46,6 +48,10 @@
           <div class="field">
             <label for="email">E-mail</label>
             <input type="email" id="email" placeholder="email@exemplo.com" />
+          </div>
+          <div class="field">
+            <label for="instagram">Instagram</label>
+            <input type="text" id="instagram" placeholder="@usuario ou link" />
           </div>
           <div class="field">
             <label for="profissao">Profissão</label>
@@ -107,6 +113,29 @@
           <button type="button" id="cancel-edit-btn" class="btn btn-secondary" hidden>Cancelar edição</button>
         </div>
       </form>
+    </section>
+
+    <!-- LEADS DO DIA -->
+    <section class="card leads-today-card">
+      <h2 class="section-title">Leads do dia</h2>
+      <div class="table-wrapper">
+        <table id="leads-today-table">
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Instagram</th>
+              <th>Email</th>
+              <th>WhatsApp</th>
+              <th>Profissão</th>
+              <th>Contexto</th>
+              <th>Data/Horário Agendamento</th>
+              <th>Agendado por</th>
+            </tr>
+          </thead>
+          <tbody id="leads-today-tbody"></tbody>
+        </table>
+        <p id="leads-today-empty-state" class="empty-state" hidden>Nenhum lead cadastrado hoje.</p>
+      </div>
     </section>
 
     <!-- FILTROS + TABELA -->
@@ -227,6 +256,79 @@
       </div>
     </section>
 
+    <!-- FATURAMENTO -->
+    <section class="card">
+      <h2 class="section-title">Faturamento</h2>
+      <div class="filters">
+        <div class="field">
+          <label for="fat-data-inicial">Data inicial</label>
+          <input type="date" id="fat-data-inicial" />
+        </div>
+        <div class="field">
+          <label for="fat-data-final">Data final</label>
+          <input type="date" id="fat-data-final" />
+        </div>
+        <button type="button" id="fat-atualizar-btn" class="btn btn-primary">Atualizar período</button>
+      </div>
+
+      <div id="fat-resumo" class="summary-grid"></div>
+
+      <h3 class="subsection-title">Detalhamento por forma de pagamento</h3>
+      <div class="table-wrapper">
+        <table id="fat-formas-table">
+          <thead>
+            <tr>
+              <th>Forma</th>
+              <th>Quantidade</th>
+              <th>Valor Bruto</th>
+              <th>Valor Líquido</th>
+              <th>Média de parcelas</th>
+            </tr>
+          </thead>
+          <tbody id="fat-formas-tbody"></tbody>
+        </table>
+      </div>
+
+      <h3 class="subsection-title">Transações</h3>
+      <div class="table-wrapper">
+        <table id="fat-transacoes-table">
+          <thead>
+            <tr>
+              <th>Cliente</th>
+              <th>Valor Bruto</th>
+              <th>Forma Pagamento</th>
+              <th>Parcelas</th>
+              <th>Taxa</th>
+              <th>Valor Líquido</th>
+              <th>Data Venda</th>
+            </tr>
+          </thead>
+          <tbody id="fat-transacoes-tbody"></tbody>
+        </table>
+        <p id="fat-transacoes-empty-state" class="empty-state" hidden>Nenhuma venda no período selecionado.</p>
+      </div>
+    </section>
+
+    <!-- RENOVAÇÕES PRÓXIMAS -->
+    <section class="card renewals-card">
+      <h2 class="section-title">Renovações próximas</h2>
+      <div class="table-wrapper">
+        <table id="renewals-table">
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Email</th>
+              <th>WhatsApp</th>
+              <th>Data Vencimento</th>
+              <th>Dias restantes</th>
+            </tr>
+          </thead>
+          <tbody id="renewals-tbody"></tbody>
+        </table>
+        <p id="renewals-empty-state" class="empty-state" hidden>Nenhuma renovação nos próximos 15 dias.</p>
+      </div>
+    </section>
+
     <!-- DASHBOARD ORGÂNICO -->
     <section class="card">
       <h2 class="section-title">Dashboard orgânico</h2>
@@ -245,12 +347,20 @@
     <div class="modal">
       <h3 class="section-title">Confirmar conversão</h3>
       <div class="field">
+        <label for="modal-valor-fechado">Valor fechado (R$)</label>
+        <input type="number" id="modal-valor-fechado" min="0" step="0.01" placeholder="0,00" />
+      </div>
+      <div class="field">
         <label for="modal-forma-pagamento">Forma de pagamento</label>
         <select id="modal-forma-pagamento">
           <option value="a_vista">À vista</option>
           <option value="parcelado_eduzz">Parcelado Eduzz</option>
           <option value="parcelado_sumup">Parcelado Sumup</option>
         </select>
+      </div>
+      <div class="field">
+        <label for="modal-data-vencimento">Data de vencimento (renovação)</label>
+        <input type="date" id="modal-data-vencimento" />
       </div>
       <div class="field" id="modal-parcelas-field">
         <label for="modal-parcelas">Parcelas</label>
