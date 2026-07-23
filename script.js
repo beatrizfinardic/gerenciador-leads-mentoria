@@ -347,7 +347,7 @@ function resetForm() {
 function renderSummaryToday(leads) {
   const trackingHoje = trackingCache.find((r) => r.data === todayISO());
   const leadsAbordadosHoje = trackingHoje ? trackingHoje.leads_abordados : 0;
-  const reunioesAgendadasHoje = leads.filter((l) => l.status === "agendado" && isToday(l.status_changed_at)).length;
+  const reunioesAgendadasHoje = leads.filter((l) => isToday(l.agendamento_em)).length;
   const reunioesFeitasHoje = leads.filter(
     (l) => (l.status === "convertido" || l.status === "perdido") && isToday(l.status_changed_at)
   ).length;
