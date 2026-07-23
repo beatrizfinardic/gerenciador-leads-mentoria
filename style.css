@@ -363,7 +363,8 @@ header h1 {
   align-items: center;
 }
 
-.filters select {
+.filters select,
+.filters .search-input {
   padding: 10px 12px;
   border: 1px solid var(--borda);
   border-radius: 6px;
@@ -371,6 +372,17 @@ header h1 {
   outline: none;
   background: var(--branco);
   color: var(--texto);
+  font-family: inherit;
+}
+
+.filters .search-input {
+  flex: 1;
+  min-width: 220px;
+}
+
+.filters .search-input:focus {
+  border-color: var(--preto);
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.08);
 }
 
 .filters select option {

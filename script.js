@@ -47,7 +47,9 @@ const cancelEditBtn = document.getElementById("cancel-edit-btn");
 
 const origemFilter = document.getElementById("origem-filter");
 const abordadoFilter = document.getElementById("abordado-filter");
+const leadsSearchInput = document.getElementById("leads-search");
 const statusTabsEl = document.getElementById("status-tabs");
+const leadsPromptState = document.getElementById("leads-prompt-state");
 let activeStatusTab = "";
 
 const tbody = document.getElementById("leads-tbody");
@@ -652,12 +654,28 @@ function renderTable(leads) {
 
   const origemValue = origemFilter.value;
   const abordadoValue = abordadoFilter.value;
+  const searchValue = leadsSearchInput.value.trim().toLowerCase();
+
+  const hasActiveFilter = !!activeStatusTab || !!origemValue || !!abordadoValue || !!searchValue;
+
+  if (!hasActiveFilter) {
+    tbody.innerHTML = "";
+    emptyState.hidden = true;
+    leadsPromptState.hidden = false;
+    return;
+  }
+  leadsPromptState.hidden = true;
 
   const filtered = leads.filter((lead) => {
     const matchesOrigem = !origemValue || lead.origem === origemValue;
     const matchesStatus = !activeStatusTab || lead.status === activeStatusTab;
     const matchesAbordado = !abordadoValue || lead.abordado_por === abordadoValue;
-    return matchesOrigem && matchesStatus && matchesAbordado;
+    const matchesSearch =
+      !searchValue ||
+      (lead.nome && lead.nome.toLowerCase().includes(searchValue)) ||
+      (lead.whatsapp && lead.whatsapp.toLowerCase().includes(searchValue)) ||
+      (lead.email && lead.email.toLowerCase().includes(searchValue));
+    return matchesOrigem && matchesStatus && matchesAbordado && matchesSearch;
   });
 
   tbody.innerHTML = "";
@@ -818,6 +836,7 @@ cancelEditBtn.addEventListener("click", resetForm);
 
 origemFilter.addEventListener("change", () => renderTable(leadsCache));
 abordadoFilter.addEventListener("change", () => renderTable(leadsCache));
+leadsSearchInput.addEventListener("input", () => renderTable(leadsCache));
 
 statusTabsEl.addEventListener("click", (e) => {
   const btn = e.target.closest(".status-tab");
