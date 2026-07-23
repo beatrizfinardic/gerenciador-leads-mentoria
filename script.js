@@ -46,8 +46,9 @@ const submitBtn = document.getElementById("submit-btn");
 const cancelEditBtn = document.getElementById("cancel-edit-btn");
 
 const origemFilter = document.getElementById("origem-filter");
-const statusFilter = document.getElementById("status-filter");
 const abordadoFilter = document.getElementById("abordado-filter");
+const statusTabsEl = document.getElementById("status-tabs");
+let activeStatusTab = "";
 
 const tbody = document.getElementById("leads-tbody");
 const emptyState = document.getElementById("empty-state");
@@ -372,23 +373,28 @@ function renderSummaryToday(leads) {
 /* ---------- Leads do dia ---------- */
 
 function renderLeadsToday(leads) {
-  const todayLeads = leads.filter((l) => isToday(l.created_at));
+  const todayLeads = leads
+    .filter((l) => isToday(l.agendamento_em))
+    .sort((a, b) => parseTimestamp(a.agendamento_em) - parseTimestamp(b.agendamento_em));
   leadsTodayEmptyState.hidden = todayLeads.length !== 0;
 
   leadsTodayTbody.innerHTML = todayLeads
-    .map(
-      (l) => `
+    .map((l) => {
+      const meta = STATUS_META[l.status];
+      return `
         <tr>
+          <td>${formatDateTimeBR(l.agendamento_em)}</td>
           <td>${escapeHtml(l.nome)}</td>
           <td>${escapeHtml(l.instagram || "-")}</td>
           <td>${escapeHtml(l.email || "-")}</td>
           <td>${escapeHtml(l.whatsapp || "-")}</td>
           <td>${escapeHtml(l.profissao)}</td>
-          <td>${formatDateTimeBR(l.agendamento_em)}</td>
+          <td><span class="badge" style="background:${meta.bg};color:${meta.text}">${escapeHtml(meta.label)}</span></td>
           <td>${escapeHtml(l.abordado_por)}</td>
+          <td>${escapeHtml(l.dificuldade || "-")}</td>
         </tr>
-      `
-    )
+      `;
+    })
     .join("");
 }
 
@@ -623,14 +629,33 @@ trackingForm.addEventListener("submit", async (e) => {
 
 /* ---------- Tabela de leads ---------- */
 
-function renderTable(leads) {
+function renderStatusTabs(leads) {
   const origemValue = origemFilter.value;
-  const statusValue = statusFilter.value;
+  const abordadoValue = abordadoFilter.value;
+
+  const preFiltered = leads.filter((lead) => {
+    const matchesOrigem = !origemValue || lead.origem === origemValue;
+    const matchesAbordado = !abordadoValue || lead.abordado_por === abordadoValue;
+    return matchesOrigem && matchesAbordado;
+  });
+
+  statusTabsEl.querySelectorAll(".status-tab").forEach((btn) => {
+    const status = btn.dataset.status;
+    const count = status ? preFiltered.filter((l) => l.status === status).length : preFiltered.length;
+    btn.querySelector(".status-tab-count").textContent = count;
+    btn.classList.toggle("active", status === activeStatusTab);
+  });
+}
+
+function renderTable(leads) {
+  renderStatusTabs(leads);
+
+  const origemValue = origemFilter.value;
   const abordadoValue = abordadoFilter.value;
 
   const filtered = leads.filter((lead) => {
     const matchesOrigem = !origemValue || lead.origem === origemValue;
-    const matchesStatus = !statusValue || lead.status === statusValue;
+    const matchesStatus = !activeStatusTab || lead.status === activeStatusTab;
     const matchesAbordado = !abordadoValue || lead.abordado_por === abordadoValue;
     return matchesOrigem && matchesStatus && matchesAbordado;
   });
@@ -792,8 +817,14 @@ cancelEditBtn.addEventListener("click", resetForm);
 /* ---------- Filtros ---------- */
 
 origemFilter.addEventListener("change", () => renderTable(leadsCache));
-statusFilter.addEventListener("change", () => renderTable(leadsCache));
 abordadoFilter.addEventListener("change", () => renderTable(leadsCache));
+
+statusTabsEl.addEventListener("click", (e) => {
+  const btn = e.target.closest(".status-tab");
+  if (!btn) return;
+  activeStatusTab = btn.dataset.status;
+  renderTable(leadsCache);
+});
 
 /* ---------- Realtime (sincroniza Gabi e Paulo) ---------- */
 

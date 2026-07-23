@@ -113,24 +113,35 @@
         <table id="leads-today-table">
           <thead>
             <tr>
+              <th>Horário</th>
               <th>Nome</th>
               <th>Instagram</th>
               <th>Email</th>
               <th>WhatsApp</th>
               <th>Profissão</th>
-              <th>Data/Horário Agendamento</th>
+              <th>Status</th>
               <th>Agendado por</th>
+              <th>Observações</th>
             </tr>
           </thead>
           <tbody id="leads-today-tbody"></tbody>
         </table>
-        <p id="leads-today-empty-state" class="empty-state" hidden>Nenhum lead cadastrado hoje.</p>
+        <p id="leads-today-empty-state" class="empty-state" hidden>Nenhum agendamento para hoje.</p>
       </div>
     </section>
 
     <!-- FILTROS + TABELA -->
     <section class="card">
       <h2 class="section-title">Leads</h2>
+
+      <div class="status-tabs" id="status-tabs">
+        <button type="button" class="status-tab active" data-status="">Todos <span class="status-tab-count">0</span></button>
+        <button type="button" class="status-tab" data-status="agendado">Agendado <span class="status-tab-count">0</span></button>
+        <button type="button" class="status-tab" data-status="convertido">Convertido <span class="status-tab-count">0</span></button>
+        <button type="button" class="status-tab" data-status="nao_compareceu">Não compareceu <span class="status-tab-count">0</span></button>
+        <button type="button" class="status-tab" data-status="perdido">Perdido <span class="status-tab-count">0</span></button>
+      </div>
+
       <div class="filters">
         <select id="origem-filter">
           <option value="">Todas as origens</option>
@@ -140,13 +151,6 @@
           <option value="Workshop">Workshop</option>
           <option value="Fluxo">Fluxo</option>
           <option value="Evento">Evento</option>
-        </select>
-        <select id="status-filter">
-          <option value="">Todos os status</option>
-          <option value="agendado">Agendado</option>
-          <option value="convertido">Convertido</option>
-          <option value="nao_compareceu">Não compareceu</option>
-          <option value="perdido">Perdido</option>
         </select>
         <select id="abordado-filter">
           <option value="">Todos (agendado por)</option>
