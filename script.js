@@ -66,6 +66,8 @@ const leadsTodayEmptyState = document.getElementById("leads-today-empty-state");
 const fatDataInicialInput = document.getElementById("fat-data-inicial");
 const fatDataFinalInput = document.getElementById("fat-data-final");
 const fatAtualizarBtn = document.getElementById("fat-atualizar-btn");
+const fatOrigemTabsEl = document.getElementById("fat-origem-tabs");
+let fatOrigemTab = "";
 const fatResumoEl = document.getElementById("fat-resumo");
 const fatFormasTbody = document.getElementById("fat-formas-tbody");
 const fatTransacoesTbody = document.getElementById("fat-transacoes-tbody");
@@ -413,6 +415,11 @@ function renderFaturamento(leads) {
   const vendas = leads
     .filter((l) => l.status === "convertido" && typeof l.valor_fechado === "number")
     .filter((l) => {
+      if (fatOrigemTab === "fluxo") return l.origem === "Fluxo";
+      if (fatOrigemTab === "organico") return l.origem !== "Fluxo";
+      return true;
+    })
+    .filter((l) => {
       const d = parseTimestamp(l.status_changed_at);
       return d && d >= start && d <= end;
     })
@@ -490,6 +497,14 @@ function renderFaturamento(leads) {
 }
 
 fatAtualizarBtn.addEventListener("click", () => renderFaturamento(leadsCache));
+
+fatOrigemTabsEl.addEventListener("click", (e) => {
+  const btn = e.target.closest(".status-tab");
+  if (!btn) return;
+  fatOrigemTab = btn.dataset.origem;
+  fatOrigemTabsEl.querySelectorAll(".status-tab").forEach((el) => el.classList.toggle("active", el === btn));
+  renderFaturamento(leadsCache);
+});
 
 /* ---------- Renovações próximas ---------- */
 
