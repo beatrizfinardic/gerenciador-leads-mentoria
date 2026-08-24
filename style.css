@@ -430,6 +430,14 @@ tbody tr:hover {
   background: rgba(0, 0, 0, 0.02);
 }
 
+.clickable-row {
+  cursor: pointer;
+}
+
+.clickable-row:hover {
+  background: rgba(59, 130, 246, 0.08);
+}
+
 .actions-cell {
   display: flex;
   gap: 6px;

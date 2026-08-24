@@ -15,6 +15,18 @@ const STATUS_META = {
 const ORGANICO_STATUSES = ["agendado", "convertido", "nao_compareceu", "perdido"];
 const FLUXO_STATUSES = ["agendado", "convertido", "nao_compareceu", "perdido"];
 
+const PESSOA_META = {
+  Gabi: { bg: "#f472b6", text: "#ffffff" },
+  Paulo: { bg: "#60a5fa", text: "#ffffff" },
+  Igor: { bg: "#34d399", text: "#065f46" },
+};
+
+function pessoaBadge(nome) {
+  const meta = PESSOA_META[nome];
+  if (!meta) return "-";
+  return `<span class="badge" style="background:${meta.bg};color:${meta.text}">${escapeHtml(nome)}</span>`;
+}
+
 // Eduzz cobra taxa fixa + percentual por transacao no credito (juros da parcela fica com o cliente).
 const FORMA_PAGAMENTO_META = {
   a_vista: { label: "PIX", taxaFixa: 0, taxaPercentual: 0 },
@@ -40,6 +52,7 @@ const pagamentoFormaInput = document.getElementById("pagamento-forma");
 const pagamentoParcelasInput = document.getElementById("pagamento-parcelas");
 const valorFechadoInput = document.getElementById("valor-fechado");
 const dataVencimentoInput = document.getElementById("data-vencimento");
+const fechadoPorInput = document.getElementById("fechado-por");
 const perdidoMotivoInput = document.getElementById("perdido-motivo");
 const perdidoFollowupInput = document.getElementById("perdido-followup");
 const perdidoFollowupDataInput = document.getElementById("perdido-followup-data");
@@ -82,6 +95,7 @@ const trackingTbody = document.getElementById("tracking-tbody");
 const trackingEmptyState = document.getElementById("tracking-empty-state");
 
 const paymentModal = document.getElementById("payment-modal");
+const modalFechadoPorSelect = document.getElementById("modal-fechado-por");
 const modalValorFechadoInput = document.getElementById("modal-valor-fechado");
 const modalDataVencimentoInput = document.getElementById("modal-data-vencimento");
 const modalFormaSelect = document.getElementById("modal-forma-pagamento");
@@ -229,6 +243,7 @@ function renderStatusOptions(preferredStatus) {
     pagamentoParcelasInput.value = "";
     valorFechadoInput.value = "";
     dataVencimentoInput.value = "";
+    fechadoPorInput.value = "";
   }
   if (value !== "perdido") {
     perdidoMotivoInput.value = "";
@@ -251,6 +266,7 @@ statusInput.addEventListener("change", () => {
     pagamentoParcelasInput.value = "";
     valorFechadoInput.value = "";
     dataVencimentoInput.value = "";
+    fechadoPorInput.value = "";
     perdidoMotivoInput.value = "";
     perdidoFollowupInput.value = "";
     perdidoFollowupDataInput.value = "";
@@ -261,6 +277,7 @@ statusInput.addEventListener("change", () => {
 /* ---------- Modal de pagamento (ao converter) ---------- */
 
 function openPaymentModal() {
+  modalFechadoPorSelect.value = fechadoPorInput.value || "Paulo";
   modalValorFechadoInput.value = valorFechadoInput.value || "";
   modalDataVencimentoInput.value = dataVencimentoInput.value || "";
   modalFormaSelect.value = pagamentoFormaInput.value || "a_vista";
@@ -278,6 +295,7 @@ modalFormaSelect.addEventListener("change", () => {
 });
 
 modalConfirmBtn.addEventListener("click", () => {
+  fechadoPorInput.value = modalFechadoPorSelect.value;
   valorFechadoInput.value = modalValorFechadoInput.value;
   dataVencimentoInput.value = modalDataVencimentoInput.value;
   pagamentoFormaInput.value = modalFormaSelect.value;
@@ -337,6 +355,7 @@ function resetForm() {
   pagamentoParcelasInput.value = "";
   valorFechadoInput.value = "";
   dataVencimentoInput.value = "";
+  fechadoPorInput.value = "";
   perdidoMotivoInput.value = "";
   perdidoFollowupInput.value = "";
   perdidoFollowupDataInput.value = "";
@@ -486,6 +505,8 @@ function renderFaturamento(leads) {
       (v) => `
         <tr>
           <td>${escapeHtml(v.nome)}</td>
+          <td>${pessoaBadge(v.abordado_por)}</td>
+          <td>${pessoaBadge(v.fechado_por)}</td>
           <td>${formatBRL(v.bruto)}</td>
           <td>${v.formaLabel}</td>
           <td>${v.pagamento_parcelas || "-"}</td>
@@ -529,7 +550,7 @@ function renderRenewals(leads) {
     .map((l) => {
       const urgente = l.diasRestantes <= 5;
       return `
-        <tr>
+        <tr class="clickable-row" data-id="${l.id}">
           <td>${escapeHtml(l.nome)}</td>
           <td>${escapeHtml(l.email || "-")}</td>
           <td>${escapeHtml(l.whatsapp || "-")}</td>
@@ -765,6 +786,7 @@ form.addEventListener("submit", async (e) => {
     valor_fechado: statusInput.value === "convertido" && valorFechadoInput.value ? Number(valorFechadoInput.value) : null,
     data_vencimento: statusInput.value === "convertido" ? dataVencimentoInput.value || null : null,
     pagamento_forma: statusInput.value === "convertido" ? pagamentoFormaInput.value || null : null,
+    fechado_por: statusInput.value === "convertido" ? fechadoPorInput.value || null : null,
     pagamento_parcelas:
       statusInput.value === "convertido" && pagamentoParcelasInput.value ? Number(pagamentoParcelasInput.value) : null,
     perdido_motivo: statusInput.value === "perdido" ? perdidoMotivoInput.value || null : null,
@@ -798,6 +820,37 @@ form.addEventListener("submit", async (e) => {
 
 /* ---------- Ações da tabela ---------- */
 
+function loadLeadIntoForm(lead) {
+  if (!lead) return;
+
+  leadIdInput.value = lead.id;
+  nomeInput.value = lead.nome;
+  emailInput.value = lead.email;
+  instagramInput.value = lead.instagram || "";
+  whatsappInput.value = lead.whatsapp || "";
+  profissaoInput.value = lead.profissao;
+  origemInput.value = lead.origem;
+  abordadoPorInput.value = lead.abordado_por;
+  renderStatusOptions(lead.status);
+  cadastroDataInput.value = lead.created_at ? toDatetimeLocalValue(lead.created_at).slice(0, 10) : todayISO();
+  agendamentoEmInput.value = toDatetimeLocalValue(lead.agendamento_em);
+  valorFechadoInput.value = lead.valor_fechado || "";
+  dataVencimentoInput.value = lead.data_vencimento || "";
+  fechadoPorInput.value = lead.fechado_por || "";
+  pagamentoFormaInput.value = lead.pagamento_forma || "";
+  pagamentoParcelasInput.value = lead.pagamento_parcelas || "";
+  perdidoMotivoInput.value = lead.perdido_motivo || "";
+  perdidoFollowupInput.value = lead.perdido_followup || "";
+  perdidoFollowupDataInput.value = lead.perdido_followup_data || "";
+  dificuldadeInput.value = lead.dificuldade || "";
+  onlineInput.value = lead.online;
+
+  submitBtn.textContent = "Salvar alterações";
+  cancelEditBtn.hidden = false;
+  nomeInput.focus();
+  nomeInput.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
 tbody.addEventListener("click", async (e) => {
   const btn = e.target.closest("button[data-action]");
   if (!btn) return;
@@ -816,35 +869,14 @@ tbody.addEventListener("click", async (e) => {
   }
 
   if (action === "edit") {
-    const lead = leadsCache.find((l) => l.id === id);
-    if (!lead) return;
-
-    leadIdInput.value = lead.id;
-    nomeInput.value = lead.nome;
-    emailInput.value = lead.email;
-    instagramInput.value = lead.instagram || "";
-    whatsappInput.value = lead.whatsapp || "";
-    profissaoInput.value = lead.profissao;
-    origemInput.value = lead.origem;
-    abordadoPorInput.value = lead.abordado_por;
-    renderStatusOptions(lead.status);
-    cadastroDataInput.value = lead.created_at ? toDatetimeLocalValue(lead.created_at).slice(0, 10) : todayISO();
-    agendamentoEmInput.value = toDatetimeLocalValue(lead.agendamento_em);
-    valorFechadoInput.value = lead.valor_fechado || "";
-    dataVencimentoInput.value = lead.data_vencimento || "";
-    pagamentoFormaInput.value = lead.pagamento_forma || "";
-    pagamentoParcelasInput.value = lead.pagamento_parcelas || "";
-    perdidoMotivoInput.value = lead.perdido_motivo || "";
-    perdidoFollowupInput.value = lead.perdido_followup || "";
-    perdidoFollowupDataInput.value = lead.perdido_followup_data || "";
-    dificuldadeInput.value = lead.dificuldade || "";
-    onlineInput.value = lead.online;
-
-    submitBtn.textContent = "Salvar alterações";
-    cancelEditBtn.hidden = false;
-    nomeInput.focus();
-    nomeInput.scrollIntoView({ behavior: "smooth", block: "center" });
+    loadLeadIntoForm(leadsCache.find((l) => l.id === id));
   }
+});
+
+renewalsTbody.addEventListener("click", (e) => {
+  const row = e.target.closest("tr[data-id]");
+  if (!row) return;
+  loadLeadIntoForm(leadsCache.find((l) => l.id === row.dataset.id));
 });
 
 cancelEditBtn.addEventListener("click", resetForm);
