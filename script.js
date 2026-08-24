@@ -15,10 +15,11 @@ const STATUS_META = {
 const ORGANICO_STATUSES = ["agendado", "convertido", "nao_compareceu", "perdido"];
 const FLUXO_STATUSES = ["agendado", "convertido", "nao_compareceu", "perdido"];
 
+// Eduzz cobra taxa fixa + percentual por transacao no credito (juros da parcela fica com o cliente).
 const FORMA_PAGAMENTO_META = {
-  a_vista: { label: "PIX", taxa: 0 },
-  parcelado_eduzz: { label: "Eduzz", taxa: 0.0466 },
-  parcelado_sumup: { label: "Sumup", taxa: 0 },
+  a_vista: { label: "PIX", taxaFixa: 0, taxaPercentual: 0 },
+  parcelado_eduzz: { label: "Eduzz", taxaFixa: 2.49, taxaPercentual: 0.0459 },
+  parcelado_sumup: { label: "Sumup", taxaFixa: 0, taxaPercentual: 0 },
 };
 
 const form = document.getElementById("lead-form");
@@ -427,8 +428,9 @@ function renderFaturamento(leads) {
       const formaKey = l.pagamento_forma || "a_vista";
       const meta = FORMA_PAGAMENTO_META[formaKey] || FORMA_PAGAMENTO_META.a_vista;
       const bruto = l.valor_fechado;
-      const liquido = bruto * (1 - meta.taxa);
-      return { ...l, formaKey, formaLabel: meta.label, taxa: meta.taxa, bruto, liquido };
+      const liquido = Math.max(0, bruto - bruto * meta.taxaPercentual - meta.taxaFixa);
+      const taxa = bruto ? (bruto - liquido) / bruto : 0;
+      return { ...l, formaKey, formaLabel: meta.label, taxa, bruto, liquido };
     })
     .sort((a, b) => parseTimestamp(b.status_changed_at) - parseTimestamp(a.status_changed_at));
 
