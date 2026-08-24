@@ -76,6 +76,8 @@ const renewalsTbody = document.getElementById("renewals-tbody");
 const renewalsEmptyState = document.getElementById("renewals-empty-state");
 const leadsTodayTbody = document.getElementById("leads-today-tbody");
 const leadsTodayEmptyState = document.getElementById("leads-today-empty-state");
+const leadsTodayOrigemTabsEl = document.getElementById("leads-today-origem-tabs");
+let leadsTodayOrigemTab = "";
 
 const fatDataInicialInput = document.getElementById("fat-data-inicial");
 const fatDataFinalInput = document.getElementById("fat-data-final");
@@ -399,6 +401,11 @@ function renderSummaryToday(leads) {
 function renderLeadsToday(leads) {
   const todayLeads = leads
     .filter((l) => isToday(l.agendamento_em))
+    .filter((l) => {
+      if (leadsTodayOrigemTab === "fluxo") return l.origem === "Fluxo";
+      if (leadsTodayOrigemTab === "organico") return l.origem !== "Fluxo";
+      return true;
+    })
     .sort((a, b) => parseTimestamp(a.agendamento_em) - parseTimestamp(b.agendamento_em));
   leadsTodayEmptyState.hidden = todayLeads.length !== 0;
 
@@ -421,6 +428,14 @@ function renderLeadsToday(leads) {
     })
     .join("");
 }
+
+leadsTodayOrigemTabsEl.addEventListener("click", (e) => {
+  const btn = e.target.closest(".status-tab");
+  if (!btn) return;
+  leadsTodayOrigemTab = btn.dataset.origem;
+  leadsTodayOrigemTabsEl.querySelectorAll(".status-tab").forEach((el) => el.classList.toggle("active", el === btn));
+  renderLeadsToday(leadsCache);
+});
 
 /* ---------- Faturamento ---------- */
 
