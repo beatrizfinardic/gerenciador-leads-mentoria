@@ -27,6 +27,18 @@ function pessoaBadge(nome) {
   return `<span class="badge" style="background:${meta.bg};color:${meta.text}">${escapeHtml(nome)}</span>`;
 }
 
+const TIPOS_MENTORIA = ["Mentoria Titulares", "Mentoria Eméritos"];
+const MENTORIA_META = {
+  "Mentoria Titulares": { bg: "#c4b5fd", text: "#4c1d95" },
+  "Mentoria Eméritos": { bg: "#fde68a", text: "#78350f" },
+};
+
+function mentoriaBadge(tipo) {
+  const meta = MENTORIA_META[tipo];
+  if (!meta) return "-";
+  return `<span class="badge" style="background:${meta.bg};color:${meta.text}">${escapeHtml(tipo)}</span>`;
+}
+
 // Eduzz cobra taxa fixa + percentual por transacao no credito (juros da parcela fica com o cliente).
 const FORMA_PAGAMENTO_META = {
   a_vista: { label: "PIX", taxaFixa: 0, taxaPercentual: 0 },
@@ -53,6 +65,7 @@ const pagamentoParcelasInput = document.getElementById("pagamento-parcelas");
 const valorFechadoInput = document.getElementById("valor-fechado");
 const dataVencimentoInput = document.getElementById("data-vencimento");
 const fechadoPorInput = document.getElementById("fechado-por");
+const tipoMentoriaInput = document.getElementById("tipo-mentoria");
 const perdidoMotivoInput = document.getElementById("perdido-motivo");
 const perdidoFollowupInput = document.getElementById("perdido-followup");
 const perdidoFollowupDataInput = document.getElementById("perdido-followup-data");
@@ -86,6 +99,7 @@ const fatOrigemTabsEl = document.getElementById("fat-origem-tabs");
 let fatOrigemTab = "";
 const fatResumoEl = document.getElementById("fat-resumo");
 const fatFormasTbody = document.getElementById("fat-formas-tbody");
+const fatMentoriaTbody = document.getElementById("fat-mentoria-tbody");
 const fatTransacoesTbody = document.getElementById("fat-transacoes-tbody");
 const fatTransacoesEmptyState = document.getElementById("fat-transacoes-empty-state");
 
@@ -98,6 +112,7 @@ const trackingEmptyState = document.getElementById("tracking-empty-state");
 
 const paymentModal = document.getElementById("payment-modal");
 const modalFechadoPorSelect = document.getElementById("modal-fechado-por");
+const modalTipoMentoriaSelect = document.getElementById("modal-tipo-mentoria");
 const modalValorFechadoInput = document.getElementById("modal-valor-fechado");
 const modalDataVencimentoInput = document.getElementById("modal-data-vencimento");
 const modalFormaSelect = document.getElementById("modal-forma-pagamento");
@@ -246,6 +261,7 @@ function renderStatusOptions(preferredStatus) {
     valorFechadoInput.value = "";
     dataVencimentoInput.value = "";
     fechadoPorInput.value = "";
+    tipoMentoriaInput.value = "";
   }
   if (value !== "perdido") {
     perdidoMotivoInput.value = "";
@@ -269,6 +285,7 @@ statusInput.addEventListener("change", () => {
     valorFechadoInput.value = "";
     dataVencimentoInput.value = "";
     fechadoPorInput.value = "";
+    tipoMentoriaInput.value = "";
     perdidoMotivoInput.value = "";
     perdidoFollowupInput.value = "";
     perdidoFollowupDataInput.value = "";
@@ -280,6 +297,7 @@ statusInput.addEventListener("change", () => {
 
 function openPaymentModal() {
   modalFechadoPorSelect.value = fechadoPorInput.value || "Paulo";
+  modalTipoMentoriaSelect.value = tipoMentoriaInput.value || "Mentoria Titulares";
   modalValorFechadoInput.value = valorFechadoInput.value || "";
   modalDataVencimentoInput.value = dataVencimentoInput.value || "";
   modalFormaSelect.value = pagamentoFormaInput.value || "a_vista";
@@ -298,6 +316,7 @@ modalFormaSelect.addEventListener("change", () => {
 
 modalConfirmBtn.addEventListener("click", () => {
   fechadoPorInput.value = modalFechadoPorSelect.value;
+  tipoMentoriaInput.value = modalTipoMentoriaSelect.value;
   valorFechadoInput.value = modalValorFechadoInput.value;
   dataVencimentoInput.value = modalDataVencimentoInput.value;
   pagamentoFormaInput.value = modalFormaSelect.value;
@@ -358,6 +377,7 @@ function resetForm() {
   valorFechadoInput.value = "";
   dataVencimentoInput.value = "";
   fechadoPorInput.value = "";
+  tipoMentoriaInput.value = "";
   perdidoMotivoInput.value = "";
   perdidoFollowupInput.value = "";
   perdidoFollowupDataInput.value = "";
@@ -514,12 +534,31 @@ function renderFaturamento(leads) {
     })
     .join("");
 
+  const tiposComVendas = vendas.some((v) => !v.tipo_mentoria) ? [...TIPOS_MENTORIA, null] : TIPOS_MENTORIA;
+  fatMentoriaTbody.innerHTML = tiposComVendas
+    .map((tipo) => {
+      const grupo = vendas.filter((v) => (v.tipo_mentoria || null) === tipo);
+      const quantidade = grupo.length;
+      const bruto = grupo.reduce((sum, v) => sum + v.bruto, 0);
+      const liquido = grupo.reduce((sum, v) => sum + v.liquido, 0);
+      return `
+        <tr>
+          <td>${tipo ? escapeHtml(tipo) : "Não informado"}</td>
+          <td>${quantidade}</td>
+          <td>${formatBRL(bruto)}</td>
+          <td>${formatBRL(liquido)}</td>
+        </tr>
+      `;
+    })
+    .join("");
+
   fatTransacoesEmptyState.hidden = vendas.length !== 0;
   fatTransacoesTbody.innerHTML = vendas
     .map(
       (v) => `
         <tr>
           <td>${escapeHtml(v.nome)}</td>
+          <td>${mentoriaBadge(v.tipo_mentoria)}</td>
           <td>${pessoaBadge(v.abordado_por)}</td>
           <td>${pessoaBadge(v.fechado_por)}</td>
           <td>${formatBRL(v.bruto)}</td>
@@ -802,6 +841,7 @@ form.addEventListener("submit", async (e) => {
     data_vencimento: statusInput.value === "convertido" ? dataVencimentoInput.value || null : null,
     pagamento_forma: statusInput.value === "convertido" ? pagamentoFormaInput.value || null : null,
     fechado_por: statusInput.value === "convertido" ? fechadoPorInput.value || null : null,
+    tipo_mentoria: statusInput.value === "convertido" ? tipoMentoriaInput.value || null : null,
     pagamento_parcelas:
       statusInput.value === "convertido" && pagamentoParcelasInput.value ? Number(pagamentoParcelasInput.value) : null,
     perdido_motivo: statusInput.value === "perdido" ? perdidoMotivoInput.value || null : null,
@@ -852,6 +892,7 @@ function loadLeadIntoForm(lead) {
   valorFechadoInput.value = lead.valor_fechado || "";
   dataVencimentoInput.value = lead.data_vencimento || "";
   fechadoPorInput.value = lead.fechado_por || "";
+  tipoMentoriaInput.value = lead.tipo_mentoria || "";
   pagamentoFormaInput.value = lead.pagamento_forma || "";
   pagamentoParcelasInput.value = lead.pagamento_parcelas || "";
   perdidoMotivoInput.value = lead.perdido_motivo || "";
