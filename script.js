@@ -40,10 +40,12 @@ function mentoriaBadge(tipo) {
 }
 
 // Eduzz cobra taxa fixa + percentual por transacao no credito (juros da parcela fica com o cliente).
+// No cartao recorrente a taxa fixa incide a cada cobranca mensal (taxaFixaPorCiclo), nao uma vez so no total.
 const FORMA_PAGAMENTO_META = {
   a_vista: { label: "PIX", taxaFixa: 0, taxaPercentual: 0 },
   parcelado_eduzz: { label: "Eduzz", taxaFixa: 2.49, taxaPercentual: 0.0459 },
   parcelado_sumup: { label: "Sumup", taxaFixa: 0, taxaPercentual: 0 },
+  recorrente_cartao: { label: "Cartão Recorrente", taxaFixa: 2.49, taxaPercentual: 0.0459, taxaFixaPorCiclo: true },
 };
 
 const form = document.getElementById("lead-form");
@@ -118,6 +120,10 @@ const modalDataVencimentoInput = document.getElementById("modal-data-vencimento"
 const modalFormaSelect = document.getElementById("modal-forma-pagamento");
 const modalParcelasField = document.getElementById("modal-parcelas-field");
 const modalParcelasSelect = document.getElementById("modal-parcelas");
+const modalRecorrenciaField = document.getElementById("modal-recorrencia-field");
+const modalRecorrenciaQuantidadeInput = document.getElementById("modal-recorrencia-quantidade");
+const modalRecorrenciaValorField = document.getElementById("modal-recorrencia-valor-field");
+const modalRecorrenciaValorInput = document.getElementById("modal-recorrencia-valor");
 const modalConfirmBtn = document.getElementById("modal-confirm-btn");
 const modalCancelBtn = document.getElementById("modal-cancel-btn");
 
@@ -295,6 +301,22 @@ statusInput.addEventListener("change", () => {
 
 /* ---------- Modal de pagamento (ao converter) ---------- */
 
+function updateModalFormaFields() {
+  const forma = modalFormaSelect.value;
+  modalParcelasField.hidden = forma !== "parcelado_eduzz" && forma !== "parcelado_sumup";
+  modalRecorrenciaField.hidden = forma !== "recorrente_cartao";
+  modalRecorrenciaValorField.hidden = forma !== "recorrente_cartao";
+}
+
+function syncValorFechadoRecorrencia() {
+  if (modalFormaSelect.value !== "recorrente_cartao") return;
+  const quantidade = Number(modalRecorrenciaQuantidadeInput.value) || 0;
+  const valorParcela = Number(modalRecorrenciaValorInput.value) || 0;
+  if (quantidade && valorParcela) {
+    modalValorFechadoInput.value = (quantidade * valorParcela).toFixed(2);
+  }
+}
+
 function openPaymentModal() {
   modalFechadoPorSelect.value = fechadoPorInput.value || "Paulo";
   modalTipoMentoriaSelect.value = tipoMentoriaInput.value || "Mentoria Titulares";
@@ -302,7 +324,16 @@ function openPaymentModal() {
   modalDataVencimentoInput.value = dataVencimentoInput.value || "";
   modalFormaSelect.value = pagamentoFormaInput.value || "a_vista";
   modalParcelasSelect.value = pagamentoParcelasInput.value || "2";
-  modalParcelasField.hidden = modalFormaSelect.value === "a_vista";
+  if (modalFormaSelect.value === "recorrente_cartao") {
+    const quantidade = Number(pagamentoParcelasInput.value) || "";
+    modalRecorrenciaQuantidadeInput.value = quantidade;
+    modalRecorrenciaValorInput.value =
+      quantidade && valorFechadoInput.value ? (Number(valorFechadoInput.value) / quantidade).toFixed(2) : "";
+  } else {
+    modalRecorrenciaQuantidadeInput.value = "";
+    modalRecorrenciaValorInput.value = "";
+  }
+  updateModalFormaFields();
   paymentModal.hidden = false;
 }
 
@@ -311,8 +342,12 @@ function closePaymentModal() {
 }
 
 modalFormaSelect.addEventListener("change", () => {
-  modalParcelasField.hidden = modalFormaSelect.value === "a_vista";
+  updateModalFormaFields();
+  syncValorFechadoRecorrencia();
 });
+
+modalRecorrenciaQuantidadeInput.addEventListener("input", syncValorFechadoRecorrencia);
+modalRecorrenciaValorInput.addEventListener("input", syncValorFechadoRecorrencia);
 
 modalConfirmBtn.addEventListener("click", () => {
   fechadoPorInput.value = modalFechadoPorSelect.value;
@@ -320,7 +355,11 @@ modalConfirmBtn.addEventListener("click", () => {
   valorFechadoInput.value = modalValorFechadoInput.value;
   dataVencimentoInput.value = modalDataVencimentoInput.value;
   pagamentoFormaInput.value = modalFormaSelect.value;
-  pagamentoParcelasInput.value = modalFormaSelect.value === "a_vista" ? "" : modalParcelasSelect.value;
+  if (modalFormaSelect.value === "recorrente_cartao") {
+    pagamentoParcelasInput.value = modalRecorrenciaQuantidadeInput.value;
+  } else {
+    pagamentoParcelasInput.value = modalFormaSelect.value === "a_vista" ? "" : modalParcelasSelect.value;
+  }
   confirmedStatusValue = "convertido";
   statusInput.value = "convertido";
   updateStatusSelectColor();
@@ -482,7 +521,8 @@ function renderFaturamento(leads) {
       const formaKey = l.pagamento_forma || "a_vista";
       const meta = FORMA_PAGAMENTO_META[formaKey] || FORMA_PAGAMENTO_META.a_vista;
       const bruto = l.valor_fechado;
-      const liquido = Math.max(0, bruto - bruto * meta.taxaPercentual - meta.taxaFixa);
+      const ciclos = meta.taxaFixaPorCiclo ? l.pagamento_parcelas || 1 : 1;
+      const liquido = Math.max(0, bruto - bruto * meta.taxaPercentual - meta.taxaFixa * ciclos);
       const taxa = bruto ? (bruto - liquido) / bruto : 0;
       return { ...l, formaKey, formaLabel: meta.label, taxa, bruto, liquido };
     })
