@@ -527,8 +527,9 @@ function renderFaturamento(leads) {
     .map((l) => {
       const formaKey = l.pagamento_forma || "a_vista";
       const meta = FORMA_PAGAMENTO_META[formaKey] || FORMA_PAGAMENTO_META.a_vista;
-      const bruto = l.valor_fechado;
-      const ciclos = meta.taxaFixaPorCiclo ? l.pagamento_parcelas || 1 : 1;
+      const isRecorrente = formaKey === "recorrente_cartao";
+      const bruto = isRecorrente ? l.valor_fechado / (l.pagamento_parcelas || 1) : l.valor_fechado;
+      const ciclos = isRecorrente ? 1 : (meta.taxaFixaPorCiclo ? l.pagamento_parcelas || 1 : 1);
       const liquido = Math.max(0, bruto - bruto * meta.taxaPercentual - meta.taxaFixa * ciclos);
       const taxa = bruto ? (bruto - liquido) / bruto : 0;
       return { ...l, formaKey, formaLabel: meta.label, taxa, bruto, liquido };
@@ -711,6 +712,7 @@ function renderCusto(leads) {
   });
 
   const totalAgendamentos = fluxoPeriodo.length;
+  const totalVendas = fluxoPeriodo.filter((l) => l.status === "convertido").length;
   const totalReunioesFeitas = fluxoPeriodo.filter((l) => l.status === "convertido" || l.status === "perdido").length;
   const totalDesqualificados = fluxoPeriodo.filter((l) => l.status === "desqualificado").length;
   const totalAgendamentoQualificado = totalAgendamentos - totalDesqualificados;
@@ -721,6 +723,8 @@ function renderCusto(leads) {
   custoResumoEl.innerHTML = [
     { label: "Total de agendamentos", value: totalAgendamentos },
     { label: "Custo por agendamento", value: formatBRL(custoPor(totalAgendamentos)) },
+    { label: "Total de vendas", value: totalVendas },
+    { label: "Custo por venda", value: formatBRL(custoPor(totalVendas)) },
     { label: "Total de reuniões feitas", value: totalReunioesFeitas },
     { label: "Custo por reunião feita", value: formatBRL(custoPor(totalReunioesFeitas)) },
     { label: "Total de agendamento qualificado", value: totalAgendamentoQualificado },
