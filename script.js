@@ -9,11 +9,13 @@ const STATUS_META = {
   confirmado: { label: "Confirmado", bg: "#facc15", text: "#1a1a1a", cardBg: "#fef9c3", cardText: "#713f12" },
   convertido: { label: "Convertido", bg: "#166534", text: "#ffffff", cardBg: "#166534", cardText: "#ffffff" },
   nao_compareceu: { label: "Não compareceu", bg: "#f87171", text: "#ffffff", cardBg: "#fee2e2", cardText: "#7f1d1d" },
+  nao_respondeu: { label: "Não respondeu/Desmarcado", bg: "#fbbf24", text: "#78350f", cardBg: "#fef3c7", cardText: "#78350f" },
+  desqualificado: { label: "Desqualificado/Desmarcado", bg: "#78716c", text: "#ffffff", cardBg: "#f5f5f4", cardText: "#44403c" },
   perdido: { label: "Perdido", bg: "#9ca3af", text: "#1a1a1a", cardBg: "#e5e7eb", cardText: "#374151" },
 };
 
-const ORGANICO_STATUSES = ["agendado", "convertido", "nao_compareceu", "perdido"];
-const FLUXO_STATUSES = ["agendado", "convertido", "nao_compareceu", "perdido"];
+const ORGANICO_STATUSES = ["agendado", "convertido", "nao_compareceu", "nao_respondeu", "desqualificado", "perdido"];
+const FLUXO_STATUSES = ["agendado", "convertido", "nao_compareceu", "nao_respondeu", "desqualificado", "perdido"];
 
 const PESSOA_META = {
   Gabi: { bg: "#f472b6", text: "#ffffff" },
@@ -86,6 +88,11 @@ const emptyState = document.getElementById("empty-state");
 const reportTbody = document.getElementById("report-tbody");
 const dashboardOrganicoEl = document.getElementById("dashboard-organico");
 const dashboardFluxoEl = document.getElementById("dashboard-fluxo");
+const custoDataInicialInput = document.getElementById("custo-data-inicial");
+const custoDataFinalInput = document.getElementById("custo-data-final");
+const custoValorInvestidoInput = document.getElementById("custo-valor-investido");
+const custoAtualizarBtn = document.getElementById("custo-atualizar-btn");
+const custoResumoEl = document.getElementById("custo-resumo");
 const summaryTodayEl = document.getElementById("summary-today");
 const renewalsTbody = document.getElementById("renewals-tbody");
 const renewalsEmptyState = document.getElementById("renewals-empty-state");
@@ -677,6 +684,62 @@ function renderDashboards(leads) {
   dashboardFluxoEl.innerHTML = FLUXO_STATUSES.map((key) => dashboardCardHtml(key, fluxo)).join("");
 }
 
+/* ---------- Custo de tráfego (Fluxo) ---------- */
+
+function getCurrentCostPeriodDates() {
+  const now = new Date();
+  const day = now.getDate();
+  const start = day >= 15 ? new Date(now.getFullYear(), now.getMonth(), 15) : new Date(now.getFullYear(), now.getMonth() - 1, 15);
+  const end = day >= 15 ? new Date(now.getFullYear(), now.getMonth() + 1, 15) : new Date(now.getFullYear(), now.getMonth(), 15);
+  const toISO = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  return { start: toISO(start), end: toISO(end) };
+}
+
+function renderCusto(leads) {
+  const startDate = custoDataInicialInput.value;
+  const endDate = custoDataFinalInput.value;
+  if (!startDate || !endDate) return;
+
+  const start = new Date(startDate + "T00:00:00");
+  const end = new Date(endDate + "T23:59:59");
+  const valorInvestido = Number(custoValorInvestidoInput.value) || 0;
+
+  const fluxoPeriodo = leads.filter((l) => {
+    if (l.origem !== "Fluxo") return false;
+    const d = parseTimestamp(l.created_at);
+    return d && d >= start && d <= end;
+  });
+
+  const totalAgendamentos = fluxoPeriodo.length;
+  const totalReunioesFeitas = fluxoPeriodo.filter((l) => l.status === "convertido" || l.status === "perdido").length;
+  const totalDesqualificados = fluxoPeriodo.filter((l) => l.status === "desqualificado").length;
+  const totalAgendamentoQualificado = totalAgendamentos - totalDesqualificados;
+  const totalNoShow = fluxoPeriodo.filter((l) => l.status === "nao_compareceu").length;
+
+  const custoPor = (total) => (total ? valorInvestido / total : 0);
+
+  custoResumoEl.innerHTML = [
+    { label: "Total de agendamentos", value: totalAgendamentos },
+    { label: "Custo por agendamento", value: formatBRL(custoPor(totalAgendamentos)) },
+    { label: "Total de reuniões feitas", value: totalReunioesFeitas },
+    { label: "Custo por reunião feita", value: formatBRL(custoPor(totalReunioesFeitas)) },
+    { label: "Total de agendamento qualificado", value: totalAgendamentoQualificado },
+    { label: "Custo por agendamento qualificado", value: formatBRL(custoPor(totalAgendamentoQualificado)) },
+    { label: "Total de no show", value: totalNoShow },
+  ]
+    .map(
+      (t) => `
+        <div class="summary-tile">
+          <span class="label">${t.label}</span>
+          <span class="value">${t.value}</span>
+        </div>
+      `
+    )
+    .join("");
+}
+
+custoAtualizarBtn.addEventListener("click", () => renderCusto(leadsCache));
+
 /* ---------- Relatório de conversão por período ---------- */
 
 function getPeriodStarts() {
@@ -847,6 +910,7 @@ function renderAll() {
   renderRenewals(leadsCache);
   renderLeadsToday(leadsCache);
   renderFaturamento(leadsCache);
+  renderCusto(leadsCache);
 }
 
 /* ---------- Form submit (criar / editar) ---------- */
@@ -1010,6 +1074,9 @@ function setupRealtime() {
   const now = new Date();
   fatDataInicialInput.value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-01`;
   fatDataFinalInput.value = todayISO();
+  const costPeriod = getCurrentCostPeriodDates();
+  custoDataInicialInput.value = costPeriod.start;
+  custoDataFinalInput.value = costPeriod.end;
   await refreshLeads();
   await refreshTracking();
   setupRealtime();
