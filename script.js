@@ -223,7 +223,9 @@ function todayISO() {
 }
 
 function formatDateBR(iso) {
-  const [y, m, d] = iso.split("-");
+  if (!iso) return "-";
+  const dateOnly = iso.split("T")[0];
+  const [y, m, d] = dateOnly.split("-");
   return `${d}/${m}/${y}`;
 }
 
