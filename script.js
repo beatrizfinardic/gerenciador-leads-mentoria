@@ -72,6 +72,8 @@ const faturamento3mesesInput = document.getElementById("faturamento-3meses");
 const faturamento3mesesFieldInput = document.getElementById("faturamento-3meses-input");
 const faturamento3mesesField = document.getElementById("faturamento-3meses-field");
 const dataVencimentoInput = document.getElementById("data-vencimento");
+const dataVendaInput = document.getElementById("data-venda");
+const modalDataVendaInput = document.getElementById("modal-data-venda");
 const pagamentoDetailsSection = document.getElementById("pagamento-details-section");
 const formValorFechadoInput = document.getElementById("form-valor-fechado");
 const formPagamentoFormaInput = document.getElementById("form-pagamento-forma");
@@ -336,6 +338,17 @@ formDataVencimentoInput.addEventListener("change", () => {
   dataVencimentoInput.value = formDataVencimentoInput.value;
 });
 
+modalDataVendaInput.addEventListener("change", () => {
+  dataVendaInput.value = modalDataVendaInput.value;
+  if (modalDataVendaInput.value) {
+    const vendaDate = new Date(modalDataVendaInput.value);
+    vendaDate.setMonth(vendaDate.getMonth() + 6);
+    const renovacaoDate = vendaDate.toISOString().split('T')[0];
+    modalDataVencimento.value = renovacaoDate;
+    dataVencimentoInput.value = renovacaoDate;
+  }
+});
+
 statusInput.addEventListener("change", () => {
   if (statusInput.value === "convertido") {
     faturamento3mesesField.hidden = cancelEditBtn.hidden;
@@ -511,6 +524,7 @@ function resetForm() {
   pagamentoParcelasInput.value = "";
   valorFechadoInput.value = "";
   dataVencimentoInput.value = "";
+  dataVendaInput.value = "";
   fechadoPorInput.value = "";
   tipoMentoriaInput.value = "";
   formValorFechadoInput.value = "";
@@ -519,6 +533,7 @@ function resetForm() {
   formTipoMentoriaInput.value = "";
   formPagamentoFormaInput.value = "";
   formPagamentoParcelasInput.value = "";
+  modalDataVendaInput.value = "";
   perdidoMotivoInput.value = "";
   perdidoFollowupInput.value = "";
   perdidoFollowupDataInput.value = "";
@@ -1158,6 +1173,7 @@ form.addEventListener("submit", async (e) => {
       statusInput.value === "perdido" && perdidoFollowupInput.value === "Sim" ? perdidoFollowupDataInput.value || null : null,
     followup_data: statusInput.value === "follow_up" ? followupDataValueInput.value || null : null,
     faturamento_3meses: statusInput.value === "convertido" && faturamento3mesesFieldInput.value ? Number(faturamento3mesesFieldInput.value) : null,
+    data_venda: statusInput.value === "convertido" ? dataVendaInput.value || null : null,
   };
 
   if (editingId) {
@@ -1201,6 +1217,7 @@ function loadLeadIntoForm(lead) {
   agendamentoEmInput.value = toDatetimeLocalValue(lead.agendamento_em);
   valorFechadoInput.value = lead.valor_fechado || "";
   dataVencimentoInput.value = lead.data_vencimento || "";
+  dataVendaInput.value = lead.data_venda || "";
   fechadoPorInput.value = lead.fechado_por || "";
   tipoMentoriaInput.value = lead.tipo_mentoria || "";
   pagamentoFormaInput.value = lead.pagamento_forma || "";
