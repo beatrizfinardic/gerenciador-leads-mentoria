@@ -448,7 +448,14 @@
 
       <div id="mentorados-resumo" class="summary-grid"></div>
 
-      <h3 class="subsection-title">Mentorados Ativos</h3>
+      <div class="status-tabs" id="mentorados-main-tabs">
+        <button type="button" class="status-tab active" data-tab="ativos">Ativos</button>
+        <button type="button" class="status-tab" data-tab="renovacoes">Renovações</button>
+        <button type="button" class="status-tab" data-tab="saidos">Saídos</button>
+      </div>
+
+      <div id="tab-ativos">
+        <h3 class="subsection-title">Mentorados Ativos</h3>
       <div class="table-wrapper">
         <table id="mentorados-table">
           <thead>
@@ -468,41 +475,46 @@
         </table>
         <p id="mentorados-empty-state" class="empty-state" hidden>Nenhum mentorado ativo.</p>
       </div>
-
-      <h3 class="subsection-title">Renovações Próximas</h3>
-      <div class="table-wrapper">
-        <table id="renewals-table">
-          <thead>
-            <tr>
-              <th>Nome</th>
-              <th>Email</th>
-              <th>WhatsApp</th>
-              <th>Data Vencimento</th>
-              <th>Dias Restantes</th>
-            </tr>
-          </thead>
-          <tbody id="renewals-tbody"></tbody>
-        </table>
-        <p id="renewals-empty-state" class="empty-state" hidden>Nenhuma renovação nos próximos 15 dias.</p>
       </div>
 
-      <h3 class="subsection-title">Mentorados que Saíram</h3>
-      <div class="table-wrapper">
-        <table id="mentorados-saidos-table">
-          <thead>
-            <tr>
-              <th>Nome</th>
-              <th>Email</th>
-              <th>Data Entrada</th>
-              <th>Data Saída</th>
-              <th>Faturamento Entrada</th>
-              <th>Faturamento Total</th>
-              <th>Motivo Saída</th>
-            </tr>
-          </thead>
-          <tbody id="mentorados-saidos-tbody"></tbody>
-        </table>
-        <p id="mentorados-saidos-empty-state" class="empty-state" hidden>Nenhum mentorado com saída registrada.</p>
+      <div id="tab-renovacoes" hidden>
+        <h3 class="subsection-title">Renovações Próximas</h3>
+        <div class="table-wrapper">
+          <table id="renewals-table">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>WhatsApp</th>
+                <th>Data Vencimento</th>
+                <th>Dias Restantes</th>
+              </tr>
+            </thead>
+            <tbody id="renewals-tbody"></tbody>
+          </table>
+          <p id="renewals-empty-state" class="empty-state" hidden>Nenhuma renovação nos próximos 15 dias.</p>
+        </div>
+      </div>
+
+      <div id="tab-saidos" hidden>
+        <h3 class="subsection-title">Mentorados que Saíram</h3>
+        <div class="table-wrapper">
+          <table id="mentorados-saidos-table">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Data Entrada</th>
+                <th>Data Saída</th>
+                <th>Faturamento Entrada</th>
+                <th>Faturamento Total</th>
+                <th>Motivo Saída</th>
+              </tr>
+            </thead>
+            <tbody id="mentorados-saidos-tbody"></tbody>
+          </table>
+          <p id="mentorados-saidos-empty-state" class="empty-state" hidden>Nenhum mentorado com saída registrada.</p>
+        </div>
       </div>
     </section>
     </div>

@@ -111,6 +111,8 @@ const custoAtualizarBtn = document.getElementById("custo-atualizar-btn");
 const custoResumoEl = document.getElementById("custo-resumo");
 const mentoriaTypeTabsEl = document.getElementById("mentoria-type-tabs");
 let mentoriaTypeTab = "Mentoria Titulares";
+const mentoradosMainTabsEl = document.getElementById("mentorados-main-tabs");
+let mentoradosMainTab = "ativos";
 const mentoradosResumoEl = document.getElementById("mentorados-resumo");
 const mentoradosTbody = document.getElementById("mentorados-tbody");
 const mentoradosEmptyState = document.getElementById("mentorados-empty-state");
@@ -958,6 +960,17 @@ mentoriaTypeTabsEl.addEventListener("click", (e) => {
   mentoriaTypeTab = btn.dataset.mentoria;
   mentoriaTypeTabsEl.querySelectorAll(".status-tab").forEach((el) => el.classList.toggle("active", el === btn));
   renderMentorados(leadsCache);
+});
+
+mentoradosMainTabsEl.addEventListener("click", (e) => {
+  const btn = e.target.closest(".status-tab");
+  if (!btn) return;
+  mentoradosMainTab = btn.dataset.tab;
+  mentoradosMainTabsEl.querySelectorAll(".status-tab").forEach((el) => el.classList.toggle("active", el === btn));
+
+  document.getElementById("tab-ativos").hidden = mentoradosMainTab !== "ativos";
+  document.getElementById("tab-renovacoes").hidden = mentoradosMainTab !== "renovacoes";
+  document.getElementById("tab-saidos").hidden = mentoradosMainTab !== "saidos";
 });
 
 /* ---------- Relatório de conversão por período ---------- */
