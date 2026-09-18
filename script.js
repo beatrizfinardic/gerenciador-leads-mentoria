@@ -593,7 +593,7 @@ function renderLeadsToday(leads) {
     .map((l) => {
       const meta = STATUS_META[l.status];
       return `
-        <tr>
+        <tr data-id="${l.id}" class="clickable-row">
           <td>${formatDateTimeBR(l.agendamento_em)}</td>
           <td>${escapeHtml(l.nome)}</td>
           <td>${escapeHtml(l.instagram || "-")}</td>
@@ -608,6 +608,13 @@ function renderLeadsToday(leads) {
     })
     .join("");
 }
+
+leadsTodayTbody.addEventListener("click", (e) => {
+  const row = e.target.closest("tr[data-id]");
+  if (!row) return;
+  loadLeadIntoForm(leadsCache.find((l) => l.id === row.dataset.id));
+  nomeInput.scrollIntoView({ behavior: "smooth", block: "center" });
+});
 
 leadsTodayOrigemTabsEl.addEventListener("click", (e) => {
   const btn = e.target.closest(".status-tab");
