@@ -68,6 +68,9 @@ const agendamentoEmInput = document.getElementById("agendamento-em");
 const pagamentoFormaInput = document.getElementById("pagamento-forma");
 const pagamentoParcelasInput = document.getElementById("pagamento-parcelas");
 const valorFechadoInput = document.getElementById("valor-fechado");
+const faturamento3mesesInput = document.getElementById("faturamento-3meses");
+const faturamento3mesesFieldInput = document.getElementById("faturamento-3meses-input");
+const faturamento3mesesField = document.getElementById("faturamento-3meses-field");
 const dataVencimentoInput = document.getElementById("data-vencimento");
 const fechadoPorInput = document.getElementById("fechado-por");
 const tipoMentoriaInput = document.getElementById("tipo-mentoria");
@@ -304,11 +307,14 @@ origemInput.addEventListener("change", () => renderStatusOptions(statusInput.val
 
 statusInput.addEventListener("change", () => {
   if (statusInput.value === "convertido") {
+    faturamento3mesesField.hidden = cancelEditBtn.hidden;
     openPaymentModal();
   } else if (statusInput.value === "perdido") {
+    faturamento3mesesField.hidden = true;
     openLostModal();
   } else if (statusInput.value === "follow_up") {
     confirmedStatusValue = statusInput.value;
+    faturamento3mesesField.hidden = true;
     followupDataField.hidden = false;
     pagamentoFormaInput.value = "";
     pagamentoParcelasInput.value = "";
@@ -465,6 +471,9 @@ function resetForm() {
   perdidoFollowupDataInput.value = "";
   followupDataValueInput.value = "";
   followupDataInput.value = "";
+  faturamento3mesesInput.value = "";
+  faturamento3mesesFieldInput.value = "";
+  faturamento3mesesField.hidden = true;
   renderStatusOptions("prospect");
   submitBtn.textContent = "Cadastrar lead";
   cancelEditBtn.hidden = true;
@@ -816,13 +825,13 @@ function renderMentorados(leads) {
   mentoradosEmptyState.hidden = ativos.length !== 0;
   mentoradosTbody.innerHTML = ativos
     .map((l) => `
-      <tr>
+      <tr data-id="${l.id}" class="clickable-row">
         <td>${escapeHtml(l.nome)}</td>
         <td>${escapeHtml(l.email || "-")}</td>
         <td>${escapeHtml(l.whatsapp || "-")}</td>
         <td>${formatDateBR(l.created_at)}</td>
         <td>${formatBRL(l.valor_fechado || 0)}</td>
-        <td>${formatBRL(l.valor_fechado ? l.valor_fechado * 0.7 : 0)}</td>
+        <td>${formatBRL(l.faturamento_3meses || 0)}</td>
         <td><span class="badge" style="background:#dbeafe;color:#1e3a8a">Ativo</span></td>
         <td>${formatDateBR(l.data_vencimento || "-")}</td>
         <td>${escapeHtml(l.dificuldade || "-")}</td>
@@ -833,6 +842,14 @@ function renderMentorados(leads) {
   mentoradosSaidosEmptyState.hidden = true;
   mentoradosSaidosTbody.innerHTML = "";
 }
+
+mentoradosTbody.addEventListener("click", (e) => {
+  const row = e.target.closest("tr[data-id]");
+  if (!row) return;
+  loadLeadIntoForm(leadsCache.find((l) => l.id === row.dataset.id));
+  const leadsSection = document.querySelector(".section-container[data-section='leads']") || document.querySelector("#section-leads");
+  if (leadsSection) leadsSection.scrollIntoView({ behavior: "smooth", block: "start" });
+});
 
 mentoriaTypeTabsEl.addEventListener("click", (e) => {
   const btn = e.target.closest(".status-tab");
@@ -1056,6 +1073,7 @@ form.addEventListener("submit", async (e) => {
     perdido_followup_data:
       statusInput.value === "perdido" && perdidoFollowupInput.value === "Sim" ? perdidoFollowupDataInput.value || null : null,
     followup_data: statusInput.value === "follow_up" ? followupDataValueInput.value || null : null,
+    faturamento_3meses: statusInput.value === "convertido" && faturamento3mesesFieldInput.value ? Number(faturamento3mesesFieldInput.value) : null,
   };
 
   if (editingId) {
@@ -1108,6 +1126,8 @@ function loadLeadIntoForm(lead) {
   perdidoFollowupDataInput.value = lead.perdido_followup_data || "";
   followupDataValueInput.value = lead.followup_data || "";
   followupDataInput.value = lead.followup_data || "";
+  faturamento3mesesInput.value = lead.faturamento_3meses || "";
+  faturamento3mesesFieldInput.value = lead.faturamento_3meses || "";
   dificuldadeInput.value = lead.dificuldade || "";
   onlineInput.value = lead.online;
 

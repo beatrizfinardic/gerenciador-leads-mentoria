@@ -38,6 +38,7 @@
         <input type="hidden" id="pagamento-forma" />
         <input type="hidden" id="pagamento-parcelas" />
         <input type="hidden" id="valor-fechado" />
+        <input type="hidden" id="faturamento-3meses" />
         <input type="hidden" id="data-vencimento" />
         <input type="hidden" id="fechado-por" />
         <input type="hidden" id="tipo-mentoria" />
@@ -114,6 +115,10 @@
           <div class="field field-wide">
             <label for="dificuldade">Principais dores</label>
             <textarea id="dificuldade" rows="4" placeholder="Ex: Não sabe estruturar aulas online, dificuldade em conseguir alunos..."></textarea>
+          </div>
+          <div class="field" id="faturamento-3meses-field" hidden>
+            <label for="faturamento-3meses-input">Faturamento - Reunião 3 meses (R$)</label>
+            <input type="number" id="faturamento-3meses-input" min="0" step="0.01" placeholder="0,00" />
           </div>
         </div>
         <div class="form-actions">
