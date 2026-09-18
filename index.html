@@ -34,6 +34,7 @@
         <input type="hidden" id="perdido-motivo" />
         <input type="hidden" id="perdido-followup" />
         <input type="hidden" id="perdido-followup-data" />
+        <input type="hidden" id="followup-data-value" />
         <div class="form-grid">
           <div class="field">
             <label for="cadastro-data">Data de cadastro</label>
@@ -87,6 +88,10 @@
           <div class="field">
             <label for="agendamento-em">Data e horário do agendamento</label>
             <input type="datetime-local" id="agendamento-em" />
+          </div>
+          <div class="field" id="followup-data-field" hidden>
+            <label for="followup-data">Data do próximo follow up</label>
+            <input type="date" id="followup-data" />
           </div>
           <div class="field">
             <label for="online">Online?</label>
@@ -150,6 +155,7 @@
         <button type="button" class="status-tab" data-status="nao_compareceu">Não compareceu <span class="status-tab-count">0</span></button>
         <button type="button" class="status-tab" data-status="nao_respondeu">Não respondeu <span class="status-tab-count">0</span></button>
         <button type="button" class="status-tab" data-status="desqualificado">Desqualificado <span class="status-tab-count">0</span></button>
+        <button type="button" class="status-tab" data-status="follow_up">Follow up <span class="status-tab-count">0</span></button>
         <button type="button" class="status-tab" data-status="perdido">Perdido <span class="status-tab-count">0</span></button>
       </div>
 
@@ -291,6 +297,7 @@
               <th>Valor Bruto</th>
               <th>Valor Líquido</th>
               <th>Média de parcelas</th>
+              <th>Observação</th>
             </tr>
           </thead>
           <tbody id="fat-formas-tbody"></tbody>

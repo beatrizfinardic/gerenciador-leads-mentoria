@@ -11,11 +11,12 @@ const STATUS_META = {
   nao_compareceu: { label: "Não compareceu", bg: "#f87171", text: "#ffffff", cardBg: "#fee2e2", cardText: "#7f1d1d" },
   nao_respondeu: { label: "Não respondeu/Desmarcado", bg: "#fbbf24", text: "#78350f", cardBg: "#fef3c7", cardText: "#78350f" },
   desqualificado: { label: "Desqualificado/Desmarcado", bg: "#78716c", text: "#ffffff", cardBg: "#f5f5f4", cardText: "#44403c" },
+  follow_up: { label: "Follow up", bg: "#8b5cf6", text: "#ffffff", cardBg: "#ede9fe", cardText: "#5b21b6" },
   perdido: { label: "Perdido", bg: "#9ca3af", text: "#1a1a1a", cardBg: "#e5e7eb", cardText: "#374151" },
 };
 
-const ORGANICO_STATUSES = ["agendado", "convertido", "nao_compareceu", "nao_respondeu", "desqualificado", "perdido"];
-const FLUXO_STATUSES = ["agendado", "convertido", "nao_compareceu", "nao_respondeu", "desqualificado", "perdido"];
+const ORGANICO_STATUSES = ["agendado", "convertido", "nao_compareceu", "nao_respondeu", "desqualificado", "follow_up", "perdido"];
+const FLUXO_STATUSES = ["agendado", "convertido", "nao_compareceu", "nao_respondeu", "desqualificado", "follow_up", "perdido"];
 
 const PESSOA_META = {
   Gabi: { bg: "#f472b6", text: "#ffffff" },
@@ -73,6 +74,9 @@ const tipoMentoriaInput = document.getElementById("tipo-mentoria");
 const perdidoMotivoInput = document.getElementById("perdido-motivo");
 const perdidoFollowupInput = document.getElementById("perdido-followup");
 const perdidoFollowupDataInput = document.getElementById("perdido-followup-data");
+const followupDataField = document.getElementById("followup-data-field");
+const followupDataInput = document.getElementById("followup-data");
+const followupDataValueInput = document.getElementById("followup-data-value");
 const submitBtn = document.getElementById("submit-btn");
 const cancelEditBtn = document.getElementById("cancel-edit-btn");
 
@@ -281,6 +285,11 @@ function renderStatusOptions(preferredStatus) {
     perdidoFollowupInput.value = "";
     perdidoFollowupDataInput.value = "";
   }
+  if (value !== "follow_up") {
+    followupDataValueInput.value = "";
+    followupDataInput.value = "";
+  }
+  followupDataField.hidden = value !== "follow_up";
   updateStatusSelectColor();
 }
 
@@ -291,6 +300,19 @@ statusInput.addEventListener("change", () => {
     openPaymentModal();
   } else if (statusInput.value === "perdido") {
     openLostModal();
+  } else if (statusInput.value === "follow_up") {
+    confirmedStatusValue = statusInput.value;
+    followupDataField.hidden = false;
+    pagamentoFormaInput.value = "";
+    pagamentoParcelasInput.value = "";
+    valorFechadoInput.value = "";
+    dataVencimentoInput.value = "";
+    fechadoPorInput.value = "";
+    tipoMentoriaInput.value = "";
+    perdidoMotivoInput.value = "";
+    perdidoFollowupInput.value = "";
+    perdidoFollowupDataInput.value = "";
+    updateStatusSelectColor();
   } else {
     confirmedStatusValue = statusInput.value;
     pagamentoFormaInput.value = "";
@@ -299,6 +321,9 @@ statusInput.addEventListener("change", () => {
     dataVencimentoInput.value = "";
     fechadoPorInput.value = "";
     tipoMentoriaInput.value = "";
+    followupDataField.hidden = true;
+    followupDataValueInput.value = "";
+    followupDataInput.value = "";
     perdidoMotivoInput.value = "";
     perdidoFollowupInput.value = "";
     perdidoFollowupDataInput.value = "";
@@ -355,6 +380,10 @@ modalFormaSelect.addEventListener("change", () => {
 
 modalRecorrenciaQuantidadeInput.addEventListener("input", syncValorFechadoRecorrencia);
 modalRecorrenciaValorInput.addEventListener("input", syncValorFechadoRecorrencia);
+
+followupDataInput.addEventListener("input", () => {
+  followupDataValueInput.value = followupDataInput.value;
+});
 
 modalConfirmBtn.addEventListener("click", () => {
   fechadoPorInput.value = modalFechadoPorSelect.value;
@@ -427,6 +456,8 @@ function resetForm() {
   perdidoMotivoInput.value = "";
   perdidoFollowupInput.value = "";
   perdidoFollowupDataInput.value = "";
+  followupDataValueInput.value = "";
+  followupDataInput.value = "";
   renderStatusOptions("prospect");
   submitBtn.textContent = "Cadastrar lead";
   cancelEditBtn.hidden = true;
@@ -529,10 +560,11 @@ function renderFaturamento(leads) {
       const meta = FORMA_PAGAMENTO_META[formaKey] || FORMA_PAGAMENTO_META.a_vista;
       const isRecorrente = formaKey === "recorrente_cartao";
       const bruto = isRecorrente ? l.valor_fechado / (l.pagamento_parcelas || 1) : l.valor_fechado;
+      const bruteTotal = isRecorrente ? l.valor_fechado : bruto;
       const ciclos = isRecorrente ? 1 : (meta.taxaFixaPorCiclo ? l.pagamento_parcelas || 1 : 1);
       const liquido = Math.max(0, bruto - bruto * meta.taxaPercentual - meta.taxaFixa * ciclos);
       const taxa = bruto ? (bruto - liquido) / bruto : 0;
-      return { ...l, formaKey, formaLabel: meta.label, taxa, bruto, liquido };
+      return { ...l, formaKey, formaLabel: meta.label, taxa, bruto, bruteTotal, liquido };
     })
     .sort((a, b) => parseTimestamp(b.status_changed_at) - parseTimestamp(a.status_changed_at));
 
@@ -564,12 +596,15 @@ function renderFaturamento(leads) {
       const quantidade = grupo.length;
       const bruto = grupo.reduce((sum, v) => sum + v.bruto, 0);
       const liquido = grupo.reduce((sum, v) => sum + v.liquido, 0);
+      const isRecorrente = key === "recorrente_cartao";
+      const bruteTotal = isRecorrente ? grupo.reduce((sum, v) => sum + v.bruteTotal, 0) : 0;
       const mediaParcelas =
         key === "a_vista"
           ? "-"
           : quantidade
           ? (grupo.reduce((sum, v) => sum + (v.pagamento_parcelas || 1), 0) / quantidade).toFixed(1) + "x"
           : "-";
+      const observacao = isRecorrente && bruteTotal ? `Valor total da venda: ${formatBRL(bruteTotal)}` : "-";
       return `
         <tr>
           <td>${meta.label}</td>
@@ -577,6 +612,7 @@ function renderFaturamento(leads) {
           <td>${formatBRL(bruto)}</td>
           <td>${formatBRL(liquido)}</td>
           <td>${mediaParcelas}</td>
+          <td>${observacao}</td>
         </tr>
       `;
     })
@@ -956,6 +992,7 @@ form.addEventListener("submit", async (e) => {
     perdido_followup: statusInput.value === "perdido" ? perdidoFollowupInput.value || null : null,
     perdido_followup_data:
       statusInput.value === "perdido" && perdidoFollowupInput.value === "Sim" ? perdidoFollowupDataInput.value || null : null,
+    followup_data: statusInput.value === "follow_up" ? followupDataValueInput.value || null : null,
   };
 
   if (editingId) {
@@ -1006,6 +1043,8 @@ function loadLeadIntoForm(lead) {
   perdidoMotivoInput.value = lead.perdido_motivo || "";
   perdidoFollowupInput.value = lead.perdido_followup || "";
   perdidoFollowupDataInput.value = lead.perdido_followup_data || "";
+  followupDataValueInput.value = lead.followup_data || "";
+  followupDataInput.value = lead.followup_data || "";
   dificuldadeInput.value = lead.dificuldade || "";
   onlineInput.value = lead.online;
 
