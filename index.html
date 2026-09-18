@@ -20,6 +20,16 @@
       </div>
     </header>
 
+    <!-- NAVEGAÇÃO PRINCIPAL -->
+    <nav class="main-nav">
+      <button class="nav-tab active" data-section="leads">Leads</button>
+      <button class="nav-tab" data-section="agendamentos">Agendamentos</button>
+      <button class="nav-tab" data-section="mentorados">Mentorados (CRM)</button>
+    </nav>
+
+    <!-- SEÇÃO: LEADS -->
+    <div id="section-leads" class="section-container">
+
     <!-- FORMULÁRIO -->
     <section class="card">
       <h2 class="section-title">Adicionar lead</h2>
@@ -396,7 +406,18 @@
       <div id="custo-resumo" class="summary-grid"></div>
     </section>
 
-    <!-- MENTORADOS (CRM) -->
+    </div>
+
+    <!-- SEÇÃO: AGENDAMENTOS -->
+    <div id="section-agendamentos" class="section-container" hidden>
+    <section class="card">
+      <h2 class="section-title">Agendamentos</h2>
+      <p class="empty-state">Seção de agendamentos em breve...</p>
+    </section>
+    </div>
+
+    <!-- SEÇÃO: MENTORADOS (CRM) -->
+    <div id="section-mentorados" class="section-container" hidden>
     <section class="card">
       <h2 class="section-title">CRM Mentorados</h2>
 
@@ -447,7 +468,7 @@
         <p id="mentorados-saidos-empty-state" class="empty-state" hidden>Nenhum mentorado com saída registrada.</p>
       </div>
     </section>
-  </div>
+    </div>
 
   <!-- MODAL: forma de pagamento ao converter -->
   <div id="payment-modal" class="modal-overlay" hidden>

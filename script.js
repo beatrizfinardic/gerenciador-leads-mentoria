@@ -1174,6 +1174,20 @@ function setupRealtime() {
 
 /* ---------- Init ---------- */
 
+/* ---------- Main navigation ---------- */
+
+document.querySelectorAll(".nav-tab").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const section = btn.dataset.section;
+
+    document.querySelectorAll(".nav-tab").forEach((b) => b.classList.remove("active"));
+    document.querySelectorAll(".section-container").forEach((s) => s.hidden = true);
+
+    btn.classList.add("active");
+    document.getElementById(`section-${section}`).hidden = false;
+  });
+});
+
 (async function init() {
   resetForm();
   trkDateInput.value = todayISO();
