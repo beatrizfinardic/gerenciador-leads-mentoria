@@ -72,6 +72,13 @@ const faturamento3mesesInput = document.getElementById("faturamento-3meses");
 const faturamento3mesesFieldInput = document.getElementById("faturamento-3meses-input");
 const faturamento3mesesField = document.getElementById("faturamento-3meses-field");
 const dataVencimentoInput = document.getElementById("data-vencimento");
+const pagamentoDetailsSection = document.getElementById("pagamento-details-section");
+const formValorFechadoInput = document.getElementById("form-valor-fechado");
+const formPagamentoFormaInput = document.getElementById("form-pagamento-forma");
+const formPagamentoParcelasInput = document.getElementById("form-pagamento-parcelas");
+const formFechadoPorInput = document.getElementById("form-fechado-por");
+const formTipoMentoriaInput = document.getElementById("form-tipo-mentoria");
+const formDataVencimentoInput = document.getElementById("form-data-vencimento");
 const fechadoPorInput = document.getElementById("fechado-por");
 const tipoMentoriaInput = document.getElementById("tipo-mentoria");
 const perdidoMotivoInput = document.getElementById("perdido-motivo");
@@ -305,16 +312,45 @@ function renderStatusOptions(preferredStatus) {
 
 origemInput.addEventListener("change", () => renderStatusOptions(statusInput.value));
 
+formValorFechadoInput.addEventListener("input", () => {
+  valorFechadoInput.value = formValorFechadoInput.value;
+});
+
+formPagamentoFormaInput.addEventListener("change", () => {
+  pagamentoFormaInput.value = formPagamentoFormaInput.value;
+});
+
+formPagamentoParcelasInput.addEventListener("input", () => {
+  pagamentoParcelasInput.value = formPagamentoParcelasInput.value;
+});
+
+formFechadoPorInput.addEventListener("change", () => {
+  fechadoPorInput.value = formFechadoPorInput.value;
+});
+
+formTipoMentoriaInput.addEventListener("change", () => {
+  tipoMentoriaInput.value = formTipoMentoriaInput.value;
+});
+
+formDataVencimentoInput.addEventListener("change", () => {
+  dataVencimentoInput.value = formDataVencimentoInput.value;
+});
+
 statusInput.addEventListener("change", () => {
   if (statusInput.value === "convertido") {
     faturamento3mesesField.hidden = cancelEditBtn.hidden;
-    openPaymentModal();
+    pagamentoDetailsSection.hidden = cancelEditBtn.hidden;
+    if (cancelEditBtn.hidden) {
+      openPaymentModal();
+    }
   } else if (statusInput.value === "perdido") {
     faturamento3mesesField.hidden = true;
+    pagamentoDetailsSection.hidden = true;
     openLostModal();
   } else if (statusInput.value === "follow_up") {
     confirmedStatusValue = statusInput.value;
     faturamento3mesesField.hidden = true;
+    pagamentoDetailsSection.hidden = true;
     followupDataField.hidden = false;
     pagamentoFormaInput.value = "";
     pagamentoParcelasInput.value = "";
@@ -322,18 +358,29 @@ statusInput.addEventListener("change", () => {
     dataVencimentoInput.value = "";
     fechadoPorInput.value = "";
     tipoMentoriaInput.value = "";
+    formPagamentoFormaInput.value = "";
+    formPagamentoParcelasInput.value = "";
+    formValorFechadoInput.value = "";
+    formDataVencimentoInput.value = "";
+    formFechadoPorInput.value = "";
     perdidoMotivoInput.value = "";
     perdidoFollowupInput.value = "";
     perdidoFollowupDataInput.value = "";
     updateStatusSelectColor();
   } else {
     confirmedStatusValue = statusInput.value;
+    pagamentoDetailsSection.hidden = true;
     pagamentoFormaInput.value = "";
     pagamentoParcelasInput.value = "";
     valorFechadoInput.value = "";
     dataVencimentoInput.value = "";
     fechadoPorInput.value = "";
     tipoMentoriaInput.value = "";
+    formPagamentoFormaInput.value = "";
+    formPagamentoParcelasInput.value = "";
+    formValorFechadoInput.value = "";
+    formDataVencimentoInput.value = "";
+    formFechadoPorInput.value = "";
     followupDataField.hidden = true;
     followupDataValueInput.value = "";
     followupDataInput.value = "";
@@ -466,6 +513,12 @@ function resetForm() {
   dataVencimentoInput.value = "";
   fechadoPorInput.value = "";
   tipoMentoriaInput.value = "";
+  formValorFechadoInput.value = "";
+  formDataVencimentoInput.value = "";
+  formFechadoPorInput.value = "";
+  formTipoMentoriaInput.value = "";
+  formPagamentoFormaInput.value = "";
+  formPagamentoParcelasInput.value = "";
   perdidoMotivoInput.value = "";
   perdidoFollowupInput.value = "";
   perdidoFollowupDataInput.value = "";
@@ -474,6 +527,7 @@ function resetForm() {
   faturamento3mesesInput.value = "";
   faturamento3mesesFieldInput.value = "";
   faturamento3mesesField.hidden = true;
+  pagamentoDetailsSection.hidden = true;
   renderStatusOptions("prospect");
   submitBtn.textContent = "Cadastrar lead";
   cancelEditBtn.hidden = true;
@@ -1121,6 +1175,12 @@ function loadLeadIntoForm(lead) {
   tipoMentoriaInput.value = lead.tipo_mentoria || "";
   pagamentoFormaInput.value = lead.pagamento_forma || "";
   pagamentoParcelasInput.value = lead.pagamento_parcelas || "";
+  formValorFechadoInput.value = lead.valor_fechado || "";
+  formDataVencimentoInput.value = lead.data_vencimento || "";
+  formFechadoPorInput.value = lead.fechado_por || "";
+  formTipoMentoriaInput.value = lead.tipo_mentoria || "";
+  formPagamentoFormaInput.value = lead.pagamento_forma || "";
+  formPagamentoParcelasInput.value = lead.pagamento_parcelas || "";
   perdidoMotivoInput.value = lead.perdido_motivo || "";
   perdidoFollowupInput.value = lead.perdido_followup || "";
   perdidoFollowupDataInput.value = lead.perdido_followup_data || "";
