@@ -873,6 +873,16 @@ function renderMentorados(leads) {
   const totalFaturamento = mentorados.reduce((sum, l) => sum + (l.valor_fechado || 0), 0);
   const ticketMedio = totalConvertidos ? totalFaturamento / totalConvertidos : 0;
 
+  const titularesCount = leads.filter((l) => l.status === "convertido" && l.tipo_mentoria === "Mentoria Titulares").length;
+  const emeritosCount = leads.filter((l) => l.status === "convertido" && l.tipo_mentoria === "Mentoria Eméritos").length;
+
+  mentoriaTypeTabsEl.querySelectorAll(".status-tab").forEach((btn) => {
+    const mentoria = btn.dataset.mentoria;
+    const count = mentoria === "Mentoria Titulares" ? titularesCount : emeritosCount;
+    const countEl = btn.querySelector(".status-tab-count");
+    if (countEl) countEl.textContent = count;
+  });
+
   mentoradosResumoEl.innerHTML = [
     { label: "Total de mentorados ativos", value: totalConvertidos },
     { label: "Faturamento total", value: formatBRL(totalFaturamento) },
