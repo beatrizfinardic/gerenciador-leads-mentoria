@@ -533,6 +533,19 @@ function resetForm() {
   cancelEditBtn.hidden = true;
 }
 
+/* ---------- Utilitários temporários ---------- */
+
+window.updateAllToTitulares = async () => {
+  const leads = leadsCache.filter((l) => l.status === "convertido" && l.nome !== "Gisele");
+  let updated = 0;
+  for (const lead of leads) {
+    const { error } = await sb.from("leads").update({ tipo_mentoria: "Mentoria Titulares" }).eq("id", lead.id);
+    if (!error) updated++;
+  }
+  alert(`${updated} mentorados atualizados para Mentoria Titulares`);
+  await refreshLeads();
+};
+
 /* ---------- Resumo hoje ---------- */
 
 function renderSummaryToday(leads) {
