@@ -395,6 +395,58 @@
 
       <div id="custo-resumo" class="summary-grid"></div>
     </section>
+
+    <!-- MENTORADOS (CRM) -->
+    <section class="card">
+      <h2 class="section-title">CRM Mentorados</h2>
+
+      <div class="status-tabs" id="mentoria-type-tabs">
+        <button type="button" class="status-tab active" data-mentoria="Mentoria Titulares">Titulares <span class="status-tab-count">0</span></button>
+        <button type="button" class="status-tab" data-mentoria="Mentoria Eméritos">Eméritos <span class="status-tab-count">0</span></button>
+      </div>
+
+      <div id="mentorados-resumo" class="summary-grid"></div>
+
+      <h3 class="subsection-title">Mentorados Ativos</h3>
+      <div class="table-wrapper">
+        <table id="mentorados-table">
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Email</th>
+              <th>Telefone</th>
+              <th>Data Entrada</th>
+              <th>Faturamento Entrada</th>
+              <th>Faturamento 3 Meses</th>
+              <th>Status Renovação</th>
+              <th>Data Próx. Renovação</th>
+              <th>Principais Dores</th>
+            </tr>
+          </thead>
+          <tbody id="mentorados-tbody"></tbody>
+        </table>
+        <p id="mentorados-empty-state" class="empty-state" hidden>Nenhum mentorado ativo.</p>
+      </div>
+
+      <h3 class="subsection-title">Mentorados que Saíram</h3>
+      <div class="table-wrapper">
+        <table id="mentorados-saidos-table">
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Email</th>
+              <th>Data Entrada</th>
+              <th>Data Saída</th>
+              <th>Faturamento Entrada</th>
+              <th>Faturamento Total</th>
+              <th>Motivo Saída</th>
+            </tr>
+          </thead>
+          <tbody id="mentorados-saidos-tbody"></tbody>
+        </table>
+        <p id="mentorados-saidos-empty-state" class="empty-state" hidden>Nenhum mentorado com saída registrada.</p>
+      </div>
+    </section>
   </div>
 
   <!-- MODAL: forma de pagamento ao converter -->

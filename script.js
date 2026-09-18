@@ -97,6 +97,13 @@ const custoDataFinalInput = document.getElementById("custo-data-final");
 const custoValorInvestidoInput = document.getElementById("custo-valor-investido");
 const custoAtualizarBtn = document.getElementById("custo-atualizar-btn");
 const custoResumoEl = document.getElementById("custo-resumo");
+const mentoriaTypeTabsEl = document.getElementById("mentoria-type-tabs");
+let mentoriaTypeTab = "Mentoria Titulares";
+const mentoradosResumoEl = document.getElementById("mentorados-resumo");
+const mentoradosTbody = document.getElementById("mentorados-tbody");
+const mentoradosEmptyState = document.getElementById("mentorados-empty-state");
+const mentoradosSaidosTbody = document.getElementById("mentorados-saidos-tbody");
+const mentoradosSaidosEmptyState = document.getElementById("mentorados-saidos-empty-state");
 const summaryTodayEl = document.getElementById("summary-today");
 const renewalsTbody = document.getElementById("renewals-tbody");
 const renewalsEmptyState = document.getElementById("renewals-empty-state");
@@ -780,6 +787,61 @@ function renderCusto(leads) {
 
 custoAtualizarBtn.addEventListener("click", () => renderCusto(leadsCache));
 
+/* ---------- CRM Mentorados ---------- */
+
+function renderMentorados(leads) {
+  const mentorados = leads.filter((l) => l.status === "convertido" && l.tipo_mentoria === mentoriaTypeTab);
+
+  const ativos = mentorados;
+  const totalConvertidos = mentorados.length;
+  const totalFaturamento = mentorados.reduce((sum, l) => sum + (l.valor_fechado || 0), 0);
+  const ticketMedio = totalConvertidos ? totalFaturamento / totalConvertidos : 0;
+
+  mentoradosResumoEl.innerHTML = [
+    { label: "Total de mentorados ativos", value: totalConvertidos },
+    { label: "Faturamento total", value: formatBRL(totalFaturamento) },
+    { label: "Ticket médio", value: formatBRL(ticketMedio) },
+    { label: "Mentorados em acompanhamento", value: mentorados.filter((l) => l.data_vencimento && new Date(l.data_vencimento) > new Date()).length },
+  ]
+    .map(
+      (t) => `
+        <div class="summary-tile">
+          <span class="label">${t.label}</span>
+          <span class="value">${t.value}</span>
+        </div>
+      `
+    )
+    .join("");
+
+  mentoradosEmptyState.hidden = ativos.length !== 0;
+  mentoradosTbody.innerHTML = ativos
+    .map((l) => `
+      <tr>
+        <td>${escapeHtml(l.nome)}</td>
+        <td>${escapeHtml(l.email || "-")}</td>
+        <td>${escapeHtml(l.whatsapp || "-")}</td>
+        <td>${formatDateBR(l.created_at)}</td>
+        <td>${formatBRL(l.valor_fechado || 0)}</td>
+        <td>${formatBRL(l.valor_fechado ? l.valor_fechado * 0.7 : 0)}</td>
+        <td><span class="badge" style="background:#dbeafe;color:#1e3a8a">Ativo</span></td>
+        <td>${formatDateBR(l.data_vencimento || "-")}</td>
+        <td>${escapeHtml(l.dificuldade || "-")}</td>
+      </tr>
+    `)
+    .join("");
+
+  mentoradosSaidosEmptyState.hidden = true;
+  mentoradosSaidosTbody.innerHTML = "";
+}
+
+mentoriaTypeTabsEl.addEventListener("click", (e) => {
+  const btn = e.target.closest(".status-tab");
+  if (!btn) return;
+  mentoriaTypeTab = btn.dataset.mentoria;
+  mentoriaTypeTabsEl.querySelectorAll(".status-tab").forEach((el) => el.classList.toggle("active", el === btn));
+  renderMentorados(leadsCache);
+});
+
 /* ---------- Relatório de conversão por período ---------- */
 
 function getPeriodStarts() {
@@ -951,6 +1013,7 @@ function renderAll() {
   renderLeadsToday(leadsCache);
   renderFaturamento(leadsCache);
   renderCusto(leadsCache);
+  renderMentorados(leadsCache);
 }
 
 /* ---------- Form submit (criar / editar) ---------- */
