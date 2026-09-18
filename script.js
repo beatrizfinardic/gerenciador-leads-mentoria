@@ -930,7 +930,7 @@ function renderMentorados(leads) {
         <td>${escapeHtml(l.nome)}</td>
         <td>${escapeHtml(l.email || "-")}</td>
         <td>${escapeHtml(l.whatsapp || "-")}</td>
-        <td>${formatDateBR(l.created_at)}</td>
+        <td>${formatDateBR(l.agendamento_em || l.created_at)}</td>
         <td>${formatBRL(l.valor_fechado || 0)}</td>
         <td>${formatBRL(l.faturamento_3meses || 0)}</td>
         <td><span class="badge" style="background:#dbeafe;color:#1e3a8a">Ativo</span></td>
