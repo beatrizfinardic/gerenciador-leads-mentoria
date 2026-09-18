@@ -1191,6 +1191,18 @@ function loadLeadIntoForm(lead) {
   dificuldadeInput.value = lead.dificuldade || "";
   onlineInput.value = lead.online;
 
+  if (lead.status === "convertido") {
+    faturamento3mesesField.hidden = false;
+    pagamentoDetailsSection.hidden = false;
+  } else if (lead.status === "follow_up") {
+    followupDataField.hidden = false;
+    pagamentoDetailsSection.hidden = true;
+  } else {
+    faturamento3mesesField.hidden = true;
+    pagamentoDetailsSection.hidden = true;
+    followupDataField.hidden = true;
+  }
+
   submitBtn.textContent = "Salvar alterações";
   cancelEditBtn.hidden = false;
   nomeInput.focus();
