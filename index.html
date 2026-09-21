@@ -24,6 +24,7 @@
     <nav class="main-nav">
       <button class="nav-tab active" data-section="leads">Agendamentos</button>
       <button class="nav-tab" data-section="mentorados">Mentorados</button>
+      <button class="nav-tab" data-section="dashboard-renovacoes">Dashboard Renovações</button>
     </nav>
 
     <!-- SEÇÃO: LEADS -->
@@ -541,6 +542,27 @@
         </div>
       </div>
     </section>
+    </div>
+
+    <!-- SEÇÃO: DASHBOARD DE RENOVAÇÕES -->
+    <div id="section-dashboard-renovacoes" class="section-container" hidden>
+      <section class="card">
+        <h2 class="section-title">Dashboard de Renovações</h2>
+
+        <div class="filters">
+          <div class="field">
+            <label for="dash-data-inicial">Data inicial</label>
+            <input type="date" id="dash-data-inicial" />
+          </div>
+          <div class="field">
+            <label for="dash-data-final">Data final</label>
+            <input type="date" id="dash-data-final" />
+          </div>
+          <button type="button" id="dash-atualizar-btn" class="btn btn-primary">Atualizar</button>
+        </div>
+
+        <div id="dash-resumo" class="summary-grid"></div>
+      </section>
     </div>
 
   <!-- MODAL: forma de pagamento ao converter -->

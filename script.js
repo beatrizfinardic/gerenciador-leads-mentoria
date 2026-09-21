@@ -123,6 +123,10 @@ const mentoradosPaginationEl = document.getElementById("mentorados-pagination");
 let mentoradosCurrentPage = 1;
 const mentoradosPerPage = 6;
 const mentoradosEmptyState = document.getElementById("mentorados-empty-state");
+const dashDataInicialInput = document.getElementById("dash-data-inicial");
+const dashDataFinalInput = document.getElementById("dash-data-final");
+const dashAtualizarBtn = document.getElementById("dash-atualizar-btn");
+const dashResumoEl = document.getElementById("dash-resumo");
 const mentoradosSaidosTbody = document.getElementById("mentorados-saidos-tbody");
 const mentoradosSaidosEmptyState = document.getElementById("mentorados-saidos-empty-state");
 const summaryTodayEl = document.getElementById("summary-today");
@@ -1359,6 +1363,48 @@ function setupRealtime() {
     .subscribe();
 }
 
+function renderDashboardRenovacoes() {
+  const dataInicial = dashDataInicialInput.value;
+  const dataFinal = dashDataFinalInput.value;
+
+  if (!dataInicial || !dataFinal) {
+    alert("Selecione data inicial e final");
+    return;
+  }
+
+  const filtrados = leadsCache.filter((l) => {
+    if (l.status !== "convertido") return false;
+    const dataVenc = l.data_renovacao || l.data_vencimento;
+    if (!dataVenc) return false;
+    return dataVenc >= dataInicial && dataVenc <= dataFinal;
+  });
+
+  const stats = {
+    totalRenovacoes: filtrados.length,
+    entreiContato: filtrados.filter((l) => l.entrei_contato === true).length,
+    responderam: filtrados.filter((l) => l.respondeu === true).length,
+    agendaram: filtrados.filter((l) => l.agendou_reuniao === true).length,
+    renovaram: filtrados.filter((l) => l.renovou === true).length,
+  };
+
+  dashResumoEl.innerHTML = [
+    { label: "Renovações no período", value: stats.totalRenovacoes },
+    { label: "Entrei em contato", value: stats.entreiContato },
+    { label: "Responderam", value: stats.responderam },
+    { label: "Agendaram reunião", value: stats.agendaram },
+    { label: "Renovaram", value: stats.renovaram },
+  ]
+    .map(
+      (t) => `
+        <div class="summary-tile">
+          <span class="label">${t.label}</span>
+          <span class="value">${t.value}</span>
+        </div>
+      `
+    )
+    .join("");
+}
+
 /* ---------- Init ---------- */
 
 /* ---------- Main navigation ---------- */
@@ -1384,7 +1430,11 @@ document.querySelectorAll(".nav-tab").forEach((btn) => {
   const costPeriod = getCurrentCostPeriodDates();
   custoDataInicialInput.value = costPeriod.start;
   custoDataFinalInput.value = costPeriod.end;
+  dashDataInicialInput.value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-01`;
+  dashDataFinalInput.value = todayISO();
   await refreshLeads();
   await refreshTracking();
   setupRealtime();
 })();
+
+dashAtualizarBtn.addEventListener("click", renderDashboardRenovacoes);
