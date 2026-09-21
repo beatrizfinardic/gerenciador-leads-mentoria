@@ -87,6 +87,12 @@ const perdidoFollowupDataInput = document.getElementById("perdido-followup-data"
 const followupDataField = document.getElementById("followup-data-field");
 const followupDataInput = document.getElementById("followup-data");
 const followupDataValueInput = document.getElementById("followup-data-value");
+const renovacaoDetailsSection = document.getElementById("renovacao-details-section");
+const entreiContatoInput = document.getElementById("entrei-contato");
+const respondeuInput = document.getElementById("respondeu");
+const agendouReuniaoInput = document.getElementById("agendou-reuniao");
+const renovouInput = document.getElementById("renovou");
+const dataRenovacaoInput = document.getElementById("data-renovacao");
 const submitBtn = document.getElementById("submit-btn");
 const cancelEditBtn = document.getElementById("cancel-edit-btn");
 
@@ -1204,6 +1210,11 @@ form.addEventListener("submit", async (e) => {
       statusInput.value === "perdido" && perdidoFollowupInput.value === "Sim" ? perdidoFollowupDataInput.value || null : null,
     followup_data: statusInput.value === "follow_up" ? followupDataValueInput.value || null : null,
     faturamento_3meses: statusInput.value === "convertido" && faturamento3mesesFieldInput.value ? Number(faturamento3mesesFieldInput.value) : null,
+    entrei_contato: statusInput.value === "convertido" && entreiContatoInput.value ? entreiContatoInput.value === "true" : null,
+    respondeu: statusInput.value === "convertido" && respondeuInput.value ? respondeuInput.value === "true" : null,
+    agendou_reuniao: statusInput.value === "convertido" && agendouReuniaoInput.value ? agendouReuniaoInput.value === "true" : null,
+    renovou: statusInput.value === "convertido" && renovouInput.value ? renovouInput.value === "true" : null,
+    data_renovacao: statusInput.value === "convertido" ? dataRenovacaoInput.value || null : null,
   };
 
   if (editingId) {
@@ -1266,17 +1277,25 @@ function loadLeadIntoForm(lead) {
   faturamento3mesesFieldInput.value = lead.faturamento_3meses || "";
   dificuldadeInput.value = lead.dificuldade || "";
   onlineInput.value = lead.online;
+  entreiContatoInput.value = lead.entrei_contato !== null && lead.entrei_contato !== undefined ? String(lead.entrei_contato) : "";
+  respondeuInput.value = lead.respondeu !== null && lead.respondeu !== undefined ? String(lead.respondeu) : "";
+  agendouReuniaoInput.value = lead.agendou_reuniao !== null && lead.agendou_reuniao !== undefined ? String(lead.agendou_reuniao) : "";
+  renovouInput.value = lead.renovou !== null && lead.renovou !== undefined ? String(lead.renovou) : "";
+  dataRenovacaoInput.value = lead.data_renovacao || "";
 
   if (lead.status === "convertido") {
     faturamento3mesesField.hidden = false;
     pagamentoDetailsSection.hidden = false;
+    renovacaoDetailsSection.hidden = false;
   } else if (lead.status === "follow_up") {
     followupDataField.hidden = false;
     pagamentoDetailsSection.hidden = true;
+    renovacaoDetailsSection.hidden = true;
   } else {
     faturamento3mesesField.hidden = true;
     pagamentoDetailsSection.hidden = true;
     followupDataField.hidden = true;
+    renovacaoDetailsSection.hidden = true;
   }
 
   submitBtn.textContent = "Salvar alterações";

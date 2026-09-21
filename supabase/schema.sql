@@ -14,6 +14,11 @@ alter table leads add column if not exists fechado_por text;
 alter table leads add column if not exists tipo_mentoria text;
 alter table leads add column if not exists followup_data date;
 alter table leads add column if not exists data_venda date;
+alter table leads add column if not exists entrei_contato boolean;
+alter table leads add column if not exists respondeu boolean;
+alter table leads add column if not exists agendou_reuniao boolean;
+alter table leads add column if not exists renovou boolean;
+alter table leads add column if not exists data_renovacao date;
 
 alter table daily_tracking add column if not exists leads_abordados int not null default 0;
 alter table daily_tracking add column if not exists agendamentos_conseguidos int not null default 0;
