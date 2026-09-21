@@ -112,7 +112,10 @@ let mentoriaTypeTab = "Mentoria Titulares";
 const mentoradosMainTabsEl = document.getElementById("mentorados-main-tabs");
 let mentoradosMainTab = "ativos";
 const mentoradosResumoEl = document.getElementById("mentorados-resumo");
-const mentoradosTbody = document.getElementById("mentorados-tbody");
+const mentoradosCardsEl = document.getElementById("mentorados-cards");
+const mentoradosPaginationEl = document.getElementById("mentorados-pagination");
+let mentoradosCurrentPage = 1;
+const mentoradosPerPage = 6;
 const mentoradosEmptyState = document.getElementById("mentorados-empty-state");
 const mentoradosSaidosTbody = document.getElementById("mentorados-saidos-tbody");
 const mentoradosSaidosEmptyState = document.getElementById("mentorados-saidos-empty-state");
@@ -911,32 +914,43 @@ function renderMentorados(leads) {
     .join("");
 
   mentoradosEmptyState.hidden = ativos.length !== 0;
-  mentoradosTbody.innerHTML = ativos
+
+  const totalPages = Math.ceil(ativos.length / mentoradosPerPage);
+  const startIdx = (mentoradosCurrentPage - 1) * mentoradosPerPage;
+  const pageAtivos = ativos.slice(startIdx, startIdx + mentoradosPerPage);
+
+  mentoradosCardsEl.innerHTML = pageAtivos
     .map((l) => `
-      <tr data-id="${l.id}" class="clickable-row">
-        <td>${escapeHtml(l.nome)}</td>
-        <td>${escapeHtml(l.email || "-")}</td>
-        <td>${escapeHtml(l.whatsapp || "-")}</td>
-        <td>${formatDateBR(l.agendamento_em || l.created_at)}</td>
-        <td>${formatBRL(l.valor_fechado || 0)}</td>
-        <td>${formatBRL(l.faturamento_3meses || 0)}</td>
-        <td><span class="badge" style="background:#dbeafe;color:#1e3a8a">Ativo</span></td>
-        <td>${formatDateBR(l.data_vencimento || "-")}</td>
-        <td>${escapeHtml(l.dificuldade || "-")}</td>
-      </tr>
+      <div class="mentorado-card" data-id="${l.id}">
+        <div class="mentorado-card-name">${escapeHtml(l.nome)}</div>
+        <div class="mentorado-card-info">Email: <span class="mentorado-card-value">${escapeHtml(l.email || "-")}</span></div>
+        <div class="mentorado-card-info">WhatsApp: <span class="mentorado-card-value">${escapeHtml(l.whatsapp || "-")}</span></div>
+        <div class="mentorado-card-info">Faturamento: <span class="mentorado-card-value">${formatBRL(l.valor_fechado || 0)}</span></div>
+      </div>
     `)
     .join("");
+
+  mentoradosPaginationEl.innerHTML = Array.from({ length: totalPages }, (_, i) => `
+    <button type="button" class="pagination-tab ${i + 1 === mentoradosCurrentPage ? "active" : ""}" data-page="${i + 1}">${i + 1}</button>
+  `).join("");
 
   mentoradosSaidosEmptyState.hidden = true;
   mentoradosSaidosTbody.innerHTML = "";
 }
 
-mentoradosTbody.addEventListener("click", (e) => {
-  const row = e.target.closest("tr[data-id]");
-  if (!row) return;
-  loadLeadIntoForm(leadsCache.find((l) => l.id === row.dataset.id));
+mentoradosCardsEl.addEventListener("click", (e) => {
+  const card = e.target.closest("[data-id]");
+  if (!card) return;
+  loadLeadIntoForm(leadsCache.find((l) => l.id === card.dataset.id));
   const leadsSection = document.querySelector(".section-container[data-section='leads']") || document.querySelector("#section-leads");
   if (leadsSection) leadsSection.scrollIntoView({ behavior: "smooth", block: "start" });
+});
+
+mentoradosPaginationEl.addEventListener("click", (e) => {
+  const btn = e.target.closest(".pagination-tab");
+  if (!btn) return;
+  mentoradosCurrentPage = parseInt(btn.dataset.page, 10);
+  renderMentorados(leadsCache);
 });
 
 mentoriaTypeTabsEl.addEventListener("click", (e) => {

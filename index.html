@@ -456,25 +456,9 @@
 
       <div id="tab-ativos">
         <h3 class="subsection-title">Mentorados Ativos</h3>
-      <div class="table-wrapper">
-        <table id="mentorados-table">
-          <thead>
-            <tr>
-              <th>Nome</th>
-              <th>Email</th>
-              <th>Telefone</th>
-              <th>Data Entrada</th>
-              <th>Faturamento Entrada</th>
-              <th>Faturamento 3 Meses</th>
-              <th>Status Renovação</th>
-              <th>Data Próx. Renovação</th>
-              <th>Principais Dores</th>
-            </tr>
-          </thead>
-          <tbody id="mentorados-tbody"></tbody>
-        </table>
+        <div id="mentorados-cards" class="mentorados-cards-grid"></div>
         <p id="mentorados-empty-state" class="empty-state" hidden>Nenhum mentorado ativo.</p>
-      </div>
+        <div class="pagination-tabs" id="mentorados-pagination"></div>
       </div>
 
       <div id="tab-renovacoes" hidden>
