@@ -939,26 +939,12 @@ function renderMentorados(leads) {
 }
 
 window.clickMentorado = function(leadId) {
-  console.log("clickMentorado chamado com ID:", leadId);
   const lead = leadsCache.find((l) => l.id === leadId);
-  console.log("Lead encontrado:", lead);
-
   if (lead) {
-    // Abre a aba "Agendamentos"
     const leadsTab = document.querySelector('.nav-tab[data-section="leads"]');
-    console.log("leadsTab:", leadsTab);
-    if (leadsTab) {
-      console.log("Clicando na aba Agendamentos");
-      leadsTab.click();
-    }
-
-    // Carrega os dados do mentorado
-    console.log("Carregando lead no formulário");
+    if (leadsTab) leadsTab.click();
     loadLeadIntoForm(lead);
-
-    // Faz scroll até o formulário
     const leadsSection = document.querySelector("#section-leads");
-    console.log("leadsSection:", leadsSection);
     if (leadsSection) leadsSection.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 };
