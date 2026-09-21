@@ -939,8 +939,11 @@ function renderMentorados(leads) {
 }
 
 mentoradosCardsEl.addEventListener("click", (e) => {
+  console.log("Card clicked:", e.target);
   const card = e.target.closest("[data-id]");
+  console.log("Card element:", card);
   if (!card) return;
+  console.log("Loading lead:", card.dataset.id);
   loadLeadIntoForm(leadsCache.find((l) => l.id === card.dataset.id));
   const leadsSection = document.querySelector(".section-container[data-section='leads']") || document.querySelector("#section-leads");
   if (leadsSection) leadsSection.scrollIntoView({ behavior: "smooth", block: "start" });
