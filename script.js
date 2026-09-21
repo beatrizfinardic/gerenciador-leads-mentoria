@@ -93,6 +93,12 @@ const respondeuInput = document.getElementById("respondeu");
 const agendouReuniaoInput = document.getElementById("agendou-reuniao");
 const renovouInput = document.getElementById("renovou");
 const dataRenovacaoInput = document.getElementById("data-renovacao");
+const progressoDetailsSection = document.getElementById("progresso-details-section");
+const faturamentoAtualInput = document.getElementById("faturamento-atual");
+const faturamentoRenovacaoInput = document.getElementById("faturamento-renovacao");
+const alunosPresencialInput = document.getElementById("alunos-presencial");
+const alunosOnlineInput = document.getElementById("alunos-online");
+const informacoesGeraisInput = document.getElementById("informacoes-gerais");
 const submitBtn = document.getElementById("submit-btn");
 const cancelEditBtn = document.getElementById("cancel-edit-btn");
 
@@ -935,7 +941,7 @@ function renderMentorados(leads) {
         <div class="mentorado-card-name" style="font-weight: 700; font-size: 16px; margin-bottom: 8px; color: #1a1a1a;">${escapeHtml(l.nome)}</div>
         <div style="font-size: 12px; color: #6b6b6b; line-height: 1.6; margin-bottom: 4px;">Email: <span style="font-weight: 600; color: #1a1a1a;">${escapeHtml(l.email || "-")}</span></div>
         <div style="font-size: 12px; color: #6b6b6b; line-height: 1.6; margin-bottom: 4px;">WhatsApp: <span style="font-weight: 600; color: #1a1a1a;">${escapeHtml(l.whatsapp || "-")}</span></div>
-        <div style="font-size: 12px; color: #6b6b6b; line-height: 1.6; margin-bottom: 4px;">Faturamento: <span style="font-weight: 600; color: #1a1a1a;">${formatBRL(l.valor_fechado || 0)}</span></div>
+        <div style="font-size: 12px; color: #6b6b6b; line-height: 1.6; margin-bottom: 4px;">Valor pago: <span style="font-weight: 600; color: #1a1a1a;">${formatBRL(l.valor_fechado || 0)}</span></div>
       </div>
     `)
     .join("");
@@ -1219,6 +1225,11 @@ form.addEventListener("submit", async (e) => {
     agendou_reuniao: statusInput.value === "convertido" && agendouReuniaoInput.value ? agendouReuniaoInput.value === "true" : null,
     renovou: statusInput.value === "convertido" && renovouInput.value ? renovouInput.value === "true" : null,
     data_renovacao: statusInput.value === "convertido" ? dataRenovacaoInput.value || null : null,
+    faturamento_atual: statusInput.value === "convertido" && faturamentoAtualInput.value ? Number(faturamentoAtualInput.value) : null,
+    faturamento_renovacao: statusInput.value === "convertido" && faturamentoRenovacaoInput.value ? Number(faturamentoRenovacaoInput.value) : null,
+    alunos_presencial: statusInput.value === "convertido" && alunosPresencialInput.value ? Number(alunosPresencialInput.value) : null,
+    alunos_online: statusInput.value === "convertido" && alunosOnlineInput.value ? Number(alunosOnlineInput.value) : null,
+    informacoes_gerais: statusInput.value === "convertido" ? informacoesGeraisInput.value.trim() || null : null,
   };
 
   if (editingId) {
@@ -1286,20 +1297,28 @@ function loadLeadIntoForm(lead) {
   agendouReuniaoInput.value = lead.agendou_reuniao !== null && lead.agendou_reuniao !== undefined ? String(lead.agendou_reuniao) : "";
   renovouInput.value = lead.renovou !== null && lead.renovou !== undefined ? String(lead.renovou) : "";
   dataRenovacaoInput.value = lead.data_renovacao || "";
+  faturamentoAtualInput.value = lead.faturamento_atual || "";
+  faturamentoRenovacaoInput.value = lead.faturamento_renovacao || "";
+  alunosPresencialInput.value = lead.alunos_presencial || "";
+  alunosOnlineInput.value = lead.alunos_online || "";
+  informacoesGeraisInput.value = lead.informacoes_gerais || "";
 
   if (lead.status === "convertido") {
     faturamento3mesesField.hidden = false;
     pagamentoDetailsSection.hidden = false;
     renovacaoDetailsSection.hidden = false;
+    progressoDetailsSection.hidden = false;
   } else if (lead.status === "follow_up") {
     followupDataField.hidden = false;
     pagamentoDetailsSection.hidden = true;
     renovacaoDetailsSection.hidden = true;
+    progressoDetailsSection.hidden = true;
   } else {
     faturamento3mesesField.hidden = true;
     pagamentoDetailsSection.hidden = true;
     followupDataField.hidden = true;
     renovacaoDetailsSection.hidden = true;
+    progressoDetailsSection.hidden = true;
   }
 
   submitBtn.textContent = "Salvar alterações";
