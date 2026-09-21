@@ -921,7 +921,7 @@ function renderMentorados(leads) {
 
   mentoradosCardsEl.innerHTML = pageAtivos
     .map((l) => `
-      <div class="mentorado-card" data-id="${l.id}" onclick="alert('Clicou em ' + this.querySelector('.mentorado-card-name').textContent); window.clickMentorado('${l.id}')" style="background: white; border: 1px solid #e0e0e0; border-radius: 8px; padding: 16px; cursor: pointer; margin-bottom: 8px;">
+      <div class="mentorado-card" data-id="${l.id}" onclick="window.clickMentorado('${l.id}')" style="background: white; border: 1px solid #e0e0e0; border-radius: 8px; padding: 16px; cursor: pointer; margin-bottom: 8px;">
         <div class="mentorado-card-name" style="font-weight: 700; font-size: 16px; margin-bottom: 8px; color: #1a1a1a;">${escapeHtml(l.nome)}</div>
         <div style="font-size: 12px; color: #6b6b6b; line-height: 1.6; margin-bottom: 4px;">Email: <span style="font-weight: 600; color: #1a1a1a;">${escapeHtml(l.email || "-")}</span></div>
         <div style="font-size: 12px; color: #6b6b6b; line-height: 1.6; margin-bottom: 4px;">WhatsApp: <span style="font-weight: 600; color: #1a1a1a;">${escapeHtml(l.whatsapp || "-")}</span></div>
