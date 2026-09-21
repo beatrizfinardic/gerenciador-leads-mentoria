@@ -941,7 +941,14 @@ function renderMentorados(leads) {
 window.clickMentorado = function(leadId) {
   const lead = leadsCache.find((l) => l.id === leadId);
   if (lead) {
+    // Abre a aba "Agendamentos"
+    const leadsTab = document.querySelector('.nav-tab[data-section="leads"]');
+    if (leadsTab) leadsTab.click();
+
+    // Carrega os dados do mentorado
     loadLeadIntoForm(lead);
+
+    // Faz scroll até o formulário
     const leadsSection = document.querySelector("#section-leads");
     if (leadsSection) leadsSection.scrollIntoView({ behavior: "smooth", block: "start" });
   }
