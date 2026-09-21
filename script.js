@@ -1399,19 +1399,19 @@ function renderDashboardRenovacoes() {
   });
 
   const stats = {
-    totalRenovacoes: filtrados.length,
+    renovacoesPrevistas: filtrados.length,
+    renovacoesFeitas: filtrados.filter((l) => l.renovou === true).length,
     entreiContato: filtrados.filter((l) => l.entrei_contato === true).length,
     responderam: filtrados.filter((l) => l.respondeu === true).length,
     agendaram: filtrados.filter((l) => l.agendou_reuniao === true).length,
-    renovaram: filtrados.filter((l) => l.renovou === true).length,
   };
 
   dashResumoEl.innerHTML = [
-    { label: "Renovações no período", value: stats.totalRenovacoes },
+    { label: "Renovações previstas", value: stats.renovacoesPrevistas },
+    { label: "Renovações feitas", value: stats.renovacoesFeitas },
     { label: "Entrei em contato", value: stats.entreiContato },
     { label: "Responderam", value: stats.responderam },
     { label: "Agendaram reunião", value: stats.agendaram },
-    { label: "Renovaram", value: stats.renovaram },
   ]
     .map(
       (t) => `
