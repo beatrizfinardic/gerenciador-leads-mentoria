@@ -938,21 +938,19 @@ function renderMentorados(leads) {
   mentoradosSaidosTbody.innerHTML = "";
 }
 
-if (mentoradosCardsEl) {
-  mentoradosCardsEl.addEventListener("click", (e) => {
-    console.log("Mentorados card clicked");
-    const card = e.target.closest("[data-id]");
-    console.log("Card found:", card);
-    if (!card) return;
-    const lead = leadsCache.find((l) => l.id === card.dataset.id);
-    console.log("Lead found:", lead);
+document.addEventListener("click", (e) => {
+  const card = e.target.closest(".mentorado-card");
+  if (!card) return;
+  console.log("Card clicked:", card);
+  const leadId = card.dataset.id;
+  if (!leadId) return;
+  const lead = leadsCache.find((l) => l.id === leadId);
+  if (lead) {
     loadLeadIntoForm(lead);
-    const leadsSection = document.querySelector(".section-container[data-section='leads']") || document.querySelector("#section-leads");
+    const leadsSection = document.querySelector("#section-leads");
     if (leadsSection) leadsSection.scrollIntoView({ behavior: "smooth", block: "start" });
-  });
-} else {
-  console.error("mentoradosCardsEl not found!");
-}
+  }
+});
 
 mentoradosPaginationEl.addEventListener("click", (e) => {
   const btn = e.target.closest(".pagination-tab");
