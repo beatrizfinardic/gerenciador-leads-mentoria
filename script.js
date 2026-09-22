@@ -1167,6 +1167,11 @@ function renderTable(leads) {
     });
 }
 
+const deleteModal = document.getElementById("delete-modal");
+const deleteCancelBtn = document.getElementById("delete-cancel-btn");
+const deleteConfirmBtn = document.getElementById("delete-confirm-btn");
+let pendingDeleteId = null;
+
 async function deleteLead(leadId) {
   const { error } = await sb.from("leads").delete().eq("id", leadId);
   if (error) {
@@ -1175,6 +1180,20 @@ async function deleteLead(leadId) {
   }
   await refreshLeads();
 }
+
+deleteModal.style.display = "flex";
+deleteCancelBtn.addEventListener("click", () => {
+  deleteModal.style.display = "none";
+  pendingDeleteId = null;
+});
+
+deleteConfirmBtn.addEventListener("click", () => {
+  if (pendingDeleteId) {
+    deleteLead(pendingDeleteId);
+    deleteModal.style.display = "none";
+    pendingDeleteId = null;
+  }
+});
 
 tbody.addEventListener("click", (e) => {
   const btn = e.target.closest("button[data-action]");
@@ -1190,9 +1209,8 @@ tbody.addEventListener("click", (e) => {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   } else if (action === "delete") {
-    if (confirm("Tem certeza que deseja deletar este lead?")) {
-      deleteLead(leadId);
-    }
+    pendingDeleteId = leadId;
+    deleteModal.style.display = "flex";
   }
 });
 
