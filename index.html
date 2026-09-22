@@ -12,18 +12,18 @@
 </head>
 <body>
   <!-- LOGIN SCREEN -->
-  <div id="login-screen" class="login-page" style="display: flex;">
+  <div id="login-screen" class="login-page">
     <div class="login-card">
       <img src="assets/logo.png" alt="Mentoria Titulares" class="login-logo" />
       <h1>Sistema de Gestão</h1>
       <p>Mentoria Titulares</p>
-      <input type="password" id="senha-input" placeholder="Senha" style="width: 100%; padding: 12px; margin: 20px 0; border: 1px solid #ccc; border-radius: 8px; font-size: 16px;" />
+      <input type="password" id="senha-input" placeholder="Senha" style="width: 100%; padding: 12px; margin: 20px 0; border: 1px solid #ccc; border-radius: 8px; font-size: 16px;" autofocus />
       <button onclick="verificarSenha()" class="btn-primary" style="width: 100%;">Entrar</button>
       <p id="erro-msg" style="color: red; text-align: center; margin-top: 10px;"></p>
     </div>
   </div>
 
-  <div class="container" id="app-content" style="display: none;">
+  <div class="container" id="app-content" hidden>
     <header class="brand-header">
       <img src="assets/logo.png" alt="Mentoria Titulares" class="brand-logo" />
       <div>
@@ -712,6 +712,6 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="script.js?v=20260922"></script>
+  <script src="script.js?v=20260923"></script>
 </body>
 </html>

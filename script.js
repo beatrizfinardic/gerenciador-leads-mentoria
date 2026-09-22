@@ -9,8 +9,8 @@ function verificarSenha() {
   const erroMsg = document.getElementById("erro-msg");
 
   if (senha === "mentoriaconterato123") {
-    loginScreen.style.display = "none";
-    appContent.style.display = "block";
+    loginScreen.hidden = true;
+    appContent.hidden = false;
     erroMsg.textContent = "";
   } else {
     erroMsg.textContent = "Senha incorreta";
