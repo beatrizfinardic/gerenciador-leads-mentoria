@@ -688,7 +688,7 @@ function renderFaturamento(leads) {
       return true;
     })
     .filter((l) => {
-      const d = parseTimestamp(l.data_venda);
+      const d = parseTimestamp(l.data_venda || l.status_changed_at);
       return d && d >= start && d <= end;
     })
     .map((l) => {
