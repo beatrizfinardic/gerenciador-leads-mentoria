@@ -11,7 +11,19 @@
   <link rel="icon" type="image/png" href="assets/logo.png" />
 </head>
 <body>
-  <div class="container">
+  <!-- LOGIN SCREEN -->
+  <div id="login-screen" class="login-page" style="display: flex;">
+    <div class="login-card">
+      <img src="assets/logo.png" alt="Mentoria Titulares" class="login-logo" />
+      <h1>Sistema de Gestão</h1>
+      <p>Mentoria Titulares</p>
+      <input type="password" id="senha-input" placeholder="Senha" style="width: 100%; padding: 12px; margin: 20px 0; border: 1px solid #ccc; border-radius: 8px; font-size: 16px;" />
+      <button onclick="verificarSenha()" class="btn-primary" style="width: 100%;">Entrar</button>
+      <p id="erro-msg" style="color: red; text-align: center; margin-top: 10px;"></p>
+    </div>
+  </div>
+
+  <div class="container" id="app-content" style="display: none;">
     <header class="brand-header">
       <img src="assets/logo.png" alt="Mentoria Titulares" class="brand-logo" />
       <div>

@@ -2,6 +2,29 @@ const SUPABASE_URL = "https://pvnycbsqfdkgcoseuhik.supabase.co";
 const SUPABASE_KEY = "sb_publishable_18RknyEYfjUNXKH8jn_3IA_tX7Zl6Si";
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+function verificarSenha() {
+  const senha = document.getElementById("senha-input").value;
+  const loginScreen = document.getElementById("login-screen");
+  const appContent = document.getElementById("app-content");
+  const erroMsg = document.getElementById("erro-msg");
+
+  if (senha === "mentoriaconterato123") {
+    loginScreen.style.display = "none";
+    appContent.style.display = "block";
+    erroMsg.textContent = "";
+  } else {
+    erroMsg.textContent = "Senha incorreta";
+    document.getElementById("senha-input").value = "";
+    document.getElementById("senha-input").focus();
+  }
+}
+
+document.getElementById("senha-input").addEventListener("keypress", (e) => {
+  if (e.key === "Enter") {
+    verificarSenha();
+  }
+});
+
 const STATUS_META = {
   prospect: { label: "Prospect", bg: "#86efac", text: "#14532d", cardBg: "#dcfce7", cardText: "#14532d" },
   abordado: { label: "Abordado", bg: "#f97316", text: "#ffffff", cardBg: "#ffedd5", cardText: "#7c2d12" },
