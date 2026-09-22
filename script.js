@@ -1149,7 +1149,10 @@ function renderTable(leads) {
       const meta = STATUS_META[lead.status];
 
       tr.innerHTML = `
-        <td><button class="btn btn-secondary btn-small" data-action="edit" data-id="${lead.id}">Editar</button></td>
+        <td>
+          <button class="btn btn-secondary btn-small" data-action="edit" data-id="${lead.id}">Editar</button>
+          <button class="btn btn-danger btn-small" data-action="delete" data-id="${lead.id}">Deletar</button>
+        </td>
         <td>${escapeHtml(lead.nome)}</td>
         <td>${escapeHtml(lead.email)}</td>
         <td>${escapeHtml(lead.whatsapp || "-")}</td>
