@@ -688,7 +688,7 @@ function renderFaturamento(leads) {
       return true;
     })
     .filter((l) => {
-      const d = parseTimestamp(l.status_changed_at);
+      const d = parseTimestamp(l.data_venda);
       return d && d >= start && d <= end;
     })
     .map((l) => {
@@ -702,7 +702,7 @@ function renderFaturamento(leads) {
       const taxa = bruto ? (bruto - liquido) / bruto : 0;
       return { ...l, formaKey, formaLabel: meta.label, taxa, bruto, bruteTotal, liquido };
     })
-    .sort((a, b) => parseTimestamp(b.status_changed_at) - parseTimestamp(a.status_changed_at));
+    .sort((a, b) => parseTimestamp(b.data_venda) - parseTimestamp(a.data_venda));
 
   const faturamentoBruto = vendas.reduce((sum, v) => sum + v.bruto, 0);
   const faturamentoLiquido = vendas.reduce((sum, v) => sum + v.liquido, 0);
