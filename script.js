@@ -879,7 +879,7 @@ function renderCusto(leads) {
 
   const fluxoPeriodo = leads.filter((l) => {
     if (l.origem !== "Fluxo") return false;
-    const d = parseTimestamp(l.created_at);
+    const d = parseTimestamp(l.agendamento_em);
     return d && d >= start && d <= end;
   });
 
@@ -902,6 +902,36 @@ function renderCusto(leads) {
     { label: "Total de agendamento qualificado", value: totalAgendamentoQualificado },
     { label: "Custo por agendamento qualificado", value: formatBRL(custoPor(totalAgendamentoQualificado)) },
     { label: "Total de no show", value: totalNoShow },
+  ]
+    .map(
+      (t) => `
+        <div class="summary-tile">
+          <span class="label">${t.label}</span>
+          <span class="value">${t.value}</span>
+        </div>
+      `
+    )
+    .join("");
+
+  const metricsStatusEl = document.getElementById("custo-metricas-status");
+  const statusCounts = {
+    agendado: fluxoPeriodo.filter((l) => l.status === "agendado").length,
+    convertido: fluxoPeriodo.filter((l) => l.status === "convertido").length,
+    nao_compareceu: fluxoPeriodo.filter((l) => l.status === "nao_compareceu").length,
+    nao_respondeu: fluxoPeriodo.filter((l) => l.status === "nao_respondeu").length,
+    desqualificado: fluxoPeriodo.filter((l) => l.status === "desqualificado").length,
+    follow_up: fluxoPeriodo.filter((l) => l.status === "follow_up").length,
+    perdido: fluxoPeriodo.filter((l) => l.status === "perdido").length,
+  };
+
+  metricsStatusEl.innerHTML = [
+    { label: "Agendado", value: statusCounts.agendado },
+    { label: "Convertido", value: statusCounts.convertido },
+    { label: "Não compareceu", value: statusCounts.nao_compareceu },
+    { label: "Não respondeu", value: statusCounts.nao_respondeu },
+    { label: "Desqualificado", value: statusCounts.desqualificado },
+    { label: "Follow up", value: statusCounts.follow_up },
+    { label: "Perdido", value: statusCounts.perdido },
   ]
     .map(
       (t) => `
