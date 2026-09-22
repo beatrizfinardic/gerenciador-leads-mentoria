@@ -512,21 +512,22 @@ header h1 {
 /* ---------- Table ---------- */
 
 .table-wrapper {
-  overflow-x: auto;
+  overflow-x: hidden;
+  width: 100%;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 13px;
+  font-size: 12px;
 }
 
 thead th {
   text-align: left;
-  padding: 10px 12px;
+  padding: 8px 6px;
   border-bottom: 1px solid var(--borda);
   color: var(--cinza-medio);
-  font-size: 11px;
+  font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   white-space: nowrap;
@@ -534,10 +535,11 @@ thead th {
 }
 
 tbody td {
-  padding: 10px 12px;
+  padding: 8px 6px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
   vertical-align: middle;
   color: var(--texto);
+  font-size: 12px;
 }
 
 tbody tr:hover {
