@@ -1205,14 +1205,14 @@ async function deleteLead(leadId) {
 }
 
 deleteCancelBtn.addEventListener("click", () => {
-  deleteModal.style.display = "none";
+  deleteModal.classList.remove("show");
   pendingDeleteId = null;
 });
 
 deleteConfirmBtn.addEventListener("click", () => {
   if (pendingDeleteId) {
     deleteLead(pendingDeleteId);
-    deleteModal.style.display = "none";
+    deleteModal.classList.remove("show");
     pendingDeleteId = null;
   }
 });
@@ -1232,7 +1232,7 @@ tbody.addEventListener("click", (e) => {
     }
   } else if (action === "delete") {
     pendingDeleteId = leadId;
-    deleteModal.style.display = "flex";
+    deleteModal.classList.add("show");
   }
 });
 

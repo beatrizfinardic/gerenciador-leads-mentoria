@@ -700,3 +700,20 @@ tbody tr:hover {
   color: var(--branco);
   border-color: var(--preto);
 }
+
+/* ---------- Delete Modal ---------- */
+
+#delete-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+#delete-modal.show {
+  display: flex;
+}
