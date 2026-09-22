@@ -36,10 +36,11 @@ const STATUS_META = {
   desqualificado: { label: "Desqualificado/Desmarcado", bg: "#78716c", text: "#ffffff", cardBg: "#f5f5f4", cardText: "#44403c" },
   follow_up: { label: "Follow up", bg: "#8b5cf6", text: "#ffffff", cardBg: "#ede9fe", cardText: "#5b21b6" },
   perdido: { label: "Perdido", bg: "#9ca3af", text: "#1a1a1a", cardBg: "#e5e7eb", cardText: "#374151" },
+  desistencia: { label: "Desistência", bg: "#ec4899", text: "#ffffff", cardBg: "#fce7f3", cardText: "#831843" },
 };
 
-const ORGANICO_STATUSES = ["agendado", "convertido", "nao_compareceu", "nao_respondeu", "desqualificado", "follow_up", "perdido"];
-const FLUXO_STATUSES = ["agendado", "convertido", "nao_compareceu", "nao_respondeu", "desqualificado", "follow_up", "perdido"];
+const ORGANICO_STATUSES = ["agendado", "convertido", "nao_compareceu", "nao_respondeu", "desqualificado", "follow_up", "perdido", "desistencia"];
+const FLUXO_STATUSES = ["agendado", "convertido", "nao_compareceu", "nao_respondeu", "desqualificado", "follow_up", "perdido", "desistencia"];
 
 const PESSOA_META = {
   Gabi: { bg: "#f472b6", text: "#ffffff" },
