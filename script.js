@@ -786,7 +786,6 @@ function renderFaturamento(leads) {
           <td>${formatBRL(v.bruto)}</td>
           <td>${v.formaLabel}</td>
           <td>${v.pagamento_parcelas || "-"}</td>
-          <td>${(v.taxa * 100).toFixed(2)}%</td>
           <td>${formatBRL(v.liquido)}</td>
           <td>${formatDateBR(v.data_venda || v.status_changed_at)}</td>
         </tr>
