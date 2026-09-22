@@ -21,6 +21,64 @@ body {
   line-height: 1.6;
 }
 
+.login-page {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
+}
+
+.login-card {
+  background: var(--branco);
+  border-radius: 12px;
+  padding: 48px 40px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.login-logo {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 24px;
+  display: block;
+  object-fit: contain;
+}
+
+.login-card h1 {
+  font-size: 24px;
+  margin: 0 0 4px;
+  color: var(--texto);
+}
+
+.login-card p {
+  color: var(--cinza-medio);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin: 0 0 32px;
+  font-weight: 600;
+}
+
+.btn-primary {
+  padding: 12px 24px;
+  background: #667eea;
+  color: var(--branco);
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btn-primary:hover {
+  background: #5568d3;
+}
+
 .container {
   max-width: 1200px;
   margin: 0 auto;
