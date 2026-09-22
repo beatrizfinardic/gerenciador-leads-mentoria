@@ -708,12 +708,14 @@ tbody tr:hover {
   inset: 0;
   background: rgba(0, 0, 0, 0.5);
   z-index: 1000;
-  display: none;
+  display: none !important;
   align-items: center;
   justify-content: center;
   padding: 20px;
+  pointer-events: none;
 }
 
 #delete-modal.show {
-  display: flex;
+  display: flex !important;
+  pointer-events: auto;
 }
