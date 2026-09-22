@@ -1167,6 +1167,35 @@ function renderTable(leads) {
     });
 }
 
+async function deleteLead(leadId) {
+  const { error } = await sb.from("leads").delete().eq("id", leadId);
+  if (error) {
+    alert("Erro ao deletar lead: " + error.message);
+    return;
+  }
+  await refreshLeads();
+}
+
+tbody.addEventListener("click", (e) => {
+  const btn = e.target.closest("button[data-action]");
+  if (!btn) return;
+
+  const leadId = btn.dataset.id;
+  const action = btn.dataset.action;
+
+  if (action === "edit") {
+    const lead = leadsCache.find((l) => l.id === leadId);
+    if (lead) {
+      loadLeadIntoForm(lead);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  } else if (action === "delete") {
+    if (confirm("Tem certeza que deseja deletar este lead?")) {
+      deleteLead(leadId);
+    }
+  }
+});
+
 function renderAll() {
   renderSummaryToday(leadsCache);
   renderDashboards(leadsCache);
