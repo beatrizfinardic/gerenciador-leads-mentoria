@@ -21,6 +21,10 @@ body {
   line-height: 1.6;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 .login-page {
   display: flex !important;
   align-items: center;
@@ -28,6 +32,10 @@ body {
   min-height: 100vh;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   padding: 20px;
+}
+
+.login-page[hidden] {
+  display: none !important;
 }
 
 .login-card {
