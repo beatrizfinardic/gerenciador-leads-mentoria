@@ -1204,7 +1204,6 @@ async function deleteLead(leadId) {
   await refreshLeads();
 }
 
-deleteModal.style.display = "flex";
 deleteCancelBtn.addEventListener("click", () => {
   deleteModal.style.display = "none";
   pendingDeleteId = null;
