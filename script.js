@@ -787,10 +787,11 @@ function renderFaturamento(leads) {
           <td>${v.pagamento_parcelas || "-"}</td>
           <td>${(v.taxa * 100).toFixed(2)}%</td>
           <td>${formatBRL(v.liquido)}</td>
-          <td>${formatDateTimeBR(v.status_changed_at)}</td>
+          <td>${formatDateBR(v.data_venda || v.status_changed_at)}</td>
         </tr>
       `
     )
+    .sort((a, b) => parseTimestamp(b.data_venda || b.status_changed_at) - parseTimestamp(a.data_venda || a.status_changed_at))
     .join("");
 }
 
