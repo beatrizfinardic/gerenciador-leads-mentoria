@@ -779,6 +779,7 @@ function renderFaturamento(leads) {
       (v) => `
         <tr>
           <td>${escapeHtml(v.nome)}</td>
+          <td>${escapeHtml(v.origem || "-")}</td>
           <td>${mentoriaBadge(v.tipo_mentoria)}</td>
           <td>${pessoaBadge(v.abordado_por)}</td>
           <td>${pessoaBadge(v.fechado_por)}</td>
