@@ -888,7 +888,7 @@ function renderCusto(leads) {
   const totalReunioesFeitas = fluxoPeriodo.filter((l) => l.status === "convertido" || l.status === "perdido").length;
   const totalDesqualificados = fluxoPeriodo.filter((l) => l.status === "desqualificado").length;
   const totalAgendamentoQualificado = totalAgendamentos - totalDesqualificados;
-  const totalNoShow = fluxoPeriodo.filter((l) => l.status === "nao_compareceu").length;
+  const totalNoShow = fluxoPeriodo.filter((l) => l.status === "nao_compareceu" || l.status === "nao_respondeu").length;
 
   const custoPor = (total) => (total ? valorInvestido / total : 0);
 
@@ -914,11 +914,14 @@ function renderCusto(leads) {
     .join("");
 
   const metricsStatusEl = document.getElementById("custo-metricas-status");
+  const naoRespondeuCount = fluxoPeriodo.filter((l) => l.status === "nao_respondeu").length;
+  const naoCompareceuCount = fluxoPeriodo.filter((l) => l.status === "nao_compareceu").length;
+  const totalNoShowCount = naoRespondeuCount + naoCompareceuCount;
+
   const statusCounts = {
     agendado: fluxoPeriodo.filter((l) => l.status === "agendado").length,
     convertido: fluxoPeriodo.filter((l) => l.status === "convertido").length,
-    nao_compareceu: fluxoPeriodo.filter((l) => l.status === "nao_compareceu").length,
-    nao_respondeu: fluxoPeriodo.filter((l) => l.status === "nao_respondeu").length,
+    no_show: totalNoShowCount,
     desqualificado: fluxoPeriodo.filter((l) => l.status === "desqualificado").length,
     follow_up: fluxoPeriodo.filter((l) => l.status === "follow_up").length,
     perdido: fluxoPeriodo.filter((l) => l.status === "perdido").length,
@@ -927,8 +930,7 @@ function renderCusto(leads) {
   metricsStatusEl.innerHTML = [
     { label: "Agendado", value: statusCounts.agendado },
     { label: "Convertido", value: statusCounts.convertido },
-    { label: "Não compareceu", value: statusCounts.nao_compareceu },
-    { label: "Não respondeu", value: statusCounts.nao_respondeu },
+    { label: "No Show (Não compareceu + Não respondeu)", value: statusCounts.no_show },
     { label: "Desqualificado", value: statusCounts.desqualificado },
     { label: "Follow up", value: statusCounts.follow_up },
     { label: "Perdido", value: statusCounts.perdido },
