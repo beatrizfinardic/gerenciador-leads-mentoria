@@ -703,6 +703,7 @@
           <option value="parcelado_eduzz">Parcelado Eduzz</option>
           <option value="parcelado_sumup">Parcelado Sumup</option>
           <option value="recorrente_cartao">Cartão de Crédito Recorrente</option>
+          <option value="sinal">Sinal</option>
         </select>
       </div>
       <div class="field">
@@ -732,6 +733,14 @@
       <div class="field" id="modal-recorrencia-valor-field" hidden>
         <label for="modal-recorrencia-valor">Valor da parcela (R$)</label>
         <input type="number" id="modal-recorrencia-valor" min="0" step="0.01" placeholder="0,00" />
+      </div>
+      <div class="field" id="modal-sinal-valor-field" hidden>
+        <label for="modal-sinal-valor">Valor do Sinal (R$)</label>
+        <input type="number" id="modal-sinal-valor" min="0" step="0.01" placeholder="0,00" />
+      </div>
+      <div class="field" id="modal-sinal-data-field" hidden>
+        <label for="modal-sinal-data">Data para Acertar o Restante</label>
+        <input type="date" id="modal-sinal-data" />
       </div>
       <div class="form-actions">
         <button type="button" id="modal-confirm-btn" class="btn btn-primary">Confirmar</button>
