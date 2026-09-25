@@ -520,6 +520,67 @@
     <!-- SEÇÃO: MENTORADOS (CRM) -->
     <div id="section-mentorados" class="section-container" hidden>
     <section class="card">
+      <h2 class="section-title">Adicionar Mentorado Ativo</h2>
+      <p style="color: #666; margin-bottom: 20px;">Preencha os dados principais do mentorado ativo</p>
+      <form id="mentorado-form">
+        <div class="form-grid">
+          <div class="field">
+            <label for="mentorado-nome">Nome *</label>
+            <input type="text" id="mentorado-nome" placeholder="Nome do mentorado" required />
+          </div>
+          <div class="field">
+            <label for="mentorado-email">Email</label>
+            <input type="email" id="mentorado-email" placeholder="email@exemplo.com" />
+          </div>
+          <div class="field">
+            <label for="mentorado-whatsapp">WhatsApp *</label>
+            <input type="tel" id="mentorado-whatsapp" placeholder="(00) 00000-0000" required />
+          </div>
+          <div class="field">
+            <label for="mentorado-tipo">Tipo de Mentoria *</label>
+            <select id="mentorado-tipo" required>
+              <option value="">Selecione...</option>
+              <option value="Mentoria Titulares">Mentoria Titulares</option>
+              <option value="Mentoria Eméritos">Mentoria Eméritos</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="mentorado-data">Data de Entrada *</label>
+            <input type="date" id="mentorado-data" required />
+          </div>
+          <div class="field">
+            <label for="mentorado-valor">Valor Fechado (R$)</label>
+            <input type="number" id="mentorado-valor" min="0" step="0.01" placeholder="0,00" />
+          </div>
+          <div class="field">
+            <label for="mentorado-forma">Forma de Pagamento</label>
+            <select id="mentorado-forma">
+              <option value="">Selecione...</option>
+              <option value="PIX">PIX</option>
+              <option value="Eduzz">Eduzz</option>
+              <option value="Cartão Recorrente">Cartão Recorrente</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="mentorado-faturamento">Faturamento Atual do Mentorado (R$)</label>
+            <input type="number" id="mentorado-faturamento" min="0" step="0.01" placeholder="0,00" />
+          </div>
+          <div class="field">
+            <label for="mentorado-faturamento-3m">Faturamento - 3 Meses (R$)</label>
+            <input type="number" id="mentorado-faturamento-3m" min="0" step="0.01" placeholder="0,00" />
+          </div>
+          <div class="field field-wide">
+            <label for="mentorado-info">Informações Gerais</label>
+            <textarea id="mentorado-info" rows="3" placeholder="Notas, desafios, progresso..."></textarea>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Salvar mentorado</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="card">
       <h2 class="section-title">CRM Mentorados</h2>
 
       <div class="status-tabs" id="mentoria-type-tabs">
