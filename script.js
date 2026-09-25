@@ -197,6 +197,10 @@ const modalRecorrenciaField = document.getElementById("modal-recorrencia-field")
 const modalRecorrenciaQuantidadeInput = document.getElementById("modal-recorrencia-quantidade");
 const modalRecorrenciaValorField = document.getElementById("modal-recorrencia-valor-field");
 const modalRecorrenciaValorInput = document.getElementById("modal-recorrencia-valor");
+const modalSinalValorField = document.getElementById("modal-sinal-valor-field");
+const modalSinalValorInput = document.getElementById("modal-sinal-valor");
+const modalSinalDataField = document.getElementById("modal-sinal-data-field");
+const modalSinalDataInput = document.getElementById("modal-sinal-data");
 const modalConfirmBtn = document.getElementById("modal-confirm-btn");
 const modalCancelBtn = document.getElementById("modal-cancel-btn");
 
@@ -445,6 +449,8 @@ function updateModalFormaFields() {
   modalParcelasField.hidden = forma !== "parcelado_eduzz" && forma !== "parcelado_sumup";
   modalRecorrenciaField.hidden = forma !== "recorrente_cartao";
   modalRecorrenciaValorField.hidden = forma !== "recorrente_cartao";
+  modalSinalValorField.hidden = forma !== "sinal";
+  modalSinalDataField.hidden = forma !== "sinal";
 }
 
 function syncValorFechadoRecorrencia() {
@@ -500,6 +506,10 @@ modalConfirmBtn.addEventListener("click", () => {
   pagamentoFormaInput.value = modalFormaSelect.value;
   if (modalFormaSelect.value === "recorrente_cartao") {
     pagamentoParcelasInput.value = modalRecorrenciaQuantidadeInput.value;
+  } else if (modalFormaSelect.value === "sinal") {
+    pagamentoParcelasInput.value = modalSinalValorInput.value;
+    followupDataInput.value = modalSinalDataInput.value;
+    followupDataValueInput.value = modalSinalDataInput.value;
   } else {
     pagamentoParcelasInput.value = modalFormaSelect.value === "a_vista" ? "" : modalParcelasSelect.value;
   }
