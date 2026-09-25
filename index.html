@@ -553,13 +553,21 @@
             <input type="number" id="mentorado-valor" min="0" step="0.01" placeholder="0,00" />
           </div>
           <div class="field">
-            <label for="mentorado-forma">Forma de Pagamento</label>
+            <label for="mentorado-sinal">Valor do Sinal (R$)</label>
+            <input type="number" id="mentorado-sinal" min="0" step="0.01" placeholder="0,00" />
+          </div>
+          <div class="field">
+            <label for="mentorado-forma">Forma de Pagamento do Sinal</label>
             <select id="mentorado-forma">
               <option value="">Selecione...</option>
               <option value="PIX">PIX</option>
               <option value="Eduzz">Eduzz</option>
               <option value="Cartão Recorrente">Cartão Recorrente</option>
             </select>
+          </div>
+          <div class="field">
+            <label for="mentorado-data-restante">Data para Acertar o Restante</label>
+            <input type="date" id="mentorado-data-restante" />
           </div>
           <div class="field">
             <label for="mentorado-faturamento">Faturamento Atual do Mentorado (R$)</label>
