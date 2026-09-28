@@ -1368,6 +1368,51 @@ form.addEventListener("submit", async (e) => {
   await refreshLeads();
 });
 
+/* ---------- Formulário de Mentorados ---------- */
+
+const mentoradoForm = document.getElementById("mentorado-form");
+if (mentoradoForm) {
+  mentoradoForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const nome = document.getElementById("mentorado-nome").value.trim();
+    const whatsapp = document.getElementById("mentorado-whatsapp").value.trim();
+    const email = document.getElementById("mentorado-email").value.trim();
+    const tipo = document.getElementById("mentorado-tipo").value;
+    const data = document.getElementById("mentorado-data").value;
+
+    if (!nome || !whatsapp || !tipo || !data) {
+      alert("Preencha todos os campos obrigatórios!");
+      return;
+    }
+
+    const mentoradoData = {
+      nome,
+      whatsapp,
+      email,
+      tipo_mentoria: tipo,
+      created_at: new Date(data + "T00:00:00").toISOString(),
+      valor_fechado: document.getElementById("mentorado-valor").value ? Number(document.getElementById("mentorado-valor").value) : null,
+      faturamento_atual: document.getElementById("mentorado-faturamento").value ? Number(document.getElementById("mentorado-faturamento").value) : null,
+      faturamento_3meses: document.getElementById("mentorado-faturamento-3m").value ? Number(document.getElementById("mentorado-faturamento-3m").value) : null,
+      pagamento_forma: document.getElementById("mentorado-forma").value || null,
+      informacoes_gerais: document.getElementById("mentorado-info").value.trim() || null,
+      status: "convertido",
+      status_changed_at: new Date().toISOString(),
+    };
+
+    const { error } = await sb.from("leads").insert([mentoradoData]);
+    if (error) {
+      alert("Erro ao cadastrar mentorado: " + error.message);
+      return;
+    }
+
+    alert("Mentorado cadastrado com sucesso!");
+    mentoradoForm.reset();
+    await refreshLeads();
+  });
+}
+
 /* ---------- Ações da tabela ---------- */
 
 function loadLeadIntoForm(lead) {
