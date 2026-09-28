@@ -963,7 +963,12 @@ custoAtualizarBtn.addEventListener("click", () => renderCusto(leadsCache));
 /* ---------- CRM Mentorados ---------- */
 
 function renderMentorados(leads) {
-  const mentorados = leads.filter((l) => l.status === "convertido" && l.tipo_mentoria === mentoriaTypeTab);
+  const searchTerm = document.getElementById("mentorados-search")?.value.toLowerCase() || "";
+  const mentorados = leads.filter((l) =>
+    l.status === "convertido" &&
+    l.tipo_mentoria === mentoriaTypeTab &&
+    (searchTerm === "" || l.nome.toLowerCase().includes(searchTerm))
+  );
 
   const ativos = mentorados;
   const totalConvertidos = mentorados.length;
@@ -1071,6 +1076,14 @@ mentoradosMainTabsEl.addEventListener("click", (e) => {
   document.getElementById("tab-renovacoes").hidden = mentoradosMainTab !== "renovacoes";
   document.getElementById("tab-saidos").hidden = mentoradosMainTab !== "saidos";
 });
+
+const mentoradosSearchInput = document.getElementById("mentorados-search");
+if (mentoradosSearchInput) {
+  mentoradosSearchInput.addEventListener("input", () => {
+    mentoradosCurrentPage = 1;
+    renderMentorados(leadsCache);
+  });
+}
 
 /* ---------- Relatório de conversão por período ---------- */
 
