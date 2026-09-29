@@ -1026,6 +1026,15 @@ function renderMentorados(leads) {
     `)
     .join("");
 
+  document.querySelectorAll(".mentorado-card").forEach((card) => {
+    card.addEventListener("click", (e) => {
+      if (!e.target.closest(".mentorado-delete-btn")) {
+        const id = card.dataset.id;
+        window.clickMentorado(id);
+      }
+    });
+  });
+
   document.querySelectorAll(".mentorado-delete-btn").forEach((btn) => {
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
