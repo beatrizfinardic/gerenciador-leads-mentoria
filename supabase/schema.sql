@@ -24,6 +24,7 @@ alter table leads add column if not exists faturamento_renovacao numeric;
 alter table leads add column if not exists alunos_presencial int;
 alter table leads add column if not exists alunos_online int;
 alter table leads add column if not exists informacoes_gerais text;
+alter table leads add column if not exists fluxo text;
 
 alter table daily_tracking add column if not exists leads_abordados int not null default 0;
 alter table daily_tracking add column if not exists agendamentos_conseguidos int not null default 0;

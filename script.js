@@ -87,6 +87,7 @@ const abordadoPorInput = document.getElementById("abordado-por");
 const statusInput = document.getElementById("status");
 const dificuldadeInput = document.getElementById("dificuldade");
 const onlineInput = document.getElementById("online");
+const fluxoInput = document.getElementById("fluxo");
 const cadastroDataInput = document.getElementById("cadastro-data");
 const agendamentoEmInput = document.getElementById("agendamento-em");
 const pagamentoFormaInput = document.getElementById("pagamento-forma");
@@ -1257,6 +1258,7 @@ function renderTable(leads) {
         <td>${escapeHtml(lead.profissao)}</td>
         <td>${escapeHtml(lead.origem)}</td>
         <td><span class="badge" style="background:${meta.bg};color:${meta.text}">${escapeHtml(meta.label)}</span></td>
+        <td>${escapeHtml(lead.fluxo || "-")}</td>
         <td>${formatDateTimeBR(lead.agendamento_em)}</td>
         <td>${escapeHtml(lead.abordado_por)}</td>
       `;
@@ -1350,6 +1352,7 @@ form.addEventListener("submit", async (e) => {
     status: statusInput.value,
     dificuldade: dificuldadeInput.value.trim(),
     online: onlineInput.value,
+    fluxo: fluxoInput.value || null,
     agendamento_em: agendamentoEmInput.value ? new Date(agendamentoEmInput.value).toISOString() : null,
     valor_fechado: statusInput.value === "convertido" && valorFechadoInput.value ? Number(valorFechadoInput.value) : null,
     data_vencimento: statusInput.value === "convertido" ? dataVencimentoInput.value || null : null,
@@ -1481,6 +1484,7 @@ function loadLeadIntoForm(lead) {
   faturamento3mesesFieldInput.value = lead.faturamento_3meses || "";
   dificuldadeInput.value = lead.dificuldade || "";
   onlineInput.value = lead.online;
+  fluxoInput.value = lead.fluxo || "";
   entreiContatoInput.value = lead.entrei_contato !== null && lead.entrei_contato !== undefined ? String(lead.entrei_contato) : "";
   respondeuInput.value = lead.respondeu !== null && lead.respondeu !== undefined ? String(lead.respondeu) : "";
   agendouReuniaoInput.value = lead.agendou_reuniao !== null && lead.agendou_reuniao !== undefined ? String(lead.agendou_reuniao) : "";

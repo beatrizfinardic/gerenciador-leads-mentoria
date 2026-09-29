@@ -59,6 +59,7 @@
         <input type="hidden" id="perdido-followup" />
         <input type="hidden" id="perdido-followup-data" />
         <input type="hidden" id="followup-data-value" />
+        <input type="hidden" id="fluxo-value" />
         <div class="form-grid">
           <div class="field">
             <label for="cadastro-data">Data de cadastro</label>
@@ -125,6 +126,14 @@
               <option value="Só presencial">Só presencial</option>
               <option value="Só online">Só online</option>
               <option value="Híbrido">Híbrido</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="fluxo">Fluxo</label>
+            <select id="fluxo">
+              <option value="">Selecione...</option>
+              <option value="Fluxo A">Fluxo A</option>
+              <option value="Fluxo B">Fluxo B</option>
             </select>
           </div>
           <div class="field field-wide">
@@ -318,15 +327,16 @@
         <table id="leads-table">
           <thead>
             <tr>
+              <th>Ações</th>
               <th>Nome</th>
               <th>Email</th>
               <th>WhatsApp</th>
               <th>Profissão</th>
               <th>Origem</th>
               <th>Status</th>
+              <th>Fluxo</th>
               <th>Data Agendamento</th>
               <th>Agendado por</th>
-              <th>Ações</th>
             </tr>
           </thead>
           <tbody id="leads-tbody"></tbody>
