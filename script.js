@@ -1026,15 +1026,6 @@ function renderMentorados(leads) {
     `)
     .join("");
 
-  document.querySelectorAll(".mentorado-card").forEach((card) => {
-    card.addEventListener("click", (e) => {
-      if (!e.target.closest(".mentorado-delete-btn")) {
-        const id = card.dataset.id;
-        window.clickMentorado(id);
-      }
-    });
-  });
-
   document.querySelectorAll(".mentorado-delete-btn").forEach((btn) => {
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -1076,11 +1067,13 @@ window.clickMentorado = function(leadId) {
 document.addEventListener("click", (e) => {
   const card = e.target.closest(".mentorado-card");
   if (!card) return;
-  console.log("Card clicked:", card);
+  if (e.target.closest(".mentorado-delete-btn")) return;
   const leadId = card.dataset.id;
   if (!leadId) return;
   const lead = leadsCache.find((l) => l.id === leadId);
   if (lead) {
+    const leadsTab = document.querySelector('.nav-tab[data-section="leads"]');
+    if (leadsTab) leadsTab.click();
     loadLeadIntoForm(lead);
     const leadsSection = document.querySelector("#section-leads");
     if (leadsSection) leadsSection.scrollIntoView({ behavior: "smooth", block: "start" });
