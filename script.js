@@ -1026,12 +1026,16 @@ function renderMentorados(leads) {
     `)
     .join("");
 
-  document.querySelectorAll(".mentorado-delete-btn").forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      const id = btn.dataset.id;
-      if (confirm("Tem certeza que deseja excluir este mentorado?")) {
-        deleteMentorado(id);
+  document.querySelectorAll(".mentorado-card").forEach((card) => {
+    card.addEventListener("click", (e) => {
+      if (e.target.closest(".mentorado-delete-btn")) {
+        const id = e.target.closest(".mentorado-delete-btn").dataset.id;
+        if (confirm("Tem certeza que deseja excluir este mentorado?")) {
+          deleteMentorado(id);
+        }
+      } else {
+        const id = card.dataset.id;
+        window.clickMentorado(id);
       }
     });
   });
@@ -1064,28 +1068,6 @@ window.clickMentorado = function(leadId) {
   }
 };
 
-document.addEventListener("click", (e) => {
-  const card = e.target.closest(".mentorado-card");
-  if (!card) return;
-  if (e.target.closest(".mentorado-delete-btn")) return;
-  const leadId = card.dataset.id;
-  console.log("Clique em mentorado:", leadId);
-  if (!leadId) return;
-  const lead = leadsCache.find((l) => l.id === leadId);
-  console.log("Lead encontrado:", lead);
-  if (lead) {
-    console.log("Mudando pra aba de leads");
-    const leadsTab = document.querySelector('.nav-tab[data-section="leads"]');
-    if (leadsTab) {
-      leadsTab.click();
-      console.log("Tab clicada");
-    }
-    loadLeadIntoForm(lead);
-    console.log("Formulário preenchido");
-    const leadsSection = document.querySelector("#section-leads");
-    if (leadsSection) leadsSection.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
-});
 
 mentoradosPaginationEl.addEventListener("click", (e) => {
   const btn = e.target.closest(".pagination-tab");
