@@ -1009,8 +1009,11 @@ function renderMentorados(leads) {
 
   mentoradosCardsEl.innerHTML = pageAtivos
     .map((l) => `
-      <div class="mentorado-card" data-id="${l.id}" onclick="window.clickMentorado('${l.id}')" style="background: white; border: 1px solid #e0e0e0; border-radius: 8px; padding: 16px; cursor: pointer; margin-bottom: 8px;">
-        <div class="mentorado-card-name" style="font-weight: 700; font-size: 16px; margin-bottom: 8px; color: #1a1a1a;">${escapeHtml(l.nome)}</div>
+      <div class="mentorado-card" data-id="${l.id}" style="background: white; border: 1px solid #e0e0e0; border-radius: 8px; padding: 16px; cursor: pointer; margin-bottom: 8px;">
+        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;">
+          <div class="mentorado-card-name" style="font-weight: 700; font-size: 16px; color: #1a1a1a; flex: 1;">${escapeHtml(l.nome)}</div>
+          <button type="button" class="btn btn-danger btn-small mentorado-delete-btn" data-id="${l.id}" style="margin-left: 8px; padding: 4px 8px; font-size: 10px;">Excluir</button>
+        </div>
         <div style="font-size: 12px; color: #6b6b6b; line-height: 1.6; margin-bottom: 4px;">Email: <span style="font-weight: 600; color: #1a1a1a;">${escapeHtml(l.email || "-")}</span></div>
         <div style="font-size: 12px; color: #6b6b6b; line-height: 1.6; margin-bottom: 4px;">WhatsApp: <span style="font-weight: 600; color: #1a1a1a;">${escapeHtml(l.whatsapp || "-")}</span></div>
         <div style="font-size: 12px; color: #6b6b6b; line-height: 1.6; margin-bottom: 4px;">Valor pago: <span style="font-weight: 600; color: #1a1a1a;">${formatBRL(l.valor_fechado || 0)}</span></div>
@@ -1018,12 +1021,31 @@ function renderMentorados(leads) {
     `)
     .join("");
 
+  document.querySelectorAll(".mentorado-delete-btn").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const id = btn.dataset.id;
+      if (confirm("Tem certeza que deseja excluir este mentorado?")) {
+        deleteMentorado(id);
+      }
+    });
+  });
+
   mentoradosPaginationEl.innerHTML = Array.from({ length: totalPages }, (_, i) => `
     <button type="button" class="pagination-tab ${i + 1 === mentoradosCurrentPage ? "active" : ""}" data-page="${i + 1}">${i + 1}</button>
   `).join("");
 
   mentoradosSaidosEmptyState.hidden = true;
   mentoradosSaidosTbody.innerHTML = "";
+}
+
+async function deleteMentorado(leadId) {
+  const { error } = await sb.from("leads").delete().eq("id", leadId);
+  if (error) {
+    alert("Erro ao excluir mentorado: " + error.message);
+    return;
+  }
+  await refreshLeads();
 }
 
 window.clickMentorado = function(leadId) {
