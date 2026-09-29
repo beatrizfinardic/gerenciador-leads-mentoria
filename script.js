@@ -160,7 +160,6 @@ const dashAtualizarBtn = document.getElementById("dash-atualizar-btn");
 const dashResumoEl = document.getElementById("dash-resumo");
 const mentoradosSaidosTbody = document.getElementById("mentorados-saidos-tbody");
 const mentoradosSaidosEmptyState = document.getElementById("mentorados-saidos-empty-state");
-const summaryTodayEl = document.getElementById("summary-today");
 const renewalsTbody = document.getElementById("renewals-tbody");
 const renewalsEmptyState = document.getElementById("renewals-empty-state");
 const leadsTodayTbody = document.getElementById("leads-today-tbody");
@@ -253,7 +252,6 @@ async function fetchTracking() {
 async function refreshTracking() {
   trackingCache = await fetchTracking();
   renderTracking();
-  renderSummaryToday(leadsCache);
 }
 
 function escapeHtml(str) {
@@ -603,36 +601,6 @@ window.updateAllToTitulares = async () => {
   alert(`${updated} mentorados atualizados para Mentoria Titulares`);
   await refreshLeads();
 };
-
-/* ---------- Resumo hoje ---------- */
-
-function renderSummaryToday(leads) {
-  const trackingHoje = trackingCache.find((r) => r.data === todayISO());
-  const leadsAbordadosHoje = trackingHoje ? trackingHoje.leads_abordados : 0;
-  const reunioesAgendadasHoje = leads.filter((l) => isToday(l.agendamento_em)).length;
-  const reunioesFeitasHoje = leads.filter(
-    (l) => (l.status === "convertido" || l.status === "perdido") && isToday(l.status_changed_at)
-  ).length;
-  const vendasConvertidasHoje = leads.filter((l) => l.status === "convertido" && isToday(l.status_changed_at)).length;
-
-  const tiles = [
-    { label: "Leads abordados", value: leadsAbordadosHoje },
-    { label: "Reuniões agendadas", value: reunioesAgendadasHoje },
-    { label: "Reuniões feitas", value: reunioesFeitasHoje },
-    { label: "Vendas convertidas", value: vendasConvertidasHoje },
-  ];
-
-  summaryTodayEl.innerHTML = tiles
-    .map(
-      (t) => `
-        <div class="summary-tile">
-          <span class="label">${t.label}</span>
-          <span class="value">${t.value}</span>
-        </div>
-      `
-    )
-    .join("");
-}
 
 /* ---------- Leads do dia ---------- */
 
@@ -1314,7 +1282,6 @@ tbody.addEventListener("click", (e) => {
 });
 
 function renderAll() {
-  renderSummaryToday(leadsCache);
   renderDashboards(leadsCache);
   renderReport(leadsCache);
   renderTable(leadsCache);
