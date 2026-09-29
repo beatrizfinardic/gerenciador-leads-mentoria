@@ -668,7 +668,7 @@ function renderFaturamento(leads) {
       return true;
     })
     .filter((l) => {
-      const d = parseTimestamp(l.data_venda || l.status_changed_at);
+      const d = parseTimestamp(l.data_venda || l.created_at);
       return d && d >= start && d <= end;
     })
     .map((l) => {
@@ -682,7 +682,7 @@ function renderFaturamento(leads) {
       const taxa = bruto ? (bruto - liquido) / bruto : 0;
       return { ...l, formaKey, formaLabel: meta.label, taxa, bruto, bruteTotal, liquido };
     })
-    .sort((a, b) => parseTimestamp(b.data_venda) - parseTimestamp(a.data_venda));
+    .sort((a, b) => parseTimestamp(b.data_venda || b.created_at) - parseTimestamp(a.data_venda || a.created_at));
 
   const faturamentoBruto = vendas.reduce((sum, v) => sum + v.bruto, 0);
   const faturamentoLiquido = vendas.reduce((sum, v) => sum + v.liquido, 0);
@@ -766,11 +766,11 @@ function renderFaturamento(leads) {
           <td>${v.formaLabel}</td>
           <td>${v.pagamento_parcelas || "-"}</td>
           <td>${formatBRL(v.liquido)}</td>
-          <td>${formatDateBR(v.data_venda || v.status_changed_at)}</td>
+          <td>${formatDateBR(v.data_venda || v.created_at)}</td>
         </tr>
       `
     )
-    .sort((a, b) => parseTimestamp(b.data_venda || b.status_changed_at) - parseTimestamp(a.data_venda || a.status_changed_at))
+    .sort((a, b) => parseTimestamp(b.data_venda || b.created_at) - parseTimestamp(a.data_venda || a.created_at))
     .join("");
 }
 
