@@ -973,7 +973,10 @@ function renderMentorados(leads) {
   const ativos = mentorados;
   const totalConvertidos = mentorados.length;
   const totalFaturamento = mentorados.reduce((sum, l) => sum + (l.valor_fechado || 0), 0);
-  const ticketMedio = totalConvertidos ? totalFaturamento / totalConvertidos : 0;
+  const ticketMedioVenda = totalConvertidos ? totalFaturamento / totalConvertidos : 0;
+
+  const totalFaturamentoRenovacao = mentorados.reduce((sum, l) => sum + (l.faturamento_renovacao || 0), 0);
+  const ticketMedioRenovacao = totalConvertidos ? totalFaturamentoRenovacao / totalConvertidos : 0;
 
   const titularesCount = leads.filter((l) => l.status === "convertido" && l.tipo_mentoria === "Mentoria Titulares").length;
   const emeritosCount = leads.filter((l) => l.status === "convertido" && l.tipo_mentoria === "Mentoria Eméritos").length;
@@ -987,8 +990,10 @@ function renderMentorados(leads) {
 
   mentoradosResumoEl.innerHTML = [
     { label: "Total de mentorados ativos", value: totalConvertidos },
-    { label: "Faturamento total", value: formatBRL(totalFaturamento) },
-    { label: "Ticket médio", value: formatBRL(ticketMedio) },
+    { label: "Faturamento total (Venda)", value: formatBRL(totalFaturamento) },
+    { label: "Ticket médio (Venda)", value: formatBRL(ticketMedioVenda) },
+    { label: "Faturamento total (Renovação)", value: formatBRL(totalFaturamentoRenovacao) },
+    { label: "Ticket médio (Renovação)", value: formatBRL(ticketMedioRenovacao) },
     { label: "Mentorados em acompanhamento", value: mentorados.filter((l) => l.data_vencimento && new Date(l.data_vencimento) > new Date()).length },
   ]
     .map(
