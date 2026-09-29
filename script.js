@@ -1069,12 +1069,19 @@ document.addEventListener("click", (e) => {
   if (!card) return;
   if (e.target.closest(".mentorado-delete-btn")) return;
   const leadId = card.dataset.id;
+  console.log("Clique em mentorado:", leadId);
   if (!leadId) return;
   const lead = leadsCache.find((l) => l.id === leadId);
+  console.log("Lead encontrado:", lead);
   if (lead) {
+    console.log("Mudando pra aba de leads");
     const leadsTab = document.querySelector('.nav-tab[data-section="leads"]');
-    if (leadsTab) leadsTab.click();
+    if (leadsTab) {
+      leadsTab.click();
+      console.log("Tab clicada");
+    }
     loadLeadIntoForm(lead);
+    console.log("Formulário preenchido");
     const leadsSection = document.querySelector("#section-leads");
     if (leadsSection) leadsSection.scrollIntoView({ behavior: "smooth", block: "start" });
   }
