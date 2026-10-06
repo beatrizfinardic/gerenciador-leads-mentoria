@@ -37,6 +37,7 @@ const STATUS_META = {
   follow_up: { label: "Follow up", bg: "#8b5cf6", text: "#ffffff", cardBg: "#ede9fe", cardText: "#5b21b6" },
   perdido: { label: "Perdido", bg: "#9ca3af", text: "#1a1a1a", cardBg: "#e5e7eb", cardText: "#374151" },
   desistencia: { label: "Desistência", bg: "#ec4899", text: "#ffffff", cardBg: "#fce7f3", cardText: "#831843" },
+  cancelado: { label: "Cancelado", bg: "#6b7280", text: "#ffffff", cardBg: "#d1d5db", cardText: "#374151" },
 };
 
 const ORGANICO_STATUSES = ["agendado", "convertido", "nao_compareceu", "nao_respondeu", "desqualificado", "follow_up", "perdido", "desistencia"];
@@ -77,6 +78,7 @@ const FORMA_PAGAMENTO_META = {
 
 const form = document.getElementById("lead-form");
 const leadIdInput = document.getElementById("lead-id");
+
 const nomeInput = document.getElementById("nome");
 const emailInput = document.getElementById("email");
 const instagramInput = document.getElementById("instagram");
@@ -87,7 +89,6 @@ const abordadoPorInput = document.getElementById("abordado-por");
 const statusInput = document.getElementById("status");
 const dificuldadeInput = document.getElementById("dificuldade");
 const onlineInput = document.getElementById("online");
-const fluxoInput = document.getElementById("fluxo");
 const cadastroDataInput = document.getElementById("cadastro-data");
 const agendamentoEmInput = document.getElementById("agendamento-em");
 const pagamentoFormaInput = document.getElementById("pagamento-forma");
@@ -133,6 +134,11 @@ const leadsSearchInput = document.getElementById("leads-search");
 const statusTabsEl = document.getElementById("status-tabs");
 const leadsPromptState = document.getElementById("leads-prompt-state");
 let activeStatusTab = "";
+
+const sinalValorField = document.getElementById("sinal-valor-field");
+const sinalValorInput = document.getElementById("sinal-valor-input");
+const sinalDataField = document.getElementById("sinal-data-field");
+const sinalDataInput = document.getElementById("sinal-data-input");
 
 const tbody = document.getElementById("leads-tbody");
 const emptyState = document.getElementById("empty-state");
@@ -211,6 +217,13 @@ const lostFollowupDataField = document.getElementById("lost-followup-data-field"
 const lostFollowupDataInput = document.getElementById("lost-followup-data");
 const lostConfirmBtn = document.getElementById("lost-confirm-btn");
 const lostCancelBtn = document.getElementById("lost-cancel-btn");
+
+const cancellationModal = document.getElementById("cancellation-modal");
+const cancellationMotivoSelect = document.getElementById("cancellation-motivo");
+const cancellationDataInput = document.getElementById("cancellation-data");
+const cancellationConfirmBtn = document.getElementById("cancellation-confirm-btn");
+const cancellationCancelBtn = document.getElementById("cancellation-cancel-btn");
+let pendingCancellationMentoradoId = null;
 
 let leadsCache = [];
 let trackingCache = [];
@@ -360,7 +373,9 @@ function renderStatusOptions(preferredStatus) {
   updateStatusSelectColor();
 }
 
-origemInput.addEventListener("change", () => renderStatusOptions(statusInput.value));
+origemInput.addEventListener("change", () => {
+  renderStatusOptions(statusInput.value);
+});
 
 formValorFechadoInput.addEventListener("input", () => {
   valorFechadoInput.value = formValorFechadoInput.value;
@@ -556,6 +571,50 @@ lostCancelBtn.addEventListener("click", () => {
   statusInput.value = confirmedStatusValue;
   updateStatusSelectColor();
   closeLostModal();
+});
+
+/* ---------- Modal de cancelamento de mentorado ---------- */
+
+function openCancellationModal(mentoradoId) {
+  console.log("Abrindo modal de cancelamento para ID:", mentoradoId);
+  pendingCancellationMentoradoId = mentoradoId;
+  cancellationMotivoSelect.value = "";
+  cancellationDataInput.value = todayISO();
+  cancellationModal.hidden = false;
+  console.log("Modal hidden agora é:", cancellationModal.hidden);
+}
+
+function closeCancellationModal() {
+  cancellationModal.hidden = true;
+  pendingCancellationMentoradoId = null;
+}
+
+cancellationCancelBtn.addEventListener("click", closeCancellationModal);
+
+cancellationConfirmBtn.addEventListener("click", async () => {
+  if (!pendingCancellationMentoradoId) return;
+
+  const motivo = cancellationMotivoSelect.value;
+  const data = cancellationDataInput.value;
+
+  if (!motivo || !data) {
+    alert("Preencha todos os campos obrigatórios");
+    return;
+  }
+
+  const { error } = await sb.from("leads").update({
+    status: "cancelado",
+    motivo_cancelamento: motivo,
+    data_cancelamento: data
+  }).eq("id", pendingCancellationMentoradoId);
+
+  if (error) {
+    alert("Erro ao cancelar mentorado: " + error.message);
+    return;
+  }
+
+  closeCancellationModal();
+  await refreshLeads();
 });
 
 function resetForm() {
@@ -870,6 +929,12 @@ function renderCusto(leads) {
   const totalDesqualificados = fluxoPeriodo.filter((l) => l.status === "desqualificado").length;
   const totalAgendamentoQualificado = totalAgendamentos - totalDesqualificados;
   const totalNoShow = fluxoPeriodo.filter((l) => l.status === "nao_compareceu" || l.status === "nao_respondeu").length;
+  const totalCompareceu = fluxoPeriodo.filter((l) => l.status === "convertido" || l.status === "perdido" || l.status === "follow_up").length;
+
+  const taxaConversao = totalAgendamentos ? ((totalVendas / totalAgendamentos) * 100).toFixed(1) : "0.0";
+  const taxaComparecimento = totalAgendamentos ? ((totalCompareceu / totalAgendamentos) * 100).toFixed(1) : "0.0";
+  const taxaDesqualificacao = totalAgendamentos ? ((totalDesqualificados / totalAgendamentos) * 100).toFixed(1) : "0.0";
+  const taxaNoShow = totalAgendamentos ? ((totalNoShow / totalAgendamentos) * 100).toFixed(1) : "0.0";
 
   const custoPor = (total) => (total ? valorInvestido / total : 0);
 
@@ -877,6 +942,10 @@ function renderCusto(leads) {
     { label: "Total de agendamentos", value: totalAgendamentos },
     { label: "Custo por agendamento", value: formatBRL(custoPor(totalAgendamentos)) },
     { label: "Total de vendas", value: totalVendas },
+    { label: "Taxa de conversão", value: `${taxaConversao}%` },
+    { label: "Taxa de comparecimento", value: `${taxaComparecimento}%` },
+    { label: "Taxa de desqualificação", value: `${taxaDesqualificacao}%` },
+    { label: "Taxa de no-show", value: `${taxaNoShow}%` },
     { label: "Custo por venda", value: formatBRL(custoPor(totalVendas)) },
     { label: "Total de reuniões feitas", value: totalReunioesFeitas },
     { label: "Custo por reunião feita", value: formatBRL(custoPor(totalReunioesFeitas)) },
@@ -984,9 +1053,10 @@ function renderMentorados(leads) {
   mentoradosCardsEl.innerHTML = pageAtivos
     .map((l) => `
       <div class="mentorado-card" data-id="${l.id}" style="background: white; border: 1px solid #e0e0e0; border-radius: 8px; padding: 16px; cursor: pointer; margin-bottom: 8px;">
-        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;">
+        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px; gap: 8px;">
           <div class="mentorado-card-name" style="font-weight: 700; font-size: 16px; color: #1a1a1a; flex: 1;">${escapeHtml(l.nome)}</div>
-          <button type="button" class="btn btn-danger btn-small mentorado-delete-btn" data-id="${l.id}" style="margin-left: 8px; padding: 4px 8px; font-size: 10px;">Excluir</button>
+          <button type="button" class="btn btn-warning btn-small mentorado-cancel-btn" data-id="${l.id}" style="margin-left: 4px; padding: 4px 8px; font-size: 10px;">Cancelar</button>
+          <button type="button" class="btn btn-danger btn-small mentorado-delete-btn" data-id="${l.id}" style="margin-left: 4px; padding: 4px 8px; font-size: 10px;">Excluir</button>
         </div>
         <div style="font-size: 12px; color: #6b6b6b; line-height: 1.6; margin-bottom: 4px;">Email: <span style="font-weight: 600; color: #1a1a1a;">${escapeHtml(l.email || "-")}</span></div>
         <div style="font-size: 12px; color: #6b6b6b; line-height: 1.6; margin-bottom: 4px;">WhatsApp: <span style="font-weight: 600; color: #1a1a1a;">${escapeHtml(l.whatsapp || "-")}</span></div>
@@ -997,8 +1067,13 @@ function renderMentorados(leads) {
 
   document.querySelectorAll(".mentorado-card").forEach((card) => {
     card.addEventListener("click", (e) => {
-      if (e.target.closest(".mentorado-delete-btn")) {
+      if (e.target.closest(".mentorado-cancel-btn")) {
+        const id = e.target.closest(".mentorado-cancel-btn").dataset.id;
+        e.stopPropagation();
+        openCancellationModal(id);
+      } else if (e.target.closest(".mentorado-delete-btn")) {
         const id = e.target.closest(".mentorado-delete-btn").dataset.id;
+        e.stopPropagation();
         if (confirm("Tem certeza que deseja excluir este mentorado?")) {
           deleteMentorado(id);
         }
@@ -1013,8 +1088,21 @@ function renderMentorados(leads) {
     <button type="button" class="pagination-tab ${i + 1 === mentoradosCurrentPage ? "active" : ""}" data-page="${i + 1}">${i + 1}</button>
   `).join("");
 
-  mentoradosSaidosEmptyState.hidden = true;
-  mentoradosSaidosTbody.innerHTML = "";
+  const mentoradosCancelados = leads.filter((l) => l.status === "cancelado" && l.tipo_mentoria === mentoriaTypeTab);
+  mentoradosSaidosEmptyState.hidden = mentoradosCancelados.length !== 0;
+  mentoradosSaidosTbody.innerHTML = mentoradosCancelados
+    .map((l) => `
+      <tr>
+        <td>${escapeHtml(l.nome)}</td>
+        <td>${escapeHtml(l.email || "-")}</td>
+        <td>${formatDateBR(l.created_at)}</td>
+        <td>${formatDateBR(l.data_cancelamento || "-")}</td>
+        <td>${formatBRL(l.valor_fechado || 0)}</td>
+        <td>${escapeHtml(l.informacoes_gerais || "-")}</td>
+        <td>${escapeHtml(l.motivo_cancelamento || "-")}</td>
+      </tr>
+    `)
+    .join("");
 }
 
 async function deleteMentorado(leadId) {
@@ -1319,7 +1407,7 @@ form.addEventListener("submit", async (e) => {
     status: statusInput.value,
     dificuldade: dificuldadeInput.value.trim(),
     online: onlineInput.value,
-    fluxo: fluxoInput.value || null,
+    fluxo: (origemInput.value.startsWith("Fluxo") ? origemInput.value : null),
     agendamento_em: agendamentoEmInput.value ? new Date(agendamentoEmInput.value).toISOString() : null,
     valor_fechado: statusInput.value === "convertido" && valorFechadoInput.value ? Number(valorFechadoInput.value) : null,
     data_vencimento: statusInput.value === "convertido" ? dataVencimentoInput.value || null : null,
@@ -1451,7 +1539,6 @@ function loadLeadIntoForm(lead) {
   faturamento3mesesFieldInput.value = lead.faturamento_3meses || "";
   dificuldadeInput.value = lead.dificuldade || "";
   onlineInput.value = lead.online;
-  fluxoInput.value = lead.fluxo || "";
   entreiContatoInput.value = lead.entrei_contato !== null && lead.entrei_contato !== undefined ? String(lead.entrei_contato) : "";
   respondeuInput.value = lead.respondeu !== null && lead.respondeu !== undefined ? String(lead.respondeu) : "";
   agendouReuniaoInput.value = lead.agendou_reuniao !== null && lead.agendou_reuniao !== undefined ? String(lead.agendou_reuniao) : "";
@@ -1468,17 +1555,31 @@ function loadLeadIntoForm(lead) {
     pagamentoDetailsSection.hidden = false;
     renovacaoDetailsSection.hidden = false;
     progressoDetailsSection.hidden = false;
+
+    if (lead.pagamento_forma === "sinal") {
+      sinalValorField.hidden = false;
+      sinalDataField.hidden = false;
+      sinalValorInput.value = lead.pagamento_parcelas || "";
+      sinalDataInput.value = lead.followup_data || "";
+    } else {
+      sinalValorField.hidden = true;
+      sinalDataField.hidden = true;
+    }
   } else if (lead.status === "follow_up") {
     followupDataField.hidden = false;
     pagamentoDetailsSection.hidden = true;
     renovacaoDetailsSection.hidden = true;
     progressoDetailsSection.hidden = true;
+    sinalValorField.hidden = true;
+    sinalDataField.hidden = true;
   } else {
     faturamento3mesesField.hidden = true;
     pagamentoDetailsSection.hidden = true;
     followupDataField.hidden = true;
     renovacaoDetailsSection.hidden = true;
     progressoDetailsSection.hidden = true;
+    sinalValorField.hidden = true;
+    sinalDataField.hidden = true;
   }
 
   submitBtn.textContent = "Salvar alterações";
@@ -1611,6 +1712,12 @@ document.querySelectorAll(".nav-tab").forEach((btn) => {
   custoDataFinalInput.value = costPeriod.end;
   dashDataInicialInput.value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-01`;
   dashDataFinalInput.value = todayISO();
+
+  const fluxoSelect = document.getElementById("fluxo");
+  if (fluxoSelect) {
+    fluxoSelect.innerHTML = '<option value="">Selecione...</option><option value="Fluxo A">Fluxo A</option><option value="Fluxo B">Fluxo B</option>';
+  }
+
   await refreshLeads();
   await refreshTracking();
   setupRealtime();

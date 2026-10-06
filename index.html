@@ -3,11 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <title>Sistema de Gestão — Mentoria Titulares</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=20260927" />
+  <link rel="stylesheet" href="style.css?v=20261006" />
   <link rel="icon" type="image/png" href="assets/logo.png" />
 </head>
 <body>
@@ -96,7 +99,8 @@
               <option value="Livros/especial hub">Livros/especial hub</option>
               <option value="Instagram">Instagram</option>
               <option value="Workshop">Workshop</option>
-              <option value="Fluxo">Fluxo</option>
+              <option value="Fluxo A">Fluxo A</option>
+              <option value="Fluxo B">Fluxo B</option>
               <option value="Evento">Evento</option>
             </select>
           </div>
@@ -126,14 +130,6 @@
               <option value="Só presencial">Só presencial</option>
               <option value="Só online">Só online</option>
               <option value="Híbrido">Híbrido</option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="fluxo">Fluxo</label>
-            <select id="fluxo">
-              <option value="">Selecione...</option>
-              <option value="Fluxo A">Fluxo A</option>
-              <option value="Fluxo B">Fluxo B</option>
             </select>
           </div>
           <div class="field field-wide">
@@ -183,6 +179,14 @@
             <div class="field">
               <label for="form-data-vencimento">Data de vencimento (renovação)</label>
               <input type="date" id="form-data-vencimento" />
+            </div>
+            <div class="field" id="sinal-valor-field" hidden>
+              <label for="sinal-valor-input">Valor do Sinal (R$)</label>
+              <input type="number" id="sinal-valor-input" min="0" step="0.01" placeholder="0,00" />
+            </div>
+            <div class="field" id="sinal-data-field" hidden>
+              <label for="sinal-data-input">Data para Acertar Restante</label>
+              <input type="date" id="sinal-data-input" />
             </div>
           </div>
 
@@ -792,6 +796,33 @@
     </div>
   </div>
 
+  <!-- MODAL: cancelamento de mentorado -->
+  <div id="cancellation-modal" class="modal-overlay" hidden>
+    <div class="modal" style="max-width: 400px;">
+      <h3 class="section-title">Cancelar mentorado</h3>
+      <div class="field">
+        <label for="cancellation-motivo">Motivo do cancelamento *</label>
+        <select id="cancellation-motivo" required>
+          <option value="">Selecione um motivo...</option>
+          <option value="Falta de interesse">Falta de interesse</option>
+          <option value="Problemas financeiros">Problemas financeiros</option>
+          <option value="Insatisfação com serviço">Insatisfação com serviço</option>
+          <option value="Encontrou alternativa">Encontrou alternativa</option>
+          <option value="Mudança de planos">Mudança de planos</option>
+          <option value="Outro">Outro</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="cancellation-data">Data do cancelamento *</label>
+        <input type="date" id="cancellation-data" required />
+      </div>
+      <div class="form-actions">
+        <button type="button" id="cancellation-confirm-btn" class="btn btn-primary">Confirmar cancelamento</button>
+        <button type="button" id="cancellation-cancel-btn" class="btn btn-secondary">Voltar</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Modal de Confirmação de Deleção -->
   <div id="delete-modal">
     <div style="background: white; border-radius: 12px; padding: 32px; max-width: 400px; box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
@@ -805,6 +836,6 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="script.js?v=20260924"></script>
+  <script src="script.js?v=20261006"></script>
 </body>
 </html>
