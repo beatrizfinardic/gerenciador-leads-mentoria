@@ -963,21 +963,41 @@ function renderCusto(leads) {
     )
     .join("");
 
-  const totalFaturamentoFluxo = fluxoPeriodo.filter((l) => l.status === "convertido").reduce((sum, l) => sum + (l.valor_fechado || 0), 0);
+  const statusBreakdown = {
+    agendado: fluxoPeriodo.filter((l) => l.status === "agendado").length,
+    convertido: fluxoPeriodo.filter((l) => l.status === "convertido").length,
+    nao_compareceu: fluxoPeriodo.filter((l) => l.status === "nao_compareceu").length,
+    nao_respondeu: fluxoPeriodo.filter((l) => l.status === "nao_respondeu").length,
+    desqualificado: fluxoPeriodo.filter((l) => l.status === "desqualificado").length,
+    follow_up: fluxoPeriodo.filter((l) => l.status === "follow_up").length,
+    perdido: fluxoPeriodo.filter((l) => l.status === "perdido").length,
+    desistencia: fluxoPeriodo.filter((l) => l.status === "desistencia").length,
+  };
+
+  const statusLabels = {
+    agendado: "Agendado",
+    convertido: "Convertido",
+    nao_compareceu: "Não compareceu",
+    nao_respondeu: "Não respondeu/Desmarcado",
+    desqualificado: "Desqualificado/Desmarcado",
+    follow_up: "Follow up",
+    perdido: "Perdido",
+    desistencia: "Desistência",
+  };
+
   const custoResumoEl2 = document.getElementById("custo-faturamento");
   if (custoResumoEl2) {
-    custoResumoEl2.innerHTML = [
-      { label: "Total de Faturamento", value: formatBRL(totalFaturamentoFluxo) },
-      { label: "Ticket Médio", value: formatBRL(totalVendas ? totalFaturamentoFluxo / totalVendas : 0) },
-    ]
-      .map(
-        (t) => `
+    custoResumoEl2.innerHTML = Object.keys(statusBreakdown)
+      .map((key) => {
+        const count = statusBreakdown[key];
+        const percentage = totalAgendamentos ? ((count / totalAgendamentos) * 100).toFixed(1) : "0.0";
+        return `
           <div class="summary-tile">
-            <span class="label">${t.label}</span>
-            <span class="value">${t.value}</span>
+            <span class="label">${statusLabels[key]}</span>
+            <span class="value">${count} (${percentage}%)</span>
           </div>
-        `
-      )
+        `;
+      })
       .join("");
   }
 }
