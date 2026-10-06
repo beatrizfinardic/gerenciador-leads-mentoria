@@ -963,37 +963,23 @@ function renderCusto(leads) {
     )
     .join("");
 
-  const metricsStatusEl = document.getElementById("custo-metricas-status");
-  const naoRespondeuCount = fluxoPeriodo.filter((l) => l.status === "nao_respondeu").length;
-  const naoCompareceuCount = fluxoPeriodo.filter((l) => l.status === "nao_compareceu").length;
-  const totalNoShowCount = naoRespondeuCount + naoCompareceuCount;
-
-  const statusCounts = {
-    agendado: fluxoPeriodo.filter((l) => l.status === "agendado").length,
-    convertido: fluxoPeriodo.filter((l) => l.status === "convertido").length,
-    no_show: totalNoShowCount,
-    desqualificado: fluxoPeriodo.filter((l) => l.status === "desqualificado").length,
-    follow_up: fluxoPeriodo.filter((l) => l.status === "follow_up").length,
-    perdido: fluxoPeriodo.filter((l) => l.status === "perdido").length,
-  };
-
-  metricsStatusEl.innerHTML = [
-    { label: "Agendado", value: statusCounts.agendado },
-    { label: "Convertido", value: statusCounts.convertido },
-    { label: "No Show (Não compareceu + Não respondeu)", value: statusCounts.no_show },
-    { label: "Desqualificado", value: statusCounts.desqualificado },
-    { label: "Follow up", value: statusCounts.follow_up },
-    { label: "Perdido", value: statusCounts.perdido },
-  ]
-    .map(
-      (t) => `
-        <div class="summary-tile">
-          <span class="label">${t.label}</span>
-          <span class="value">${t.value}</span>
-        </div>
-      `
-    )
-    .join("");
+  const totalFaturamentoFluxo = fluxoPeriodo.filter((l) => l.status === "convertido").reduce((sum, l) => sum + (l.valor_fechado || 0), 0);
+  const custoResumoEl2 = document.getElementById("custo-faturamento");
+  if (custoResumoEl2) {
+    custoResumoEl2.innerHTML = [
+      { label: "Total de Faturamento", value: formatBRL(totalFaturamentoFluxo) },
+      { label: "Ticket Médio", value: formatBRL(totalVendas ? totalFaturamentoFluxo / totalVendas : 0) },
+    ]
+      .map(
+        (t) => `
+          <div class="summary-tile">
+            <span class="label">${t.label}</span>
+            <span class="value">${t.value}</span>
+          </div>
+        `
+      )
+      .join("");
+  }
 }
 
 custoAtualizarBtn.addEventListener("click", () => renderCusto(leadsCache));
