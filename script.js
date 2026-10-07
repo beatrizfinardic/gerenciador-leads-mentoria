@@ -39,11 +39,10 @@ const STATUS_META = {
   desistencia: { label: "Desistência", bg: "#ec4899", text: "#ffffff", cardBg: "#fce7f3", cardText: "#831843" },
   cancelado: { label: "Cancelado", bg: "#6b7280", text: "#ffffff", cardBg: "#d1d5db", cardText: "#374151" },
   formacao: { label: "Formação", bg: "#06b6d4", text: "#ffffff", cardBg: "#cffafe", cardText: "#164e63" },
-  ultima_chance: { label: "Última Chance", bg: "#ef5350", text: "#ffffff", cardBg: "#ffebee", cardText: "#b71c1c" },
 };
 
-const ORGANICO_STATUSES = ["agendado", "convertido", "formacao", "ultima_chance", "nao_compareceu", "nao_respondeu", "desqualificado", "follow_up", "perdido", "desistencia"];
-const FLUXO_STATUSES = ["agendado", "convertido", "formacao", "ultima_chance", "nao_compareceu", "nao_respondeu", "desqualificado", "follow_up", "perdido", "desistencia"];
+const ORGANICO_STATUSES = ["agendado", "convertido", "formacao", "nao_compareceu", "nao_respondeu", "desqualificado", "follow_up", "perdido", "desistencia"];
+const FLUXO_STATUSES = ["agendado", "convertido", "formacao", "nao_compareceu", "nao_respondeu", "desqualificado", "follow_up", "perdido", "desistencia"];
 
 const PESSOA_META = {
   Gabi: { bg: "#f472b6", text: "#ffffff" },
@@ -106,6 +105,7 @@ const formPagamentoFormaInput = document.getElementById("form-pagamento-forma");
 const formPagamentoParcelasInput = document.getElementById("form-pagamento-parcelas");
 const formFechadoPorInput = document.getElementById("form-fechado-por");
 const formTipoMentoriaInput = document.getElementById("form-tipo-mentoria");
+const formacaoTipoInput = document.getElementById("formacao-tipo");
 const formDataVencimentoInput = document.getElementById("form-data-vencimento");
 const fechadoPorInput = document.getElementById("fechado-por");
 const tipoMentoriaInput = document.getElementById("tipo-mentoria");
@@ -404,9 +404,10 @@ formDataVencimentoInput.addEventListener("change", () => {
 });
 
 statusInput.addEventListener("change", () => {
-  if (statusInput.value === "convertido" || statusInput.value === "formacao" || statusInput.value === "ultima_chance") {
+  if (statusInput.value === "convertido" || statusInput.value === "formacao") {
     faturamento3mesesField.hidden = false;
     pagamentoDetailsSection.hidden = false;
+    document.getElementById("formacao-tipo-field").hidden = statusInput.value !== "formacao";
     if (cancelEditBtn.hidden) {
       openPaymentModal();
     }
@@ -1558,7 +1559,7 @@ function loadLeadIntoForm(lead) {
   alunosOnlineInput.value = lead.alunos_online || "";
   informacoesGeraisInput.value = lead.informacoes_gerais || "";
 
-  if (lead.status === "convertido" || lead.status === "formacao" || lead.status === "ultima_chance") {
+  if (lead.status === "convertido" || lead.status === "formacao") {
     faturamento3mesesField.hidden = false;
     pagamentoDetailsSection.hidden = false;
     if (lead.status === "convertido") {
