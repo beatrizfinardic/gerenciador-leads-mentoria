@@ -38,8 +38,8 @@ const STATUS_META = {
   perdido: { label: "Perdido", bg: "#9ca3af", text: "#1a1a1a", cardBg: "#e5e7eb", cardText: "#374151" },
   desistencia: { label: "Desistência", bg: "#ec4899", text: "#ffffff", cardBg: "#fce7f3", cardText: "#831843" },
   cancelado: { label: "Cancelado", bg: "#6b7280", text: "#ffffff", cardBg: "#d1d5db", cardText: "#374151" },
-  formacao: { label: "Formação (R$ 997 ou 12x R$ 103,11)", bg: "#06b6d4", text: "#ffffff", cardBg: "#cffafe", cardText: "#164e63" },
-  ultima_chance: { label: "Última Chance (R$ 697 ou 12x R$ 72,09)", bg: "#ef5350", text: "#ffffff", cardBg: "#ffebee", cardText: "#b71c1c" },
+  formacao: { label: "Formação", bg: "#06b6d4", text: "#ffffff", cardBg: "#cffafe", cardText: "#164e63" },
+  ultima_chance: { label: "Última Chance", bg: "#ef5350", text: "#ffffff", cardBg: "#ffebee", cardText: "#b71c1c" },
 };
 
 const ORGANICO_STATUSES = ["agendado", "convertido", "formacao", "ultima_chance", "nao_compareceu", "nao_respondeu", "desqualificado", "follow_up", "perdido", "desistencia"];
