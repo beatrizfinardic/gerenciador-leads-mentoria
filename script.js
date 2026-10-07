@@ -405,8 +405,8 @@ formDataVencimentoInput.addEventListener("change", () => {
 
 statusInput.addEventListener("change", () => {
   if (statusInput.value === "convertido" || statusInput.value === "formacao" || statusInput.value === "ultima_chance") {
-    faturamento3mesesField.hidden = cancelEditBtn.hidden;
-    pagamentoDetailsSection.hidden = cancelEditBtn.hidden;
+    faturamento3mesesField.hidden = false;
+    pagamentoDetailsSection.hidden = false;
     if (cancelEditBtn.hidden && statusInput.value === "convertido") {
       openPaymentModal();
     }
