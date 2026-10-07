@@ -407,7 +407,7 @@ statusInput.addEventListener("change", () => {
   if (statusInput.value === "convertido" || statusInput.value === "formacao" || statusInput.value === "ultima_chance") {
     faturamento3mesesField.hidden = false;
     pagamentoDetailsSection.hidden = false;
-    if (cancelEditBtn.hidden && statusInput.value === "convertido") {
+    if (cancelEditBtn.hidden) {
       openPaymentModal();
     }
   } else if (statusInput.value === "perdido") {
