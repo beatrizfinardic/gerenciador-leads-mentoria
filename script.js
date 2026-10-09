@@ -1670,7 +1670,11 @@ function calcularReunioesPeríodo() {
 
   const todasReunioesFeitas = leadsCache
     .filter((l) => l.status !== "agendado" && l.status !== "nao_compareceu" && l.status !== "nao_respondeu" && l.status !== "desqualificado")
-    .filter((l) => !origemValue || l.origem === origemValue)
+    .filter((l) => {
+      if (!origemValue) return true;
+      if (origemValue === "Fluxo") return l.origem && l.origem.startsWith("Fluxo");
+      return l.origem === origemValue;
+    })
     .filter((l) => !abordadoValue || l.abordado_por === abordadoValue)
     .filter((l) => {
       const d = parseTimestamp(l.agendamento_em || l.data_venda || l.created_at);
