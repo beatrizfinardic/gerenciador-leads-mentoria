@@ -1664,7 +1664,7 @@ function calcularReunioesPeríodo() {
   const end = new Date(endDate + "T23:59:59");
 
   const reunioesFeitas = leadsCache
-    .filter((l) => l.status === "convertido" || l.status === "perdido")
+    .filter((l) => l.status !== "agendado" && l.status !== "nao_compareceu" && l.status !== "nao_respondeu" && l.status !== "desqualificado")
     .filter((l) => {
       const d = parseTimestamp(l.agendamento_em || l.data_venda || l.created_at);
       return d && d >= start && d <= end;
