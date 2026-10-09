@@ -148,6 +148,8 @@ const leadsDataInicialInput = document.getElementById("leads-data-inicial");
 const leadsDataFinalInput = document.getElementById("leads-data-final");
 const leadsCalcularBtn = document.getElementById("leads-calcular-btn");
 const leadsReunioesResumoEl = document.getElementById("leads-reunioes-resumo");
+const leadsReunioesTableWrapper = document.getElementById("leads-reunioes-table-wrapper");
+const leadsReunioesTableBody = document.getElementById("leads-reunioes-tbody");
 const reportTbody = document.getElementById("report-tbody");
 const dashboardOrganicoEl = document.getElementById("dashboard-organico");
 const dashboardFluxoEl = document.getElementById("dashboard-fluxo");
@@ -1659,29 +1661,26 @@ function calcularReunioesPeríodo() {
 
   if (!startDate || !endDate) {
     leadsReunioesResumoEl.innerHTML = "";
+    leadsReunioesTableWrapper.hidden = true;
     return;
   }
 
   const start = new Date(startDate + "T00:00:00");
   const end = new Date(endDate + "T23:59:59");
 
-  const reunioesFeitas = leadsCache
+  const todasReunioesFeitas = leadsCache
     .filter((l) => l.status !== "agendado" && l.status !== "nao_compareceu" && l.status !== "nao_respondeu" && l.status !== "desqualificado")
     .filter((l) => !origemValue || l.origem === origemValue)
     .filter((l) => !abordadoValue || l.abordado_por === abordadoValue)
     .filter((l) => {
       const d = parseTimestamp(l.agendamento_em || l.data_venda || l.created_at);
       return d && d >= start && d <= end;
-    }).length;
+    })
+    .sort((a, b) => parseTimestamp(b.agendamento_em || b.data_venda || b.created_at) - parseTimestamp(a.agendamento_em || a.data_venda || a.created_at));
 
-  const vendas = leadsCache
-    .filter((l) => l.status === "convertido" && typeof l.valor_fechado === "number")
-    .filter((l) => !origemValue || l.origem === origemValue)
-    .filter((l) => !abordadoValue || l.abordado_por === abordadoValue)
-    .filter((l) => {
-      const d = parseTimestamp(l.agendamento_em || l.data_venda || l.created_at);
-      return d && d >= start && d <= end;
-    }).length;
+  const reunioesFeitas = todasReunioesFeitas.length;
+
+  const vendas = todasReunioesFeitas.filter((l) => l.status === "convertido" && typeof l.valor_fechado === "number").length;
 
   leadsReunioesResumoEl.innerHTML = [
     { label: "Total de Reuniões Feitas", value: reunioesFeitas },
@@ -1696,6 +1695,24 @@ function calcularReunioesPeríodo() {
       `
     )
     .join("");
+
+  leadsReunioesTableBody.innerHTML = todasReunioesFeitas
+    .map((l) => {
+      const meta = STATUS_META[l.status];
+      return `
+        <tr>
+          <td>${formatDateTimeBR(l.agendamento_em || l.data_venda || l.created_at)}</td>
+          <td>${escapeHtml(l.nome)}</td>
+          <td><span class="badge" style="background:${meta.bg};color:${meta.text}">${escapeHtml(meta.label)}</span></td>
+          <td>${escapeHtml(l.origem || "-")}</td>
+          <td>${escapeHtml(l.abordado_por || "-")}</td>
+          <td>${escapeHtml(l.profissao || "-")}</td>
+        </tr>
+      `;
+    })
+    .join("");
+
+  leadsReunioesTableWrapper.hidden = false;
 }
 
 leadsCalcularBtn.addEventListener("click", calcularReunioesPeríodo);
