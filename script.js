@@ -752,14 +752,14 @@ function renderFaturamento(leads) {
   const ticketMedio = quantidadeVendas ? faturamentoBruto / quantidadeVendas : 0;
 
   const todasReunioesFeitas = leads
-    .filter((l) => (l.status === "convertido" || l.status === "perdido") && typeof l.valor_fechado === "number")
+    .filter((l) => l.status === "convertido" || l.status === "perdido")
     .filter((l) => {
       if (fatOrigemTab === "fluxo") return l.origem.startsWith("Fluxo");
       if (fatOrigemTab === "organico") return !l.origem.startsWith("Fluxo");
       return true;
     })
     .filter((l) => {
-      const d = parseTimestamp(l.data_venda || l.created_at);
+      const d = parseTimestamp(l.agendamento_em || l.data_venda || l.created_at);
       return d && d >= start && d <= end;
     }).length;
 
