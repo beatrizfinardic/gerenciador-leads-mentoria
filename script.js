@@ -670,8 +670,8 @@ function renderLeadsToday(leads) {
   const todayLeads = leads
     .filter((l) => isToday(l.agendamento_em))
     .filter((l) => {
-      if (leadsTodayOrigemTab === "fluxo") return l.origem.startsWith("Fluxo");
-      if (leadsTodayOrigemTab === "organico") return !l.origem.startsWith("Fluxo");
+      if (leadsTodayOrigemTab === "fluxo") return l.origem && l.origem.startsWith("Fluxo");
+      if (leadsTodayOrigemTab === "organico") return !l.origem || !l.origem.startsWith("Fluxo");
       return true;
     })
     .sort((a, b) => parseTimestamp(a.agendamento_em) - parseTimestamp(b.agendamento_em));
@@ -725,8 +725,8 @@ function renderFaturamento(leads) {
   const vendas = leads
     .filter((l) => l.status === "convertido" && typeof l.valor_fechado === "number")
     .filter((l) => {
-      if (fatOrigemTab === "fluxo") return l.origem.startsWith("Fluxo");
-      if (fatOrigemTab === "organico") return !l.origem.startsWith("Fluxo");
+      if (fatOrigemTab === "fluxo") return l.origem && l.origem.startsWith("Fluxo");
+      if (fatOrigemTab === "organico") return !l.origem || !l.origem.startsWith("Fluxo");
       return true;
     })
     .filter((l) => {
@@ -934,7 +934,7 @@ function renderCusto(leads) {
   const valorInvestido = Number(custoValorInvestidoInput.value) || 0;
 
   const fluxoPeriodo = leads.filter((l) => {
-    if (!l.origem.startsWith("Fluxo")) return false;
+    if (!l.origem || !l.origem.startsWith("Fluxo")) return false;
     const d = parseTimestamp(l.agendamento_em);
     return d && d >= start && d <= end;
   });
