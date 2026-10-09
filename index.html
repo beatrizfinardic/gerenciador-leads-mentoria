@@ -334,6 +334,20 @@
         </select>
       </div>
 
+      <div class="filters">
+        <div class="field">
+          <label for="leads-data-inicial">Data inicial</label>
+          <input type="date" id="leads-data-inicial" />
+        </div>
+        <div class="field">
+          <label for="leads-data-final">Data final</label>
+          <input type="date" id="leads-data-final" />
+        </div>
+        <button type="button" id="leads-calcular-btn" class="btn btn-primary">Calcular reuniões</button>
+      </div>
+
+      <div id="leads-reunioes-resumo" class="summary-grid" style="margin-bottom: 20px;"></div>
+
       <div class="table-wrapper">
         <table id="leads-table">
           <thead>

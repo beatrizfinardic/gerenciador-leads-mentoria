@@ -144,6 +144,10 @@ const sinalDataInput = document.getElementById("sinal-data-input");
 
 const tbody = document.getElementById("leads-tbody");
 const emptyState = document.getElementById("empty-state");
+const leadsDataInicialInput = document.getElementById("leads-data-inicial");
+const leadsDataFinalInput = document.getElementById("leads-data-final");
+const leadsCalcularBtn = document.getElementById("leads-calcular-btn");
+const leadsReunioesResumoEl = document.getElementById("leads-reunioes-resumo");
 const reportTbody = document.getElementById("report-tbody");
 const dashboardOrganicoEl = document.getElementById("dashboard-organico");
 const dashboardFluxoEl = document.getElementById("dashboard-fluxo");
@@ -1644,6 +1648,51 @@ renewalsTbody.addEventListener("click", (e) => {
 });
 
 cancelEditBtn.addEventListener("click", resetForm);
+
+/* ---------- Cálculo de Reuniões por Período ---------- */
+
+function calcularReunioesPeríodo() {
+  const startDate = leadsDataInicialInput.value;
+  const endDate = leadsDataFinalInput.value;
+
+  if (!startDate || !endDate) {
+    leadsReunioesResumoEl.innerHTML = "";
+    return;
+  }
+
+  const start = new Date(startDate + "T00:00:00");
+  const end = new Date(endDate + "T23:59:59");
+
+  const reunioesFeitas = leadsCache
+    .filter((l) => l.status === "convertido" || l.status === "perdido")
+    .filter((l) => {
+      const d = parseTimestamp(l.agendamento_em || l.data_venda || l.created_at);
+      return d && d >= start && d <= end;
+    }).length;
+
+  const vendas = leadsCache
+    .filter((l) => l.status === "convertido" && typeof l.valor_fechado === "number")
+    .filter((l) => {
+      const d = parseTimestamp(l.agendamento_em || l.data_venda || l.created_at);
+      return d && d >= start && d <= end;
+    }).length;
+
+  leadsReunioesResumoEl.innerHTML = [
+    { label: "Total de Reuniões Feitas", value: reunioesFeitas },
+    { label: "Total de Vendas", value: vendas },
+  ]
+    .map(
+      (t) => `
+        <div class="summary-tile">
+          <span class="label">${t.label}</span>
+          <span class="value">${t.value}</span>
+        </div>
+      `
+    )
+    .join("");
+}
+
+leadsCalcularBtn.addEventListener("click", calcularReunioesPeríodo);
 
 /* ---------- Filtros ---------- */
 
