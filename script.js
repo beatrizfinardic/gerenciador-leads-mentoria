@@ -906,8 +906,8 @@ function dashboardCardHtml(key, leads) {
 }
 
 function renderDashboards(leads) {
-  const organico = leads.filter((l) => !l.origem.startsWith("Fluxo"));
-  const fluxo = leads.filter((l) => l.origem.startsWith("Fluxo"));
+  const organico = leads.filter((l) => !l.origem || !l.origem.startsWith("Fluxo"));
+  const fluxo = leads.filter((l) => l.origem && l.origem.startsWith("Fluxo"));
 
   dashboardOrganicoEl.innerHTML = ORGANICO_STATUSES.map((key) => dashboardCardHtml(key, organico)).join("");
   dashboardFluxoEl.innerHTML = FLUXO_STATUSES.map((key) => dashboardCardHtml(key, fluxo)).join("");
