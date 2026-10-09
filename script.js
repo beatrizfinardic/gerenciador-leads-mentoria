@@ -1654,6 +1654,8 @@ cancelEditBtn.addEventListener("click", resetForm);
 function calcularReunioesPeríodo() {
   const startDate = leadsDataInicialInput.value;
   const endDate = leadsDataFinalInput.value;
+  const origemValue = origemFilter.value;
+  const abordadoValue = abordadoFilter.value;
 
   if (!startDate || !endDate) {
     leadsReunioesResumoEl.innerHTML = "";
@@ -1665,6 +1667,8 @@ function calcularReunioesPeríodo() {
 
   const reunioesFeitas = leadsCache
     .filter((l) => l.status !== "agendado" && l.status !== "nao_compareceu" && l.status !== "nao_respondeu" && l.status !== "desqualificado")
+    .filter((l) => !origemValue || l.origem === origemValue)
+    .filter((l) => !abordadoValue || l.abordado_por === abordadoValue)
     .filter((l) => {
       const d = parseTimestamp(l.agendamento_em || l.data_venda || l.created_at);
       return d && d >= start && d <= end;
@@ -1672,6 +1676,8 @@ function calcularReunioesPeríodo() {
 
   const vendas = leadsCache
     .filter((l) => l.status === "convertido" && typeof l.valor_fechado === "number")
+    .filter((l) => !origemValue || l.origem === origemValue)
+    .filter((l) => !abordadoValue || l.abordado_por === abordadoValue)
     .filter((l) => {
       const d = parseTimestamp(l.agendamento_em || l.data_venda || l.created_at);
       return d && d >= start && d <= end;
