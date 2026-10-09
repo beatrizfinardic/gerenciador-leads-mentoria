@@ -754,8 +754,8 @@ function renderFaturamento(leads) {
   const todasReunioesFeitas = leads
     .filter((l) => l.status === "convertido" || l.status === "perdido")
     .filter((l) => {
-      if (fatOrigemTab === "fluxo") return l.origem.startsWith("Fluxo");
-      if (fatOrigemTab === "organico") return !l.origem.startsWith("Fluxo");
+      if (fatOrigemTab === "fluxo") return l.origem && l.origem.startsWith("Fluxo");
+      if (fatOrigemTab === "organico") return !l.origem || !l.origem.startsWith("Fluxo");
       return true;
     })
     .filter((l) => {
