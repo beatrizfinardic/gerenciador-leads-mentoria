@@ -151,7 +151,6 @@ const leadsCalcularBtn = document.getElementById("leads-calcular-btn");
 const leadsReunioesResumoEl = document.getElementById("leads-reunioes-resumo");
 const leadsReunioesTableWrapper = document.getElementById("leads-reunioes-table-wrapper");
 const leadsReunioesTableBody = document.getElementById("leads-reunioes-tbody");
-const reportTbody = document.getElementById("report-tbody");
 const dashboardOrganicoEl = document.getElementById("dashboard-organico");
 const dashboardFluxoEl = document.getElementById("dashboard-fluxo");
 const custoDataInicialInput = document.getElementById("custo-data-inicial");
@@ -1161,50 +1160,6 @@ if (mentoradosSearchInput) {
   });
 }
 
-/* ---------- Relatório de conversão por período ---------- */
-
-function getPeriodStarts() {
-  const now = new Date();
-  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-
-  const dayOfWeek = (now.getDay() + 6) % 7; // segunda = 0
-  const startOfWeek = new Date(startOfToday);
-  startOfWeek.setDate(startOfToday.getDate() - dayOfWeek);
-
-  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-  const startOfYear = new Date(now.getFullYear(), 0, 1);
-
-  return { hoje: startOfToday, semana: startOfWeek, mes: startOfMonth, ano: startOfYear };
-}
-
-function renderReport(leads) {
-  const starts = getPeriodStarts();
-  const periods = [
-    { key: "hoje", label: "Diário" },
-    { key: "semana", label: "Semana" },
-    { key: "mes", label: "Mês" },
-    { key: "ano", label: "Ano" },
-  ];
-
-  reportTbody.innerHTML = periods
-    .map((period) => {
-      const leadsPeriodo = leads.filter((l) => l.created_at && parseTimestamp(l.created_at) >= starts[period.key]);
-      const naoCompareceram = leadsPeriodo.filter((l) => l.status === "nao_compareceu").length;
-      const convertidos = leadsPeriodo.filter((l) => l.status === "convertido").length;
-      const taxa = leadsPeriodo.length ? ((convertidos / leadsPeriodo.length) * 100).toFixed(1) : "0.0";
-      return `
-        <tr>
-          <td>${period.label}</td>
-          <td>${leadsPeriodo.length}</td>
-          <td>${naoCompareceram}</td>
-          <td>${convertidos}</td>
-          <td>${taxa}%</td>
-        </tr>
-      `;
-    })
-    .join("");
-}
-
 /* ---------- Tabela de leads ---------- */
 
 function renderStatusTabs(leads) {
@@ -1332,7 +1287,6 @@ tbody.addEventListener("click", (e) => {
 
 function renderAll() {
   renderDashboards(leadsCache);
-  renderReport(leadsCache);
   renderTable(leadsCache);
   renderRenewals(leadsCache);
   renderLeadsToday(leadsCache);
