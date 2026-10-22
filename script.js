@@ -193,13 +193,6 @@ const fatMentoriaTbody = document.getElementById("fat-mentoria-tbody");
 const fatTransacoesTbody = document.getElementById("fat-transacoes-tbody");
 const fatTransacoesEmptyState = document.getElementById("fat-transacoes-empty-state");
 
-const trackingForm = document.getElementById("tracking-form");
-const trkDateInput = document.getElementById("trk-date");
-const trkAbordadosInput = document.getElementById("trk-abordados");
-const trkAgendamentosInput = document.getElementById("trk-agendamentos");
-const trackingTbody = document.getElementById("tracking-tbody");
-const trackingEmptyState = document.getElementById("tracking-empty-state");
-
 const paymentModal = document.getElementById("payment-modal");
 const modalFechadoPorSelect = document.getElementById("modal-fechado-por");
 const modalTipoMentoriaSelect = document.getElementById("modal-tipo-mentoria");
@@ -235,7 +228,6 @@ const cancellationCancelBtn = document.getElementById("cancellation-cancel-btn")
 let pendingCancellationMentoradoId = null;
 
 let leadsCache = [];
-let trackingCache = [];
 let confirmedStatusValue = "prospect";
 
 /* ---------- Supabase: leads ---------- */
@@ -253,27 +245,6 @@ async function fetchLeads() {
 async function refreshLeads() {
   leadsCache = await fetchLeads();
   renderAll();
-}
-
-/* ---------- Supabase: rastreamento diário ---------- */
-
-async function fetchTracking() {
-  const { data, error } = await sb
-    .from("daily_tracking")
-    .select("*")
-    .order("data", { ascending: false })
-    .limit(7);
-  if (error) {
-    console.error(error);
-    alert("Erro ao carregar rastreamento: " + error.message);
-    return [];
-  }
-  return data;
-}
-
-async function refreshTracking() {
-  trackingCache = await fetchTracking();
-  renderTracking();
 }
 
 function escapeHtml(str) {
@@ -1234,46 +1205,6 @@ function renderReport(leads) {
     .join("");
 }
 
-/* ---------- Rastreamento diário Gabi ---------- */
-
-function renderTracking() {
-  trackingEmptyState.hidden = trackingCache.length !== 0;
-
-  trackingTbody.innerHTML = trackingCache
-    .map(
-      (r) => `
-        <tr>
-          <td>${formatDateBR(r.data)}</td>
-          <td>${r.leads_abordados}</td>
-          <td>${r.agendamentos_conseguidos}</td>
-        </tr>
-      `
-    )
-    .join("");
-}
-
-trackingForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  const data = trkDateInput.value || todayISO();
-  const leads_abordados = Number(trkAbordadosInput.value) || 0;
-  const agendamentos_conseguidos = Number(trkAgendamentosInput.value) || 0;
-
-  const { error } = await sb
-    .from("daily_tracking")
-    .upsert({ data, leads_abordados, agendamentos_conseguidos }, { onConflict: "data" });
-  if (error) {
-    alert("Erro ao salvar rastreamento: " + error.message);
-    return;
-  }
-
-  trkAbordadosInput.value = "";
-  trkAgendamentosInput.value = "";
-  trkDateInput.value = todayISO();
-
-  await refreshTracking();
-});
-
 /* ---------- Tabela de leads ---------- */
 
 function renderStatusTabs(leads) {
@@ -1742,10 +1673,6 @@ function setupRealtime() {
   sb.channel("leads-realtime")
     .on("postgres_changes", { event: "*", schema: "public", table: "leads" }, () => refreshLeads())
     .subscribe();
-
-  sb.channel("tracking-realtime")
-    .on("postgres_changes", { event: "*", schema: "public", table: "daily_tracking" }, () => refreshTracking())
-    .subscribe();
 }
 
 function renderDashboardRenovacoes() {
@@ -1808,7 +1735,6 @@ document.querySelectorAll(".nav-tab").forEach((btn) => {
 
 (async function init() {
   resetForm();
-  trkDateInput.value = todayISO();
   const now = new Date();
   fatDataInicialInput.value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-01`;
   fatDataFinalInput.value = todayISO();
@@ -1818,13 +1744,7 @@ document.querySelectorAll(".nav-tab").forEach((btn) => {
   dashDataInicialInput.value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-01`;
   dashDataFinalInput.value = todayISO();
 
-  const fluxoSelect = document.getElementById("fluxo");
-  if (fluxoSelect) {
-    fluxoSelect.innerHTML = '<option value="">Selecione...</option><option value="Fluxo A">Fluxo A</option><option value="Fluxo B">Fluxo B</option>';
-  }
-
   await refreshLeads();
-  await refreshTracking();
   setupRealtime();
 })();
 

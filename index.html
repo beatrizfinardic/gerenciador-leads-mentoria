@@ -392,45 +392,6 @@
       </div>
     </section>
 
-    <!-- RASTREAMENTO DIÁRIO GABI -->
-    <section class="card">
-      <h2 class="section-title">Rastreamento diário</h2>
-      <form id="tracking-form">
-        <div class="form-grid">
-          <div class="field">
-            <label for="trk-date">Data</label>
-            <input type="date" id="trk-date" required />
-          </div>
-          <div class="field">
-            <label for="trk-abordados">Leads abordados</label>
-            <input type="number" id="trk-abordados" min="0" step="1" placeholder="0" />
-          </div>
-          <div class="field">
-            <label for="trk-agendamentos">Agendamentos conseguidos</label>
-            <input type="number" id="trk-agendamentos" min="0" step="1" placeholder="0" />
-          </div>
-        </div>
-        <div class="form-actions">
-          <button type="submit" class="btn btn-primary">Salvar dados</button>
-        </div>
-      </form>
-
-      <h3 class="subsection-title">Últimos 7 dias</h3>
-      <div class="table-wrapper">
-        <table id="tracking-table">
-          <thead>
-            <tr>
-              <th>Data</th>
-              <th>Leads abordados</th>
-              <th>Agendamentos conseguidos</th>
-            </tr>
-          </thead>
-          <tbody id="tracking-tbody"></tbody>
-        </table>
-        <p id="tracking-empty-state" class="empty-state" hidden>Nenhum registro ainda.</p>
-      </div>
-    </section>
-
     <!-- RELATÓRIO DE CONVERSÃO -->
     <section class="card">
       <h2 class="section-title">Relatório de conversão</h2>
