@@ -1089,6 +1089,7 @@ function renderMentorados(leads) {
         </div>
         <div style="font-size: 12px; color: #6b6b6b; line-height: 1.6; margin-bottom: 4px;">Email: <span style="font-weight: 600; color: #1a1a1a;">${escapeHtml(l.email || "-")}</span></div>
         <div style="font-size: 12px; color: #6b6b6b; line-height: 1.6; margin-bottom: 4px;">WhatsApp: <span style="font-weight: 600; color: #1a1a1a;">${escapeHtml(l.whatsapp || "-")}</span></div>
+        <div style="font-size: 12px; color: #6b6b6b; line-height: 1.6; margin-bottom: 4px;">Entrada: <span style="font-weight: 600; color: #1a1a1a;">${l.created_at ? parseTimestamp(l.created_at).toLocaleDateString("pt-BR") : "-"}</span></div>
         <div style="font-size: 12px; color: #6b6b6b; line-height: 1.6; margin-bottom: 4px;">Valor pago: <span style="font-weight: 600; color: #1a1a1a;">${formatBRL(l.valor_fechado || 0)}</span></div>
       </div>
     `)
