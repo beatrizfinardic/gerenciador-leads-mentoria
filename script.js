@@ -487,7 +487,7 @@ function syncValorFechadoRecorrencia() {
 }
 
 function openPaymentModal() {
-  modalFechadoPorSelect.value = fechadoPorInput.value || "Paulo";
+  modalFechadoPorSelect.value = fechadoPorInput.value || "Igor";
   modalTipoMentoriaSelect.value = tipoMentoriaInput.value || "Mentoria Titulares";
   modalValorFechadoInput.value = valorFechadoInput.value || "";
   modalDataVencimentoInput.value = dataVencimentoInput.value || "";
