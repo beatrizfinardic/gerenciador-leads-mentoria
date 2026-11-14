@@ -55,3 +55,11 @@ begin
   alter publication supabase_realtime add table daily_tracking;
 exception when duplicate_object then null;
 end $$;
+
+alter table leads add column if not exists reuniao_3m_feita boolean;
+alter table leads add column if not exists reuniao_3m_data date;
+alter table leads add column if not exists reuniao_3m_obs text;
+alter table leads add column if not exists reuniao_6m_feita boolean;
+alter table leads add column if not exists reuniao_6m_data date;
+alter table leads add column if not exists reuniao_6m_obs text;
+alter table leads add column if not exists faturamento_6meses numeric;

@@ -40,6 +40,8 @@
       <button class="nav-tab active" data-section="leads">Agendamentos</button>
       <button class="nav-tab" data-section="mentorados">Mentorados</button>
       <button class="nav-tab" data-section="dashboard-renovacoes">Dashboard Renovações</button>
+      <button class="nav-tab" data-section="alertas">Alertas</button>
+      <button class="nav-tab" data-section="materiais">Materiais</button>
     </nav>
 
     <!-- SEÇÃO: LEADS -->
@@ -225,6 +227,34 @@
                 <option value="true">Sim</option>
                 <option value="false">Não</option>
               </select>
+            </div>
+            <div class="subsection-title">Reunião de 3 meses</div>
+            <div class="field">
+              <label><input type="checkbox" id="reuniao-3m-feita" /> Reunião feita</label>
+            </div>
+            <div class="field">
+              <label for="reuniao-3m-data">Data da reunião</label>
+              <input type="date" id="reuniao-3m-data" />
+            </div>
+            <div class="field field-wide">
+              <label for="reuniao-3m-obs">Observações da reunião de 3 meses</label>
+              <textarea id="reuniao-3m-obs" rows="3"></textarea>
+            </div>
+            <div class="subsection-title">Reunião de 6 meses</div>
+            <div class="field">
+              <label><input type="checkbox" id="reuniao-6m-feita" /> Reunião feita</label>
+            </div>
+            <div class="field">
+              <label for="reuniao-6m-data">Data da reunião</label>
+              <input type="date" id="reuniao-6m-data" />
+            </div>
+            <div class="field">
+              <label for="faturamento-6meses-input">Faturamento - 6 meses (R$)</label>
+              <input type="number" id="faturamento-6meses-input" min="0" step="0.01" placeholder="0,00" />
+            </div>
+            <div class="field field-wide">
+              <label for="reuniao-6m-obs">Observações da reunião de 6 meses</label>
+              <textarea id="reuniao-6m-obs" rows="3"></textarea>
             </div>
             <div class="field">
               <label for="renovou">Renovou?</label>
@@ -652,6 +682,93 @@
         </div>
       </div>
     </section>
+    </div>
+
+    <!-- SEÇÃO: ALERTAS -->
+    <div id="section-alertas" class="section-container" hidden>
+      <section class="card">
+        <h2 class="section-title">Alertas</h2>
+        <p class="empty-state">Avisos com 20 dias de antecedência. Clique no mentorado para registrar a reunião.</p>
+
+        <h3 class="subsection-title">Reunião de 3 meses pendente</h3>
+        <div class="table-wrapper">
+          <table>
+            <thead><tr><th>Nome</th><th>Entrada</th><th>Data prevista</th><th>Situação</th></tr></thead>
+            <tbody id="alert-3m-tbody"></tbody>
+          </table>
+          <p id="alert-3m-empty" class="empty-state" hidden>Nenhuma reunião de 3 meses pendente.</p>
+        </div>
+
+        <h3 class="subsection-title">Reunião de 6 meses pendente</h3>
+        <div class="table-wrapper">
+          <table>
+            <thead><tr><th>Nome</th><th>Entrada</th><th>Data prevista</th><th>Situação</th></tr></thead>
+            <tbody id="alert-6m-tbody"></tbody>
+          </table>
+          <p id="alert-6m-empty" class="empty-state" hidden>Nenhuma reunião de 6 meses pendente.</p>
+        </div>
+
+        <h3 class="subsection-title">Renovação</h3>
+        <div class="table-wrapper">
+          <table>
+            <thead><tr><th>Nome</th><th>Vencimento</th><th>Situação</th></tr></thead>
+            <tbody id="alert-renovacao-tbody"></tbody>
+          </table>
+          <p id="alert-renovacao-empty" class="empty-state" hidden>Nenhuma renovação pendente.</p>
+        </div>
+      </section>
+    </div>
+
+    <!-- SEÇÃO: MATERIAIS -->
+    <div id="section-materiais" class="section-container" hidden>
+      <section class="card">
+        <h2 class="section-title">Materiais e processos</h2>
+
+        <h3 class="subsection-title">Laboratório de Musculação</h3>
+        <ul>
+          <li><a href="https://docs.google.com/spreadsheets/d/19MNgCF8gU1EmS4ZpU7wTH1WnLr-qodb2/edit?usp=sharing" target="_blank" rel="noopener">Planilha do evento (aba DRE)</a></li>
+          <li><a href="https://drive.google.com/drive/folders/18vc24E1bCGRmC3msedt-H7cDIoBxP13o?usp=drive_link" target="_blank" rel="noopener">Pasta do evento</a></li>
+          <li><a href="https://docs.google.com/spreadsheets/d/1EihSJ7deEHsSDIokVuazuGpQTaDH-KVpTulKKzaLkQE/edit?usp=sharing" target="_blank" rel="noopener">Respostas do NPS</a></li>
+          <li><a href="https://drive.google.com/file/d/1kKOiuus4Z23gMh2E_ZiOnZ6SWcb8XlkZ/view?usp=sharing" target="_blank" rel="noopener">Análise do NPS</a></li>
+          <li><a href="https://canva.link/t53oe45hpjr7bva" target="_blank" rel="noopener">Certificados</a></li>
+        </ul>
+        <p>Resumo: 88 vendas, 85 participantes presentes, 15 respostas no NPS.</p>
+
+        <h3 class="subsection-title">Mentoria Titulares e Eméritos</h3>
+        <ul>
+          <li><a href="https://docs.google.com/spreadsheets/d/1qpoqRAPSORI6PEl9PjnBnOKQszMk2-jQ/edit?usp=sharing" target="_blank" rel="noopener">Planilha Titulares</a></li>
+          <li><a href="https://docs.google.com/spreadsheets/d/1y6se5qri1IyLn5sW3Er58d6T0ztz0U73/edit?usp=sharing" target="_blank" rel="noopener">Planilha Eméritos</a></li>
+          <li><a href="https://drive.google.com/drive/folders/16AlhJyzqfd9HZAVolHyngqLoUNLonUgK?usp=drive_link" target="_blank" rel="noopener">Pastas das mentorias</a></li>
+        </ul>
+        <p>As planilhas têm as abas Controle de alunos, Mensagens e processos, Cronograma (links das aulas) e Cancelados.</p>
+
+        <h3 class="subsection-title">Relatórios dos alunos (ChatGPT)</h3>
+        <p><a href="https://chatgpt.com/share/6af497c6-c10c-83e8-87c1-d2cf45b6debc" target="_blank" rel="noopener">Abrir conversa fixada "Análise"</a></p>
+        <ol>
+          <li><strong>1º mês:</strong> enviar "Chat, faça a análise de primeiro mês desse aluno" e colar as respostas do onboarding.</li>
+          <li><strong>3º mês:</strong> pedir o preenchimento do formulário de acompanhamento e enviar "Chat, faça o relatório de três meses desse aluno" com as respostas.
+            <br /><a href="https://forms.gle/A1KiY1KsgF9ieGAu6" target="_blank" rel="noopener">Formulário 3 meses</a> · <a href="https://docs.google.com/spreadsheets/d/1nBOaHMWnGblt955fykPUSCFhPFptuagIT2NsM485cmo/edit?usp=sharing" target="_blank" rel="noopener">Respostas 3 meses</a>
+          </li>
+          <li><strong>6º mês:</strong> enviar "Chat, faça a análise de seis meses desse aluno" com as respostas do formulário.
+            <br /><a href="https://forms.gle/H7BmcA29Dd6uEiay7" target="_blank" rel="noopener">Formulário 6 meses</a> · <a href="https://docs.google.com/spreadsheets/d/1T443Jk9c8AJHjbdfu0nT7cOjLFNYdMZkb5sAGkrx1sY/edit?usp=sharing" target="_blank" rel="noopener">Respostas 6 meses</a>
+          </li>
+        </ol>
+        <p>Os formulários estão no Drive do Igor: faça uma cópia no seu Drive para não perder.</p>
+
+        <h3 class="subsection-title">Perguntas do onboarding</h3>
+        <ol>
+          <li>Instagram</li>
+          <li>Formação profissional e tempo que exerce</li>
+          <li>Número de clientes presenciais</li>
+          <li>Número de alunos online ativos</li>
+          <li>Ticket atual</li>
+          <li>Faturamento mensal</li>
+          <li>Maior desafio para crescer como empresário/personal/nutricionista/fisioterapeuta</li>
+          <li>Principal objetivo ao entrar na Mentoria Titulares</li>
+          <li>O que fez você comprar o produto</li>
+          <li>O que precisa acontecer para o investimento valer 100% a pena</li>
+        </ol>
+      </section>
     </div>
 
     <!-- SEÇÃO: DASHBOARD DE RENOVAÇÕES -->

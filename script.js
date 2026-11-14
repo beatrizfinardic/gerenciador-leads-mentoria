@@ -121,6 +121,13 @@ const entreiContatoInput = document.getElementById("entrei-contato");
 const respondeuInput = document.getElementById("respondeu");
 const agendouReuniaoInput = document.getElementById("agendou-reuniao");
 const renovouInput = document.getElementById("renovou");
+const reuniao3mFeitaInput = document.getElementById("reuniao-3m-feita");
+const reuniao3mDataInput = document.getElementById("reuniao-3m-data");
+const reuniao3mObsInput = document.getElementById("reuniao-3m-obs");
+const reuniao6mFeitaInput = document.getElementById("reuniao-6m-feita");
+const reuniao6mDataInput = document.getElementById("reuniao-6m-data");
+const reuniao6mObsInput = document.getElementById("reuniao-6m-obs");
+const faturamento6mesesInput = document.getElementById("faturamento-6meses-input");
 const dataRenovacaoInput = document.getElementById("data-renovacao");
 const progressoDetailsSection = document.getElementById("progresso-details-section");
 const faturamentoAtualInput = document.getElementById("faturamento-atual");
@@ -621,6 +628,13 @@ function resetForm() {
   followupDataInput.value = "";
   faturamento3mesesInput.value = "";
   faturamento3mesesFieldInput.value = "";
+  reuniao3mFeitaInput.checked = false;
+  reuniao3mDataInput.value = "";
+  reuniao3mObsInput.value = "";
+  reuniao6mFeitaInput.checked = false;
+  reuniao6mDataInput.value = "";
+  reuniao6mObsInput.value = "";
+  faturamento6mesesInput.value = "";
   faturamento3mesesField.hidden = true;
   pagamentoDetailsSection.hidden = true;
   renderStatusOptions("prospect");
@@ -868,6 +882,87 @@ function renderRenewals(leads) {
     })
     .join("");
 }
+
+/* ---------- Alertas de reuniões e renovações ---------- */
+
+const ALERTA_ANTECEDENCIA_DIAS = 20;
+
+function addMonthsToDate(date, months) {
+  return new Date(date.getFullYear(), date.getMonth() + months, date.getDate());
+}
+
+function isoFromDate(d) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+function alertasReuniao(leads, meses, feitaKey) {
+  return leads
+    .filter((l) => l.status === "convertido" && l.created_at && l[feitaKey] !== true)
+    .map((l) => {
+      const entrada = parseTimestamp(l.created_at);
+      const entradaLocal = new Date(entrada.getFullYear(), entrada.getMonth(), entrada.getDate());
+      const prevista = isoFromDate(addMonthsToDate(entradaLocal, meses));
+      return { lead: l, entrada: isoFromDate(entradaLocal), prevista, dias: daysUntil(prevista) };
+    })
+    .filter((a) => a.dias <= ALERTA_ANTECEDENCIA_DIAS)
+    .sort((a, b) => a.dias - b.dias);
+}
+
+function situacaoBadge(dias) {
+  const texto = dias < 0 ? `Atrasada há ${-dias} dias` : dias === 0 ? "Vence hoje" : `Faltam ${dias} dias`;
+  const cor = dias <= 15 ? "#ef4444" : "#fb923c";
+  return `<span class="badge" style="background:${cor};color:#ffffff">${texto}</span>`;
+}
+
+function renderAlertas(leads) {
+  const reunioes3m = alertasReuniao(leads, 3, "reuniao_3m_feita");
+  const reunioes6m = alertasReuniao(leads, 6, "reuniao_6m_feita");
+  const renovacoes = leads
+    .filter((l) => l.status === "convertido" && l.data_vencimento && l.renovou !== true)
+    .map((l) => ({ lead: l, dias: daysUntil(l.data_vencimento) }))
+    .filter((a) => a.dias <= ALERTA_ANTECEDENCIA_DIAS)
+    .sort((a, b) => a.dias - b.dias);
+
+  document.getElementById("alert-3m-empty").hidden = reunioes3m.length !== 0;
+  document.getElementById("alert-3m-tbody").innerHTML = reunioes3m
+    .map((a) => `
+      <tr class="clickable-row" data-id="${a.lead.id}">
+        <td>${escapeHtml(a.lead.nome)}</td>
+        <td>${formatDateBR(a.entrada)}</td>
+        <td>${formatDateBR(a.prevista)}</td>
+        <td>${situacaoBadge(a.dias)}</td>
+      </tr>`)
+    .join("");
+
+  document.getElementById("alert-6m-empty").hidden = reunioes6m.length !== 0;
+  document.getElementById("alert-6m-tbody").innerHTML = reunioes6m
+    .map((a) => `
+      <tr class="clickable-row" data-id="${a.lead.id}">
+        <td>${escapeHtml(a.lead.nome)}</td>
+        <td>${formatDateBR(a.entrada)}</td>
+        <td>${formatDateBR(a.prevista)}</td>
+        <td>${situacaoBadge(a.dias)}</td>
+      </tr>`)
+    .join("");
+
+  document.getElementById("alert-renovacao-empty").hidden = renovacoes.length !== 0;
+  document.getElementById("alert-renovacao-tbody").innerHTML = renovacoes
+    .map((a) => `
+      <tr class="clickable-row" data-id="${a.lead.id}">
+        <td>${escapeHtml(a.lead.nome)}</td>
+        <td>${formatDateBR(a.lead.data_vencimento)}</td>
+        <td>${situacaoBadge(a.dias)}</td>
+      </tr>`)
+    .join("");
+}
+
+document.getElementById("section-alertas").addEventListener("click", (e) => {
+  const row = e.target.closest("tr[data-id]");
+  if (!row) return;
+  loadLeadIntoForm(leadsCache.find((l) => l.id === row.dataset.id));
+  document.querySelector('.nav-tab[data-section="leads"]').click();
+  window.scrollTo(0, 0);
+});
 
 /* ---------- Dashboards (automáticos, calculados a partir da tabela) ---------- */
 
@@ -1289,6 +1384,7 @@ function renderAll() {
   renderDashboards(leadsCache);
   renderTable(leadsCache);
   renderRenewals(leadsCache);
+  renderAlertas(leadsCache);
   renderLeadsToday(leadsCache);
   renderFaturamento(leadsCache);
   renderCusto(leadsCache);
@@ -1341,6 +1437,13 @@ form.addEventListener("submit", async (e) => {
     respondeu: statusInput.value === "convertido" && respondeuInput.value ? respondeuInput.value === "true" : null,
     agendou_reuniao: statusInput.value === "convertido" && agendouReuniaoInput.value ? agendouReuniaoInput.value === "true" : null,
     renovou: statusInput.value === "convertido" && renovouInput.value ? renovouInput.value === "true" : null,
+    reuniao_3m_feita: statusInput.value === "convertido" ? reuniao3mFeitaInput.checked : null,
+    reuniao_3m_data: statusInput.value === "convertido" ? reuniao3mDataInput.value || null : null,
+    reuniao_3m_obs: statusInput.value === "convertido" ? reuniao3mObsInput.value || null : null,
+    reuniao_6m_feita: statusInput.value === "convertido" ? reuniao6mFeitaInput.checked : null,
+    reuniao_6m_data: statusInput.value === "convertido" ? reuniao6mDataInput.value || null : null,
+    reuniao_6m_obs: statusInput.value === "convertido" ? reuniao6mObsInput.value || null : null,
+    faturamento_6meses: statusInput.value === "convertido" && faturamento6mesesInput.value ? Number(faturamento6mesesInput.value) : null,
     data_renovacao: statusInput.value === "convertido" ? dataRenovacaoInput.value || null : null,
     faturamento_atual: statusInput.value === "convertido" && faturamentoAtualInput.value ? Number(faturamentoAtualInput.value) : null,
     faturamento_renovacao: statusInput.value === "convertido" && faturamentoRenovacaoInput.value ? Number(faturamentoRenovacaoInput.value) : null,
@@ -1458,6 +1561,13 @@ function loadLeadIntoForm(lead) {
   respondeuInput.value = lead.respondeu !== null && lead.respondeu !== undefined ? String(lead.respondeu) : "";
   agendouReuniaoInput.value = lead.agendou_reuniao !== null && lead.agendou_reuniao !== undefined ? String(lead.agendou_reuniao) : "";
   renovouInput.value = lead.renovou !== null && lead.renovou !== undefined ? String(lead.renovou) : "";
+  reuniao3mFeitaInput.checked = lead.reuniao_3m_feita === true;
+  reuniao3mDataInput.value = lead.reuniao_3m_data || "";
+  reuniao3mObsInput.value = lead.reuniao_3m_obs || "";
+  reuniao6mFeitaInput.checked = lead.reuniao_6m_feita === true;
+  reuniao6mDataInput.value = lead.reuniao_6m_data || "";
+  reuniao6mObsInput.value = lead.reuniao_6m_obs || "";
+  faturamento6mesesInput.value = lead.faturamento_6meses || "";
   dataRenovacaoInput.value = lead.data_renovacao || "";
   faturamentoAtualInput.value = lead.faturamento_atual || "";
   faturamentoRenovacaoInput.value = lead.faturamento_renovacao || "";
