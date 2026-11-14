@@ -32,15 +32,6 @@
         <input type="password" id="confirmar-senha-input" placeholder="Repita a nova senha" autocomplete="new-password" style="width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 8px; font-size: 16px;" />
         <button id="salvar-nova-senha-btn" class="btn-primary" style="width: 100%;">Salvar nova senha</button>
       </div>
-      <div id="login-step-mfa" hidden>
-        <div id="mfa-setup" hidden>
-          <p>Primeiro acesso: escaneie o QR code no app autenticador (Google Authenticator, Microsoft Authenticator ou similar).</p>
-          <div id="mfa-qr" style="display: flex; justify-content: center; margin: 12px 0;"></div>
-          <p style="font-size: 12px; word-break: break-all;">Ou digite a chave: <strong id="mfa-secret"></strong></p>
-        </div>
-        <input type="text" id="mfa-codigo-input" inputmode="numeric" autocomplete="one-time-code" placeholder="Código de 6 dígitos" style="width: 100%; padding: 12px; margin: 20px 0; border: 1px solid #ccc; border-radius: 8px; font-size: 16px;" />
-        <button id="mfa-verificar-btn" class="btn-primary" style="width: 100%;">Verificar</button>
-      </div>
       <p id="erro-msg" style="color: red; text-align: center; margin-top: 10px;"></p>
     </div>
   </div>
@@ -1042,7 +1033,7 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="script.js?v=20261035"></script>
-  <script src="acompanhamento.js?v=20261034"></script>
+  <script src="script.js?v=20261036"></script>
+  <script src="acompanhamento.js?v=20261036"></script>
 </body>
 </html>

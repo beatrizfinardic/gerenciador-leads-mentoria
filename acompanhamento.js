@@ -113,6 +113,7 @@ async function importarPlanilhaCsv(arquivo) {
     .map((l) => {
       const dados = {};
       chaves.forEach((k, i) => {
+        if (k === "CPF" || k === "RG") return;
         const v = (l[i] ?? "").trim();
         if (v) dados[k] = v;
       });
@@ -121,8 +122,6 @@ async function importarPlanilhaCsv(arquivo) {
         nome: dados["Nome"],
         telefone: dados["Telefone"] || null,
         email: dados["E-mail"] || null,
-        cpf: dados["CPF"] || null,
-        rg: dados["RG"] || null,
         data_entrada: parseDataBR(dados["Data que entrou"]),
         data_encerra: parseDataBR(dados["Data que encerra"]),
         dados,

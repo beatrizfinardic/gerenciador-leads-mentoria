@@ -1,9 +1,6 @@
--- Rodar SOMENTE depois de:
---   1) criar os 3 usuários em Authentication > Users (Igor, Gabi, Djavan)
---   2) cada um ter feito o login com o código do app autenticador (MFA)
--- Antes disso, esta migração tranca o sistema para todo mundo.
+-- Rodar no SQL Editor. Só deixa ler e alterar dados quem estiver logado
+-- e com e-mail na lista abaixo. Para liberar outra pessoa, acrescente o e-mail na lista.
 
--- Lista de e-mails autorizados (editar antes de rodar)
 create or replace function public.equipe_autorizada()
 returns boolean
 language sql
@@ -12,8 +9,7 @@ as $$
   select (auth.jwt() ->> 'email') in (
     'beatrizfinardic@gmail.com'
     -- para liberar outra pessoa depois, acrescente o e-mail aqui, ex.: 'gabiiivargas1@gmail.com'
-  )
-  and (auth.jwt() ->> 'aal') = 'aal2';
+  );
 $$;
 
 drop policy if exists "leads_anon_all" on leads;
