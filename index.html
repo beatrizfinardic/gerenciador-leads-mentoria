@@ -61,6 +61,7 @@
       <button class="nav-tab" data-section="mentorados">Mentorados</button>
       <button class="nav-tab" data-section="dashboard-renovacoes">Dashboard Renovações</button>
       <button class="nav-tab" data-section="alertas">Alertas</button>
+      <button class="nav-tab" data-section="acompanhamento">Acompanhamento</button>
       <button class="nav-tab" data-section="materiais">Materiais</button>
     </nav>
 
@@ -730,6 +731,96 @@
       </section>
     </div>
 
+    <!-- SEÇÃO: ACOMPANHAMENTO DOS MENTORADOS -->
+    <div id="section-acompanhamento" class="section-container" hidden>
+      <section class="card">
+        <h2 class="section-title">Acompanhamento dos mentorados</h2>
+        <div class="filters">
+          <div class="field">
+            <label for="acomp-busca">Buscar por nome</label>
+            <input type="text" id="acomp-busca" placeholder="Nome do mentorado" />
+          </div>
+          <div class="field">
+            <label for="acomp-tipo">Mentoria</label>
+            <select id="acomp-tipo">
+              <option value="">Todas</option>
+              <option value="Mentoria Titulares">Titulares</option>
+              <option value="Mentoria Eméritos">Eméritos</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="acomp-importar">Importar planilha (CSV)</label>
+            <input type="file" id="acomp-importar" accept=".csv,text/csv" />
+          </div>
+        </div>
+        <p id="acomp-status" class="empty-state"></p>
+        <p class="empty-state" style="margin-top: 0;">
+          <span class="badge" style="background:#fde68a;color:#78350f">Faltam 20 dias ou menos</span>
+          <span class="badge" style="background:#fb923c;color:#ffffff">Faltam 15 dias ou menos</span>
+          <span class="badge" style="background:#dc2626;color:#ffffff">Atrasada</span>
+          <span class="badge" style="background:#16a34a;color:#ffffff">Reunião feita</span>
+        </p>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Mentorado</th>
+                <th>Contato</th>
+                <th>Entrada</th>
+                <th>Reunião 3 meses</th>
+                <th>Renovação (6 meses)</th>
+              </tr>
+            </thead>
+            <tbody id="acomp-tbody"></tbody>
+          </table>
+          <p id="acomp-empty" class="empty-state" hidden>Nenhum mentorado cadastrado ainda. Importe a planilha acima.</p>
+        </div>
+      </section>
+
+      <section class="card" id="acomp-detalhe" hidden>
+        <h2 class="section-title" id="acomp-detalhe-nome"></h2>
+        <div id="acomp-detalhe-dados" class="summary-grid" style="margin-bottom: 20px;"></div>
+
+        <div class="subsection-title">Reunião de 3 meses</div>
+        <div class="form-grid">
+          <div class="field">
+            <label><input type="checkbox" id="acomp-3m-feita" /> Reunião feita</label>
+          </div>
+          <div class="field">
+            <label for="acomp-3m-data">Data da reunião</label>
+            <input type="date" id="acomp-3m-data" />
+          </div>
+          <div class="field field-wide">
+            <label for="acomp-3m-obs">Observações</label>
+            <textarea id="acomp-3m-obs" rows="3"></textarea>
+          </div>
+        </div>
+
+        <div class="subsection-title">Reunião de renovação (6 meses)</div>
+        <div class="form-grid">
+          <div class="field">
+            <label><input type="checkbox" id="acomp-6m-feita" /> Reunião feita</label>
+          </div>
+          <div class="field">
+            <label><input type="checkbox" id="acomp-renovou" /> Renovou</label>
+          </div>
+          <div class="field">
+            <label for="acomp-6m-data">Data da reunião</label>
+            <input type="date" id="acomp-6m-data" />
+          </div>
+          <div class="field field-wide">
+            <label for="acomp-6m-obs">Observações</label>
+            <textarea id="acomp-6m-obs" rows="3"></textarea>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" id="acomp-salvar-btn" class="btn btn-primary">Salvar</button>
+          <button type="button" id="acomp-fechar-btn" class="btn">Fechar</button>
+        </div>
+      </section>
+    </div>
+
     <!-- SEÇÃO: MATERIAIS -->
     <div id="section-materiais" class="section-container" hidden>
       <section class="card">
@@ -951,6 +1042,7 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="script.js?v=20261033"></script>
+  <script src="script.js?v=20261034"></script>
+  <script src="acompanhamento.js?v=20261034"></script>
 </body>
 </html>
