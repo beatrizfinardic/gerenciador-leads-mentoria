@@ -66,7 +66,10 @@ async function avancarLogin() {
     return;
   }
 
-  const { data: novo, error: erroNovo } = await sb.auth.mfa.enroll({ factorType: "totp", friendlyName: "Sistema de Gestão" });
+  for (const pendente of fatores.totp.filter((f) => f.status !== "verified")) {
+    await sb.auth.mfa.unenroll({ factorId: pendente.id });
+  }
+  const { data: novo, error: erroNovo } = await sb.auth.mfa.enroll({ factorType: "totp", friendlyName: `Sistema ${Date.now()}` });
   if (erroNovo) {
     mostrarErroLogin(erroNovo.message);
     return;
