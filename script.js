@@ -1544,14 +1544,23 @@ tbody.addEventListener("click", (e) => {
 });
 
 function renderAll() {
-  renderDashboards(leadsCache);
-  renderTable(leadsCache);
-  renderRenewals(leadsCache);
-  renderAlertas(leadsCache);
-  renderLeadsToday(leadsCache);
-  renderFaturamento(leadsCache);
-  renderCusto(leadsCache);
-  renderMentorados(leadsCache);
+  const secoes = [
+    () => renderDashboards(leadsCache),
+    () => renderTable(leadsCache),
+    () => renderRenewals(leadsCache),
+    () => renderAlertas(leadsCache),
+    () => renderLeadsToday(leadsCache),
+    () => renderFaturamento(leadsCache),
+    () => renderCusto(leadsCache),
+    () => renderMentorados(leadsCache),
+  ];
+  for (const render of secoes) {
+    try {
+      render();
+    } catch (erro) {
+      console.error(erro);
+    }
+  }
 }
 
 /* ---------- Form submit (criar / editar) ---------- */
