@@ -10,10 +10,8 @@ language sql
 stable
 as $$
   select (auth.jwt() ->> 'email') in (
-    'beatrizfinardic@gmail.com',
-    'alexandre.djavan@gmail.com',
-    'gabiiivargas1@gmail.com',
-    'igorcontgomes@gmail.com'
+    'beatrizfinardic@gmail.com'
+    -- para liberar outra pessoa depois, acrescente o e-mail aqui, ex.: 'gabiiivargas1@gmail.com'
   )
   and (auth.jwt() ->> 'aal') = 'aal2';
 $$;
