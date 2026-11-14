@@ -111,6 +111,11 @@ document.getElementById("mfa-verificar-btn").addEventListener("click", async () 
   entrarNoApp();
 });
 
+document.getElementById("sair-btn").addEventListener("click", async () => {
+  await sb.auth.signOut();
+  window.location.reload();
+});
+
 mfaCodigoInput.addEventListener("keypress", (e) => {
   if (e.key === "Enter") document.getElementById("mfa-verificar-btn").click();
 });
