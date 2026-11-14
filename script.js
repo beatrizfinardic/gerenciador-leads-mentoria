@@ -908,6 +908,20 @@ function alertasReuniao(leads, meses, feitaKey) {
     .sort((a, b) => a.dias - b.dias);
 }
 
+function nomeAlertaCell(l) {
+  const detalhes = [l.profissao, l.instagram].filter(Boolean).map(escapeHtml).join(" · ");
+  return `${escapeHtml(l.nome)}${detalhes ? `<br /><small>${detalhes}</small>` : ""}`;
+}
+
+function contatoAlertaCell(l) {
+  const digits = (l.whatsapp || "").replace(/\D/g, "");
+  const numero = digits.length >= 12 ? digits : `55${digits}`;
+  const whatsapp = digits
+    ? `<a href="https://wa.me/${numero}" target="_blank" rel="noopener">${escapeHtml(l.whatsapp)}</a>`
+    : "-";
+  return `${whatsapp}<br /><small>${escapeHtml(l.email || "-")}</small>`;
+}
+
 function situacaoBadge(dias) {
   const texto = dias < 0 ? `Atrasada há ${-dias} dias` : dias === 0 ? "Vence hoje" : `Faltam ${dias} dias`;
   const cor = dias <= 15 ? "#ef4444" : "#fb923c";
@@ -927,7 +941,8 @@ function renderAlertas(leads) {
   document.getElementById("alert-3m-tbody").innerHTML = reunioes3m
     .map((a) => `
       <tr class="clickable-row" data-id="${a.lead.id}">
-        <td>${escapeHtml(a.lead.nome)}</td>
+        <td>${nomeAlertaCell(a.lead)}</td>
+        <td>${contatoAlertaCell(a.lead)}</td>
         <td>${formatDateBR(a.entrada)}</td>
         <td>${formatDateBR(a.prevista)}</td>
         <td>${situacaoBadge(a.dias)}</td>
@@ -938,7 +953,8 @@ function renderAlertas(leads) {
   document.getElementById("alert-6m-tbody").innerHTML = reunioes6m
     .map((a) => `
       <tr class="clickable-row" data-id="${a.lead.id}">
-        <td>${escapeHtml(a.lead.nome)}</td>
+        <td>${nomeAlertaCell(a.lead)}</td>
+        <td>${contatoAlertaCell(a.lead)}</td>
         <td>${formatDateBR(a.entrada)}</td>
         <td>${formatDateBR(a.prevista)}</td>
         <td>${situacaoBadge(a.dias)}</td>
@@ -949,7 +965,8 @@ function renderAlertas(leads) {
   document.getElementById("alert-renovacao-tbody").innerHTML = renovacoes
     .map((a) => `
       <tr class="clickable-row" data-id="${a.lead.id}">
-        <td>${escapeHtml(a.lead.nome)}</td>
+        <td>${nomeAlertaCell(a.lead)}</td>
+        <td>${contatoAlertaCell(a.lead)}</td>
         <td>${formatDateBR(a.lead.data_vencimento)}</td>
         <td>${situacaoBadge(a.dias)}</td>
       </tr>`)
@@ -957,6 +974,7 @@ function renderAlertas(leads) {
 }
 
 document.getElementById("section-alertas").addEventListener("click", (e) => {
+  if (e.target.closest("a")) return;
   const row = e.target.closest("tr[data-id]");
   if (!row) return;
   loadLeadIntoForm(leadsCache.find((l) => l.id === row.dataset.id));
