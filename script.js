@@ -33,7 +33,11 @@ function mostrarEtapaMfa({ factorId, qr, secret }) {
   loginMfaEl.hidden = false;
   mfaSetupEl.hidden = !qr;
   if (qr) {
-    mfaQrEl.innerHTML = qr;
+    const imagem = document.createElement("img");
+    imagem.src = qr;
+    imagem.alt = "QR code para o app autenticador";
+    imagem.width = 180;
+    mfaQrEl.replaceChildren(imagem);
     mfaSecretEl.textContent = secret;
   }
   mfaCodigoInput.value = "";
