@@ -78,7 +78,7 @@ document.getElementById("entrar-btn").addEventListener("click", async () => {
   });
   senhaLoginInput.value = "";
   if (error) {
-    mostrarErroLogin("E-mail ou senha incorretos");
+    mostrarErroLogin(error.message);
     return;
   }
   await avancarLogin();
