@@ -2,28 +2,119 @@ const SUPABASE_URL = "https://pvnycbsqfdkgcoseuhik.supabase.co";
 const SUPABASE_KEY = "sb_publishable_18RknyEYfjUNXKH8jn_3IA_tX7Zl6Si";
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-function verificarSenha() {
-  const senha = document.getElementById("senha-input").value;
-  const loginScreen = document.getElementById("login-screen");
-  const appContent = document.getElementById("app-content");
-  const erroMsg = document.getElementById("erro-msg");
+const loginCredenciaisEl = document.getElementById("login-step-credenciais");
+const loginMfaEl = document.getElementById("login-step-mfa");
+const mfaSetupEl = document.getElementById("mfa-setup");
+const mfaQrEl = document.getElementById("mfa-qr");
+const mfaSecretEl = document.getElementById("mfa-secret");
+const mfaCodigoInput = document.getElementById("mfa-codigo-input");
+const emailLoginInput = document.getElementById("email-login-input");
+const senhaLoginInput = document.getElementById("senha-login-input");
+const erroLoginEl = document.getElementById("erro-msg");
+let mfaFactorId = null;
+let appIniciado = false;
 
-  if (senha === "mentoriaconterato123") {
-    loginScreen.hidden = true;
-    appContent.hidden = false;
-    erroMsg.textContent = "";
-  } else {
-    erroMsg.textContent = "Senha incorreta";
-    document.getElementById("senha-input").value = "";
-    document.getElementById("senha-input").focus();
+function mostrarErroLogin(mensagem) {
+  erroLoginEl.textContent = mensagem;
+}
+
+function entrarNoApp() {
+  document.getElementById("login-screen").hidden = true;
+  document.getElementById("app-content").hidden = false;
+  if (!appIniciado) {
+    appIniciado = true;
+    startApp();
   }
 }
 
-document.getElementById("senha-input").addEventListener("keypress", (e) => {
-  if (e.key === "Enter") {
-    verificarSenha();
+function mostrarEtapaMfa({ factorId, qr, secret }) {
+  mfaFactorId = factorId;
+  loginCredenciaisEl.hidden = true;
+  loginMfaEl.hidden = false;
+  mfaSetupEl.hidden = !qr;
+  if (qr) {
+    mfaQrEl.innerHTML = qr;
+    mfaSecretEl.textContent = secret;
   }
+  mfaCodigoInput.value = "";
+  mfaCodigoInput.focus();
+}
+
+async function avancarLogin() {
+  const { data: nivel, error: erroNivel } = await sb.auth.mfa.getAuthenticatorAssuranceLevel();
+  if (erroNivel) {
+    mostrarErroLogin(erroNivel.message);
+    return;
+  }
+  if (nivel.currentLevel === "aal2") {
+    entrarNoApp();
+    return;
+  }
+
+  const { data: fatores, error: erroFatores } = await sb.auth.mfa.listFactors();
+  if (erroFatores) {
+    mostrarErroLogin(erroFatores.message);
+    return;
+  }
+  const fatorVerificado = fatores.totp.find((f) => f.status === "verified");
+  if (fatorVerificado) {
+    mostrarEtapaMfa({ factorId: fatorVerificado.id });
+    return;
+  }
+
+  const { data: novo, error: erroNovo } = await sb.auth.mfa.enroll({ factorType: "totp", friendlyName: "Sistema de Gestão" });
+  if (erroNovo) {
+    mostrarErroLogin(erroNovo.message);
+    return;
+  }
+  mostrarEtapaMfa({ factorId: novo.id, qr: novo.totp.qr_code, secret: novo.totp.secret });
+}
+
+document.getElementById("entrar-btn").addEventListener("click", async () => {
+  mostrarErroLogin("");
+  const { error } = await sb.auth.signInWithPassword({
+    email: emailLoginInput.value.trim(),
+    password: senhaLoginInput.value,
+  });
+  senhaLoginInput.value = "";
+  if (error) {
+    mostrarErroLogin("E-mail ou senha incorretos");
+    return;
+  }
+  await avancarLogin();
 });
+
+document.getElementById("mfa-verificar-btn").addEventListener("click", async () => {
+  mostrarErroLogin("");
+  const { data: desafio, error: erroDesafio } = await sb.auth.mfa.challenge({ factorId: mfaFactorId });
+  if (erroDesafio) {
+    mostrarErroLogin(erroDesafio.message);
+    return;
+  }
+  const { error } = await sb.auth.mfa.verify({
+    factorId: mfaFactorId,
+    challengeId: desafio.id,
+    code: mfaCodigoInput.value.trim(),
+  });
+  if (error) {
+    mostrarErroLogin("Código inválido ou expirado");
+    mfaCodigoInput.value = "";
+    return;
+  }
+  entrarNoApp();
+});
+
+mfaCodigoInput.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") document.getElementById("mfa-verificar-btn").click();
+});
+senhaLoginInput.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") document.getElementById("entrar-btn").click();
+});
+
+(async () => {
+  const { data } = await sb.auth.getSession();
+  if (data.session) await avancarLogin();
+})();
 
 const STATUS_META = {
   prospect: { label: "Prospect", bg: "#86efac", text: "#14532d", cardBg: "#dcfce7", cardText: "#14532d" },
@@ -1802,7 +1893,7 @@ document.querySelectorAll(".nav-tab").forEach((btn) => {
   });
 });
 
-(async function init() {
+async function startApp() {
   resetForm();
   const now = new Date();
   fatDataInicialInput.value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-01`;
@@ -1815,6 +1906,6 @@ document.querySelectorAll(".nav-tab").forEach((btn) => {
 
   await refreshLeads();
   setupRealtime();
-})();
+}
 
 dashAtualizarBtn.addEventListener("click", renderDashboardRenovacoes);

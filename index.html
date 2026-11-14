@@ -20,8 +20,20 @@
       <img src="assets/logo.png" alt="Mentoria Titulares" class="login-logo" />
       <h1>Sistema de Gestão</h1>
       <p>Mentoria Titulares</p>
-      <input type="password" id="senha-input" placeholder="Senha" style="width: 100%; padding: 12px; margin: 20px 0; border: 1px solid #ccc; border-radius: 8px; font-size: 16px;" autofocus />
-      <button onclick="verificarSenha()" class="btn-primary" style="width: 100%;">Entrar</button>
+      <div id="login-step-credenciais">
+        <input type="email" id="email-login-input" placeholder="E-mail" autocomplete="username" style="width: 100%; padding: 12px; margin: 20px 0 10px; border: 1px solid #ccc; border-radius: 8px; font-size: 16px;" />
+        <input type="password" id="senha-login-input" placeholder="Senha" autocomplete="current-password" style="width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 8px; font-size: 16px;" />
+        <button id="entrar-btn" class="btn-primary" style="width: 100%;">Entrar</button>
+      </div>
+      <div id="login-step-mfa" hidden>
+        <div id="mfa-setup" hidden>
+          <p>Primeiro acesso: escaneie o QR code no app autenticador (Google Authenticator, Microsoft Authenticator ou similar).</p>
+          <div id="mfa-qr" style="display: flex; justify-content: center; margin: 12px 0;"></div>
+          <p style="font-size: 12px; word-break: break-all;">Ou digite a chave: <strong id="mfa-secret"></strong></p>
+        </div>
+        <input type="text" id="mfa-codigo-input" inputmode="numeric" autocomplete="one-time-code" placeholder="Código de 6 dígitos" style="width: 100%; padding: 12px; margin: 20px 0; border: 1px solid #ccc; border-radius: 8px; font-size: 16px;" />
+        <button id="mfa-verificar-btn" class="btn-primary" style="width: 100%;">Verificar</button>
+      </div>
       <p id="erro-msg" style="color: red; text-align: center; margin-top: 10px;"></p>
     </div>
   </div>
