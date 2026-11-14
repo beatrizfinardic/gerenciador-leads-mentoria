@@ -118,7 +118,62 @@ senhaLoginInput.addEventListener("keypress", (e) => {
   if (e.key === "Enter") document.getElementById("entrar-btn").click();
 });
 
+const loginNovaSenhaEl = document.getElementById("login-step-nova-senha");
+const novaSenhaInput = document.getElementById("nova-senha-input");
+const confirmarSenhaInput = document.getElementById("confirmar-senha-input");
+const recuperandoSenha = window.location.hash.includes("type=recovery");
+
+function mostrarNovaSenha() {
+  loginCredenciaisEl.hidden = true;
+  loginMfaEl.hidden = true;
+  loginNovaSenhaEl.hidden = false;
+  novaSenhaInput.focus();
+}
+
+document.getElementById("esqueci-senha-link").addEventListener("click", async (e) => {
+  e.preventDefault();
+  const email = emailLoginInput.value.trim();
+  if (!email) {
+    mostrarErroLogin("Digite seu e-mail primeiro");
+    return;
+  }
+  const { error } = await sb.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.origin + window.location.pathname,
+  });
+  mostrarErroLogin(error ? error.message : "Enviamos um link de redefinição para o seu e-mail");
+});
+
+document.getElementById("salvar-nova-senha-btn").addEventListener("click", async () => {
+  mostrarErroLogin("");
+  if (novaSenhaInput.value.length < 8) {
+    mostrarErroLogin("A senha precisa ter no mínimo 8 caracteres");
+    return;
+  }
+  if (novaSenhaInput.value !== confirmarSenhaInput.value) {
+    mostrarErroLogin("As senhas não coincidem");
+    return;
+  }
+  const { error } = await sb.auth.updateUser({ password: novaSenhaInput.value });
+  novaSenhaInput.value = "";
+  confirmarSenhaInput.value = "";
+  if (error) {
+    mostrarErroLogin(error.message);
+    return;
+  }
+  loginNovaSenhaEl.hidden = true;
+  loginCredenciaisEl.hidden = false;
+  await avancarLogin();
+});
+
+sb.auth.onAuthStateChange((evento) => {
+  if (evento === "PASSWORD_RECOVERY") mostrarNovaSenha();
+});
+
 (async () => {
+  if (recuperandoSenha) {
+    mostrarNovaSenha();
+    return;
+  }
   const { data } = await sb.auth.getSession();
   if (data.session) await avancarLogin();
 })();
