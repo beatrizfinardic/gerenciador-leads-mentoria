@@ -937,10 +937,21 @@ function daysUntil(dateStr) {
   return Math.round((target - today) / 86400000);
 }
 
+function prazoRenovacao(l) {
+  if (l.tipo_mentoria === "Mentoria Eméritos" && l.created_at) {
+    const entrada = parseTimestamp(l.created_at);
+    const entradaLocal = new Date(entrada.getFullYear(), entrada.getMonth(), entrada.getDate());
+    return isoFromDate(addMonthsToDate(entradaLocal, 12));
+  }
+  return l.data_vencimento;
+}
+
 function renderRenewals(leads) {
   const upcoming = leads
-    .filter((l) => l.status === "convertido" && l.data_vencimento)
-    .map((l) => ({ ...l, diasRestantes: daysUntil(l.data_vencimento) }))
+    .filter((l) => l.status === "convertido")
+    .map((l) => ({ ...l, prazo: prazoRenovacao(l) }))
+    .filter((l) => l.prazo)
+    .map((l) => ({ ...l, diasRestantes: daysUntil(l.prazo) }))
     .filter((l) => l.diasRestantes <= 15)
     .sort((a, b) => a.diasRestantes - b.diasRestantes);
 
@@ -954,7 +965,8 @@ function renderRenewals(leads) {
           <td>${escapeHtml(l.nome)}</td>
           <td>${escapeHtml(l.email || "-")}</td>
           <td>${escapeHtml(l.whatsapp || "-")}</td>
-          <td>${formatDateBR(l.data_vencimento)}</td>
+          <td>${escapeHtml(l.tipo_mentoria || "-")}</td>
+          <td>${formatDateBR(l.prazo)}</td>
           <td><span class="badge" style="background:${urgente ? "#ef4444" : "#fb923c"};color:#ffffff">${l.diasRestantes}</span></td>
         </tr>
       `;
