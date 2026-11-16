@@ -472,11 +472,11 @@ sinalDataInput.addEventListener("input", () => {
 });
 
 formPagamentoParcelasInput.addEventListener("input", () => {
-  if (pagamentoFormaInput.value !== "sinal") pagamentoParcelasInput.value = formPagamentoParcelasInput.value;
+  pagamentoParcelasInput.value = formPagamentoParcelasInput.value;
 });
 
 sinalValorInput.addEventListener("input", () => {
-  if (pagamentoFormaInput.value === "sinal") pagamentoParcelasInput.value = sinalValorInput.value;
+  if (pagamentoFormaInput.value === "sinal") valorPagoValueInput.value = sinalValorInput.value;
 });
 
 formFechadoPorInput.addEventListener("change", () => {
@@ -625,7 +625,7 @@ modalConfirmBtn.addEventListener("click", () => {
     pagamentoParcelasInput.value = "";
     acordoPagamentoValueInput.value = modalAcordoPagamentoInput.value.trim();
   } else if (modalFormaSelect.value === "sinal") {
-    pagamentoParcelasInput.value = modalSinalValorInput.value;
+    valorPagoValueInput.value = modalSinalValorInput.value;
     followupDataInput.value = modalSinalDataInput.value;
     followupDataValueInput.value = modalSinalDataInput.value;
   } else {
@@ -848,7 +848,7 @@ function renderFaturamento(leads) {
       const isRecorrente = formaKey === "recorrente_cartao";
       const isSinal = formaKey === "sinal";
       const bruto = isSinal
-        ? Number(l.pagamento_parcelas) || 0
+        ? Number(l.valor_pago ?? l.pagamento_parcelas) || 0
         : formaKey === "pix_recorrente"
         ? Number(l.valor_pago) || 0
         : isRecorrente
@@ -1744,7 +1744,7 @@ function loadLeadIntoForm(lead) {
   pagamentoParcelasInput.value = lead.pagamento_parcelas || "";
   diaPagamentoValueInput.value = lead.dia_pagamento || "";
   acordoPagamentoValueInput.value = lead.acordo_pagamento || "";
-  valorPagoValueInput.value = lead.valor_pago ?? "";
+  valorPagoValueInput.value = (lead.pagamento_forma === "sinal" ? lead.valor_pago ?? lead.pagamento_parcelas : lead.valor_pago) ?? "";
   formValorFechadoInput.value = lead.valor_fechado || "";
   formDataVencimentoInput.value = lead.data_vencimento || "";
   formFechadoPorInput.value = lead.fechado_por || "";
@@ -1793,7 +1793,7 @@ function loadLeadIntoForm(lead) {
     if (lead.pagamento_forma === "sinal") {
       sinalValorField.hidden = false;
       sinalDataField.hidden = false;
-      sinalValorInput.value = lead.pagamento_parcelas || "";
+      sinalValorInput.value = lead.valor_pago ?? lead.pagamento_parcelas ?? "";
       sinalDataInput.value = lead.followup_data || "";
     } else {
       sinalValorField.hidden = true;
