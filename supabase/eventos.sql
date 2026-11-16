@@ -14,6 +14,7 @@ create table if not exists eventos (
 
 alter table eventos add column if not exists contato text;
 alter table eventos add column if not exists pagamento text;
+alter table eventos add column if not exists acordo text;
 
 alter table eventos enable row level security;
 

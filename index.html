@@ -774,6 +774,10 @@
               <label for="evento-tempo">Tempo</label>
               <input type="text" id="evento-tempo" placeholder="Ex: 2 dias, 8h" />
             </div>
+            <div class="field field-wide">
+              <label for="evento-acordo">Acordo do evento</label>
+              <textarea id="evento-acordo" rows="4" placeholder="Descreva os combinados do evento"></textarea>
+            </div>
           </div>
           <div class="form-actions">
             <button type="submit" class="btn btn-primary">Adicionar evento</button>
@@ -791,6 +795,7 @@
                 <th>Organizador</th>
                 <th>Telefone</th>
                 <th>Forma de pagamento</th>
+                <th>Acordo</th>
                 <th>Tempo</th>
                 <th>Ações</th>
               </tr>
@@ -1024,6 +1029,6 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="script.js?v=20261039"></script>
-  <script src="eventos.js?v=4"></script>
+  <script src="eventos.js?v=5"></script>
 </body>
 </html>
