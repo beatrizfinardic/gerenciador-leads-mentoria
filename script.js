@@ -116,6 +116,7 @@ const STATUS_META = {
   perdido: { label: "Perdido", bg: "#9ca3af", text: "#1a1a1a", cardBg: "#e5e7eb", cardText: "#374151" },
   desistencia: { label: "Desistência", bg: "#ec4899", text: "#ffffff", cardBg: "#fce7f3", cardText: "#831843" },
   cancelado: { label: "Cancelado", bg: "#6b7280", text: "#ffffff", cardBg: "#d1d5db", cardText: "#374151" },
+  nao_renovou: { label: "Não renovou", bg: "#0d9488", text: "#ffffff", cardBg: "#ccfbf1", cardText: "#134e4a" },
   formacao: { label: "Formação", bg: "#06b6d4", text: "#ffffff", cardBg: "#cffafe", cardText: "#164e63" },
 };
 
@@ -259,6 +260,8 @@ const dashAtualizarBtn = document.getElementById("dash-atualizar-btn");
 const dashResumoEl = document.getElementById("dash-resumo");
 const mentoradosSaidosTbody = document.getElementById("mentorados-saidos-tbody");
 const mentoradosSaidosEmptyState = document.getElementById("mentorados-saidos-empty-state");
+const mentoradosNaoRenovadosTbody = document.getElementById("mentorados-naorenovados-tbody");
+const mentoradosNaoRenovadosEmptyState = document.getElementById("mentorados-naorenovados-empty-state");
 const renewalsTbody = document.getElementById("renewals-tbody");
 const renewalsEmptyState = document.getElementById("renewals-empty-state");
 const leadsTodayTbody = document.getElementById("leads-today-tbody");
@@ -309,7 +312,9 @@ const cancellationMotivoSelect = document.getElementById("cancellation-motivo");
 const cancellationDataInput = document.getElementById("cancellation-data");
 const cancellationConfirmBtn = document.getElementById("cancellation-confirm-btn");
 const cancellationCancelBtn = document.getElementById("cancellation-cancel-btn");
+const cancellationModalTitle = document.getElementById("cancellation-modal-title");
 let pendingCancellationMentoradoId = null;
+let pendingCancellationStatus = "cancelado";
 
 let leadsCache = [];
 let confirmedStatusValue = "prospect";
@@ -640,13 +645,13 @@ lostCancelBtn.addEventListener("click", () => {
 
 /* ---------- Modal de cancelamento de mentorado ---------- */
 
-function openCancellationModal(mentoradoId) {
-  console.log("Abrindo modal de cancelamento para ID:", mentoradoId);
+function openCancellationModal(mentoradoId, status = "cancelado") {
   pendingCancellationMentoradoId = mentoradoId;
+  pendingCancellationStatus = status;
+  cancellationModalTitle.textContent = status === "nao_renovou" ? "Não renovou" : "Cancelar mentorado";
   cancellationMotivoSelect.value = "";
   cancellationDataInput.value = todayISO();
   cancellationModal.hidden = false;
-  console.log("Modal hidden agora é:", cancellationModal.hidden);
 }
 
 function closeCancellationModal() {
@@ -668,13 +673,13 @@ cancellationConfirmBtn.addEventListener("click", async () => {
   }
 
   const { error } = await sb.from("leads").update({
-    status: "cancelado",
+    status: pendingCancellationStatus,
     motivo_cancelamento: motivo,
     data_cancelamento: data
   }).eq("id", pendingCancellationMentoradoId);
 
   if (error) {
-    alert("Erro ao cancelar mentorado: " + error.message);
+    alert("Erro ao salvar: " + error.message);
     return;
   }
 
@@ -1254,6 +1259,7 @@ function renderMentorados(leads) {
         <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px; gap: 8px;">
           <div class="mentorado-card-name" style="font-weight: 700; font-size: 16px; color: #1a1a1a; flex: 1;">${escapeHtml(l.nome)}</div>
           <button type="button" class="btn btn-warning btn-small mentorado-cancel-btn" data-id="${l.id}" style="margin-left: 4px; padding: 4px 8px; font-size: 10px;">Cancelar</button>
+          <button type="button" class="btn btn-secondary btn-small mentorado-naorenovou-btn" data-id="${l.id}" style="margin-left: 4px; padding: 4px 8px; font-size: 10px;">Não renovou</button>
           <button type="button" class="btn btn-danger btn-small mentorado-delete-btn" data-id="${l.id}" style="margin-left: 4px; padding: 4px 8px; font-size: 10px;">Excluir</button>
         </div>
         <div style="font-size: 12px; color: #6b6b6b; line-height: 1.6; margin-bottom: 4px;">Email: <span style="font-weight: 600; color: #1a1a1a;">${escapeHtml(l.email || "-")}</span></div>
@@ -1270,6 +1276,10 @@ function renderMentorados(leads) {
         const id = e.target.closest(".mentorado-cancel-btn").dataset.id;
         e.stopPropagation();
         openCancellationModal(id);
+      } else if (e.target.closest(".mentorado-naorenovou-btn")) {
+        const id = e.target.closest(".mentorado-naorenovou-btn").dataset.id;
+        e.stopPropagation();
+        openCancellationModal(id, "nao_renovou");
       } else if (e.target.closest(".mentorado-delete-btn")) {
         const id = e.target.closest(".mentorado-delete-btn").dataset.id;
         e.stopPropagation();
@@ -1298,6 +1308,22 @@ function renderMentorados(leads) {
         <td>${formatDateBR(l.data_cancelamento || "-")}</td>
         <td>${formatBRL(l.valor_fechado || 0)}</td>
         <td>${escapeHtml(l.informacoes_gerais || "-")}</td>
+        <td>${escapeHtml(l.motivo_cancelamento || "-")}</td>
+      </tr>
+    `)
+    .join("");
+
+  const mentoradosNaoRenovados = leads.filter((l) => l.status === "nao_renovou" && l.tipo_mentoria === mentoriaTypeTab);
+  mentoradosNaoRenovadosEmptyState.hidden = mentoradosNaoRenovados.length !== 0;
+  mentoradosNaoRenovadosTbody.innerHTML = mentoradosNaoRenovados
+    .map((l) => `
+      <tr>
+        <td>${escapeHtml(l.nome)}</td>
+        <td>${escapeHtml(l.email || "-")}</td>
+        <td>${escapeHtml(l.whatsapp || "-")}</td>
+        <td>${formatDateBR(l.created_at)}</td>
+        <td>${formatDateBR(l.data_cancelamento || "-")}</td>
+        <td>${formatBRL(l.valor_fechado || 0)}</td>
         <td>${escapeHtml(l.motivo_cancelamento || "-")}</td>
       </tr>
     `)
@@ -1349,6 +1375,7 @@ mentoradosMainTabsEl.addEventListener("click", (e) => {
   document.getElementById("tab-ativos").hidden = mentoradosMainTab !== "ativos";
   document.getElementById("tab-renovacoes").hidden = mentoradosMainTab !== "renovacoes";
   document.getElementById("tab-saidos").hidden = mentoradosMainTab !== "saidos";
+  document.getElementById("tab-naorenovados").hidden = mentoradosMainTab !== "naorenovados";
 });
 
 const mentoradosSearchInput = document.getElementById("mentorados-search");

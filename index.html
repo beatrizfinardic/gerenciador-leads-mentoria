@@ -642,6 +642,7 @@
         <button type="button" class="status-tab active" data-tab="ativos">Ativos</button>
         <button type="button" class="status-tab" data-tab="renovacoes">Renovações</button>
         <button type="button" class="status-tab" data-tab="saidos">Saídos</button>
+        <button type="button" class="status-tab" data-tab="naorenovados">Não renovados</button>
       </div>
 
       <div id="tab-ativos">
@@ -691,6 +692,27 @@
             <tbody id="mentorados-saidos-tbody"></tbody>
           </table>
           <p id="mentorados-saidos-empty-state" class="empty-state" hidden>Nenhum mentorado com saída registrada.</p>
+        </div>
+      </div>
+
+      <div id="tab-naorenovados" hidden>
+        <h3 class="subsection-title">Mentorados que não renovaram</h3>
+        <div class="table-wrapper">
+          <table id="mentorados-naorenovados-table">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>WhatsApp</th>
+                <th>Data Entrada</th>
+                <th>Data Saída</th>
+                <th>Valor Fechado</th>
+                <th>Motivo</th>
+              </tr>
+            </thead>
+            <tbody id="mentorados-naorenovados-tbody"></tbody>
+          </table>
+          <p id="mentorados-naorenovados-empty-state" class="empty-state" hidden>Nenhum mentorado que não renovou.</p>
         </div>
       </div>
     </section>
@@ -991,7 +1013,7 @@
   <!-- MODAL: cancelamento de mentorado -->
   <div id="cancellation-modal" class="modal-overlay" hidden>
     <div class="modal" style="max-width: 400px;">
-      <h3 class="section-title">Cancelar mentorado</h3>
+      <h3 class="section-title" id="cancellation-modal-title">Cancelar mentorado</h3>
       <div class="field">
         <label for="cancellation-motivo">Motivo do cancelamento *</label>
         <select id="cancellation-motivo" required>
@@ -1028,7 +1050,7 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="script.js?v=20261039"></script>
+  <script src="script.js?v=20261040"></script>
   <script src="eventos.js?v=5"></script>
 </body>
 </html>
