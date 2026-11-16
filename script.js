@@ -155,6 +155,7 @@ const FORMA_PAGAMENTO_META = {
   parcelado_sumup: { label: "Sumup", taxaFixa: 0, taxaPercentual: 0 },
   parcelado_sumup_novo: { label: "Sumup (novo link)", taxaFixa: 0, taxaPercentual: 0 },
   recorrente_cartao: { label: "Cartão Recorrente", taxaFixa: 2.49, taxaPercentual: 0.0459, taxaFixaPorCiclo: true },
+  pix_recorrente: { label: "Pix recorrente", taxaFixa: 0, taxaPercentual: 0 },
 };
 
 const form = document.getElementById("lead-form");
@@ -293,6 +294,9 @@ const modalRecorrenciaField = document.getElementById("modal-recorrencia-field")
 const modalRecorrenciaQuantidadeInput = document.getElementById("modal-recorrencia-quantidade");
 const modalRecorrenciaValorField = document.getElementById("modal-recorrencia-valor-field");
 const modalRecorrenciaValorInput = document.getElementById("modal-recorrencia-valor");
+const modalDiaPagamentoField = document.getElementById("modal-dia-pagamento-field");
+const modalDiaPagamentoInput = document.getElementById("modal-dia-pagamento");
+const diaPagamentoValueInput = document.getElementById("dia-pagamento-value");
 const modalSinalValorField = document.getElementById("modal-sinal-valor-field");
 const modalSinalValorInput = document.getElementById("modal-sinal-valor");
 const modalSinalDataField = document.getElementById("modal-sinal-data-field");
@@ -530,8 +534,9 @@ statusInput.addEventListener("change", () => {
 function updateModalFormaFields() {
   const forma = modalFormaSelect.value;
   modalParcelasField.hidden = !["parcelado_eduzz", "parcelado_sumup", "parcelado_sumup_novo"].includes(forma);
-  modalRecorrenciaField.hidden = forma !== "recorrente_cartao";
+  modalRecorrenciaField.hidden = !["recorrente_cartao", "pix_recorrente"].includes(forma);
   modalRecorrenciaValorField.hidden = forma !== "recorrente_cartao";
+  modalDiaPagamentoField.hidden = forma !== "pix_recorrente";
   modalSinalValorField.hidden = forma !== "sinal";
   modalSinalDataField.hidden = forma !== "sinal";
 }
@@ -552,7 +557,8 @@ function openPaymentModal() {
   modalDataVencimentoInput.value = dataVencimentoInput.value || "";
   modalFormaSelect.value = pagamentoFormaInput.value || "a_vista";
   modalParcelasSelect.value = pagamentoParcelasInput.value || "2";
-  if (modalFormaSelect.value === "recorrente_cartao") {
+  modalDiaPagamentoInput.value = diaPagamentoValueInput.value || "";
+  if (modalFormaSelect.value === "recorrente_cartao" || modalFormaSelect.value === "pix_recorrente") {
     const quantidade = Number(pagamentoParcelasInput.value) || "";
     modalRecorrenciaQuantidadeInput.value = quantidade;
     modalRecorrenciaValorInput.value =
@@ -589,6 +595,9 @@ modalConfirmBtn.addEventListener("click", () => {
   pagamentoFormaInput.value = modalFormaSelect.value;
   if (modalFormaSelect.value === "recorrente_cartao") {
     pagamentoParcelasInput.value = modalRecorrenciaQuantidadeInput.value;
+  } else if (modalFormaSelect.value === "pix_recorrente") {
+    pagamentoParcelasInput.value = modalRecorrenciaQuantidadeInput.value;
+    diaPagamentoValueInput.value = modalDiaPagamentoInput.value;
   } else if (modalFormaSelect.value === "sinal") {
     pagamentoParcelasInput.value = modalSinalValorInput.value;
     followupDataInput.value = modalSinalDataInput.value;
@@ -695,6 +704,7 @@ function resetForm() {
   dataVencimentoInput.value = "";
   fechadoPorInput.value = "";
   tipoMentoriaInput.value = "";
+  diaPagamentoValueInput.value = "";
   formValorFechadoInput.value = "";
   formDataVencimentoInput.value = "";
   formFechadoPorInput.value = "";
@@ -1574,6 +1584,8 @@ form.addEventListener("submit", async (e) => {
     tipo_mentoria: statusInput.value === "convertido" ? tipoMentoriaInput.value || null : null,
     pagamento_parcelas:
       statusInput.value === "convertido" && pagamentoParcelasInput.value ? Number(pagamentoParcelasInput.value) : null,
+    dia_pagamento:
+      statusInput.value === "convertido" && diaPagamentoValueInput.value ? Number(diaPagamentoValueInput.value) : null,
     perdido_motivo: statusInput.value === "perdido" ? perdidoMotivoInput.value || null : null,
     perdido_followup: statusInput.value === "perdido" ? perdidoFollowupInput.value || null : null,
     perdido_followup_data:
@@ -1690,6 +1702,7 @@ function loadLeadIntoForm(lead) {
   tipoMentoriaInput.value = lead.tipo_mentoria || "";
   pagamentoFormaInput.value = lead.pagamento_forma || "";
   pagamentoParcelasInput.value = lead.pagamento_parcelas || "";
+  diaPagamentoValueInput.value = lead.dia_pagamento || "";
   formValorFechadoInput.value = lead.valor_fechado || "";
   formDataVencimentoInput.value = lead.data_vencimento || "";
   formFechadoPorInput.value = lead.fechado_por || "";

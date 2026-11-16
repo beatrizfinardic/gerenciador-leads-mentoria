@@ -66,6 +66,7 @@
         <input type="hidden" id="lead-id" />
         <input type="hidden" id="pagamento-forma" />
         <input type="hidden" id="pagamento-parcelas" />
+        <input type="hidden" id="dia-pagamento-value" />
         <input type="hidden" id="valor-fechado" />
         <input type="hidden" id="faturamento-3meses" />
         <input type="hidden" id="data-vencimento" />
@@ -171,6 +172,7 @@
                 <option value="parcelado_sumup">Sumup</option>
                 <option value="parcelado_sumup_novo">Sumup (novo link)</option>
                 <option value="recorrente_cartao">Cartão Recorrente</option>
+                <option value="pix_recorrente">Pix recorrente</option>
               </select>
             </div>
             <div class="field">
@@ -955,6 +957,7 @@
           <option value="parcelado_sumup">Parcelado Sumup</option>
           <option value="parcelado_sumup_novo">Parcelado Sumup (novo link)</option>
           <option value="recorrente_cartao">Cartão de Crédito Recorrente</option>
+          <option value="pix_recorrente">Pix recorrente</option>
           <option value="sinal">Sinal</option>
         </select>
       </div>
@@ -981,6 +984,10 @@
       <div class="field" id="modal-recorrencia-field" hidden>
         <label for="modal-recorrencia-quantidade">Quantidade de recorrências (meses)</label>
         <input type="number" id="modal-recorrencia-quantidade" min="1" step="1" placeholder="Ex: 12" />
+      </div>
+      <div class="field" id="modal-dia-pagamento-field" hidden>
+        <label for="modal-dia-pagamento">Dia de pagamento (1 a 31)</label>
+        <input type="number" id="modal-dia-pagamento" min="1" max="31" step="1" placeholder="Ex: 10" />
       </div>
       <div class="field" id="modal-recorrencia-valor-field" hidden>
         <label for="modal-recorrencia-valor">Valor da parcela (R$)</label>
@@ -1073,7 +1080,7 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="script.js?v=20261046"></script>
+  <script src="script.js?v=20261047"></script>
   <script src="eventos.js?v=5"></script>
 </body>
 </html>
