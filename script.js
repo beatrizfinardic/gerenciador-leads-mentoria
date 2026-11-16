@@ -208,6 +208,7 @@ const reuniao6mDataInput = document.getElementById("reuniao-6m-data");
 const reuniao6mObsInput = document.getElementById("reuniao-6m-obs");
 const faturamento6mesesInput = document.getElementById("faturamento-6meses-input");
 const dataRenovacaoInput = document.getElementById("data-renovacao");
+const upgradeEmeritosInput = document.getElementById("upgrade-emeritos");
 const progressoDetailsSection = document.getElementById("progresso-details-section");
 const faturamentoAtualInput = document.getElementById("faturamento-atual");
 const faturamentoRenovacaoInput = document.getElementById("faturamento-renovacao");
@@ -1215,7 +1216,7 @@ function renderMentorados(leads) {
   const searchTerm = document.getElementById("mentorados-search")?.value.toLowerCase() || "";
   const mentorados = leads.filter((l) =>
     l.status === "convertido" &&
-    !(l.renovou === false && l.reuniao_6m_feita === true) &&
+    !(l.renovou === false && l.reuniao_6m_feita === true && l.upgrade_emeritos !== true) &&
     l.tipo_mentoria === mentoriaTypeTab &&
     (searchTerm === "" || l.nome.toLowerCase().includes(searchTerm))
   );
@@ -1317,7 +1318,7 @@ function renderMentorados(leads) {
     .join("");
 
   const mentoradosNaoRenovados = leads.filter((l) =>
-    (l.status === "nao_renovou" || (l.status === "convertido" && l.renovou === false && l.reuniao_6m_feita === true)) &&
+    (l.status === "nao_renovou" || (l.status === "convertido" && l.renovou === false && l.reuniao_6m_feita === true && l.upgrade_emeritos !== true)) &&
     l.tipo_mentoria === mentoriaTypeTab
   );
   mentoradosNaoRenovadosEmptyState.hidden = mentoradosNaoRenovados.length !== 0;
@@ -1591,6 +1592,7 @@ form.addEventListener("submit", async (e) => {
     reuniao_6m_obs: statusInput.value === "convertido" ? reuniao6mObsInput.value || null : null,
     faturamento_6meses: statusInput.value === "convertido" && faturamento6mesesInput.value ? Number(faturamento6mesesInput.value) : null,
     data_renovacao: statusInput.value === "convertido" ? dataRenovacaoInput.value || null : null,
+    upgrade_emeritos: statusInput.value === "convertido" ? upgradeEmeritosInput.checked : null,
     faturamento_atual: statusInput.value === "convertido" && faturamentoAtualInput.value ? Number(faturamentoAtualInput.value) : null,
     faturamento_renovacao: statusInput.value === "convertido" && faturamentoRenovacaoInput.value ? Number(faturamentoRenovacaoInput.value) : null,
     alunos_presencial: statusInput.value === "convertido" && alunosPresencialInput.value ? Number(alunosPresencialInput.value) : null,
@@ -1715,6 +1717,7 @@ function loadLeadIntoForm(lead) {
   reuniao6mObsInput.value = lead.reuniao_6m_obs || "";
   faturamento6mesesInput.value = lead.faturamento_6meses || "";
   dataRenovacaoInput.value = lead.data_renovacao || "";
+  upgradeEmeritosInput.checked = lead.upgrade_emeritos === true;
   faturamentoAtualInput.value = lead.faturamento_atual || "";
   faturamentoRenovacaoInput.value = lead.faturamento_renovacao || "";
   alunosPresencialInput.value = lead.alunos_presencial || "";
