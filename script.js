@@ -847,7 +847,7 @@ function renderFaturamento(leads) {
       const meta = FORMA_PAGAMENTO_META[formaKey] || FORMA_PAGAMENTO_META.a_vista;
       const isRecorrente = formaKey === "recorrente_cartao";
       const isSinal = formaKey === "sinal";
-      const bruto = isSinal
+      const bruto = formaKey === "a_acertar" ? 0 : isSinal
         ? Number(l.valor_pago ?? l.pagamento_parcelas) || 0
         : formaKey === "pix_recorrente"
         ? Number(l.valor_pago) || 0
