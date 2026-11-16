@@ -54,6 +54,7 @@
       <button class="nav-tab" data-section="alertas">Alertas</button>
       <button class="nav-tab" data-section="acompanhamento">Acompanhamento</button>
       <button class="nav-tab" data-section="materiais">Materiais</button>
+      <button class="nav-tab" data-section="eventos">Calendário</button>
     </nav>
 
     <!-- SEÇÃO: LEADS -->
@@ -731,6 +732,67 @@
       </section>
     </div>
 
+    <!-- SEÇÃO: CALENDÁRIO DE CURSOS E PALESTRAS -->
+    <div id="section-eventos" class="section-container" hidden>
+      <section class="card">
+        <h2 class="section-title">Calendário de cursos e palestras</h2>
+        <p id="eventos-proxima" class="empty-state"></p>
+
+        <form id="evento-form">
+          <div class="form-grid">
+            <div class="field">
+              <label for="evento-tipo">Palestra ou Curso *</label>
+              <select id="evento-tipo" required>
+                <option value="Palestra">Palestra</option>
+                <option value="Curso">Curso</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="evento-tema">Tema *</label>
+              <input type="text" id="evento-tema" required />
+            </div>
+            <div class="field">
+              <label for="evento-local">Local/Cidade</label>
+              <input type="text" id="evento-local" />
+            </div>
+            <div class="field">
+              <label for="evento-organizador">Organizador</label>
+              <input type="text" id="evento-organizador" />
+            </div>
+            <div class="field">
+              <label for="evento-data">Data *</label>
+              <input type="date" id="evento-data" required />
+            </div>
+            <div class="field">
+              <label for="evento-tempo">Tempo</label>
+              <input type="text" id="evento-tempo" placeholder="Ex: 2 dias, 8h" />
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Adicionar evento</button>
+          </div>
+        </form>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Tipo</th>
+                <th>Tema</th>
+                <th>Local/Cidade</th>
+                <th>Organizador</th>
+                <th>Tempo</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="eventos-tbody"></tbody>
+          </table>
+          <p id="eventos-empty" class="empty-state" hidden>Nenhum evento cadastrado.</p>
+        </div>
+      </section>
+    </div>
+
     <!-- SEÇÃO: ACOMPANHAMENTO DOS MENTORADOS -->
     <div id="section-acompanhamento" class="section-container" hidden>
       <section class="card">
@@ -1044,5 +1106,6 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="script.js?v=20261037"></script>
   <script src="acompanhamento.js?v=20261036"></script>
+  <script src="eventos.js?v=1"></script>
 </body>
 </html>
