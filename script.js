@@ -1922,7 +1922,6 @@ async function startApp() {
   dashDataFinalInput.value = todayISO();
 
   await refreshLeads();
-  await carregarAcompanhamento();
   setupRealtime();
 }
 
