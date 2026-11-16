@@ -462,6 +462,13 @@ formValorFechadoInput.addEventListener("input", () => {
 
 formPagamentoFormaInput.addEventListener("change", () => {
   pagamentoFormaInput.value = formPagamentoFormaInput.value;
+  const ehSinal = formPagamentoFormaInput.value === "sinal";
+  sinalValorField.hidden = !ehSinal;
+  sinalDataField.hidden = !ehSinal;
+});
+
+sinalDataInput.addEventListener("input", () => {
+  if (pagamentoFormaInput.value === "sinal") followupDataValueInput.value = sinalDataInput.value;
 });
 
 formPagamentoParcelasInput.addEventListener("input", () => {
@@ -1620,7 +1627,10 @@ form.addEventListener("submit", async (e) => {
     perdido_followup: statusInput.value === "perdido" ? perdidoFollowupInput.value || null : null,
     perdido_followup_data:
       statusInput.value === "perdido" && perdidoFollowupInput.value === "Sim" ? perdidoFollowupDataInput.value || null : null,
-    followup_data: statusInput.value === "follow_up" ? followupDataValueInput.value || null : null,
+    followup_data:
+      statusInput.value === "follow_up" || (statusInput.value === "convertido" && pagamentoFormaInput.value === "sinal")
+        ? followupDataValueInput.value || null
+        : null,
     faturamento_3meses: statusInput.value === "convertido" && faturamento3mesesFieldInput.value ? Number(faturamento3mesesFieldInput.value) : null,
     entrei_contato: statusInput.value === "convertido" && entreiContatoInput.value ? entreiContatoInput.value === "true" : null,
     respondeu: statusInput.value === "convertido" && respondeuInput.value ? respondeuInput.value === "true" : null,
