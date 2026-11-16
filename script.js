@@ -1007,8 +1007,11 @@ function situacaoBadge(dias) {
 }
 
 function renderAlertas(leads) {
-  const reunioes3m = alertasReuniao(leads, 3, "reuniao_3m_feita");
-  const reunioes6m = leads
+  const titulares = leads.filter((l) => l.tipo_mentoria === "Mentoria Titulares");
+  const emeritos = leads.filter((l) => l.tipo_mentoria === "Mentoria Eméritos");
+  const reunioes3m = alertasReuniao(titulares, 3, "reuniao_3m_feita");
+  const reunioes12m = alertasReuniao(emeritos, 12, "reuniao_12m_feita");
+  const reunioes6m = titulares
     .filter((l) => l.status === "convertido" && l.data_vencimento && l.renovou !== true && l.reuniao_6m_feita !== true)
     .map((l) => ({ lead: l, dias: daysUntil(l.data_vencimento) }))
     .filter((a) => a.dias <= ALERTA_ANTECEDENCIA_DIAS)
@@ -1033,6 +1036,18 @@ function renderAlertas(leads) {
         <td>${nomeAlertaCell(a.lead)}</td>
         <td>${contatoAlertaCell(a.lead)}</td>
         <td>${formatDateBR(a.lead.data_vencimento)}</td>
+        <td>${situacaoBadge(a.dias)}</td>
+      </tr>`)
+    .join("");
+
+  document.getElementById("alert-12m-empty").hidden = reunioes12m.length !== 0;
+  document.getElementById("alert-12m-tbody").innerHTML = reunioes12m
+    .map((a) => `
+      <tr class="clickable-row" data-id="${a.lead.id}">
+        <td>${nomeAlertaCell(a.lead)}</td>
+        <td>${contatoAlertaCell(a.lead)}</td>
+        <td>${formatDateBR(a.entrada)}</td>
+        <td>${formatDateBR(a.prevista)}</td>
         <td>${situacaoBadge(a.dias)}</td>
       </tr>`)
     .join("");
