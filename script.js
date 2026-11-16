@@ -1207,6 +1207,7 @@ function renderMentorados(leads) {
   const searchTerm = document.getElementById("mentorados-search")?.value.toLowerCase() || "";
   const mentorados = leads.filter((l) =>
     l.status === "convertido" &&
+    l.renovou !== false &&
     l.tipo_mentoria === mentoriaTypeTab &&
     (searchTerm === "" || l.nome.toLowerCase().includes(searchTerm))
   );
@@ -1313,7 +1314,10 @@ function renderMentorados(leads) {
     `)
     .join("");
 
-  const mentoradosNaoRenovados = leads.filter((l) => l.status === "nao_renovou" && l.tipo_mentoria === mentoriaTypeTab);
+  const mentoradosNaoRenovados = leads.filter((l) =>
+    (l.status === "nao_renovou" || (l.status === "convertido" && l.renovou === false)) &&
+    l.tipo_mentoria === mentoriaTypeTab
+  );
   mentoradosNaoRenovadosEmptyState.hidden = mentoradosNaoRenovados.length !== 0;
   mentoradosNaoRenovadosTbody.innerHTML = mentoradosNaoRenovados
     .map((l) => `
