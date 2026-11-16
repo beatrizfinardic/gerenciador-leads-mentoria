@@ -828,7 +828,8 @@ function renderFaturamento(leads) {
       const formaKey = l.pagamento_forma || "a_vista";
       const meta = FORMA_PAGAMENTO_META[formaKey] || FORMA_PAGAMENTO_META.a_vista;
       const isRecorrente = formaKey === "recorrente_cartao";
-      const bruto = isRecorrente ? l.valor_fechado / (l.pagamento_parcelas || 1) : l.valor_fechado;
+      const isSinal = formaKey === "sinal";
+      const bruto = isSinal ? Number(l.pagamento_parcelas) || 0 : isRecorrente ? l.valor_fechado / (l.pagamento_parcelas || 1) : l.valor_fechado;
       const bruteTotal = isRecorrente ? l.valor_fechado : bruto;
       const ciclos = isRecorrente ? 1 : (meta.taxaFixaPorCiclo ? l.pagamento_parcelas || 1 : 1);
       const liquido = Math.max(0, bruto - bruto * meta.taxaPercentual - meta.taxaFixa * ciclos);
