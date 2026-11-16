@@ -1923,6 +1923,25 @@ function renderDashboardRenovacoes() {
       `
     )
     .join("");
+
+  const simNao = (v) => (v === true ? "Sim" : v === false ? "Não" : "-");
+  document.getElementById("dash-lista-empty").hidden = filtrados.length !== 0;
+  document.getElementById("dash-lista-tbody").innerHTML = filtrados
+    .slice()
+    .sort((a, b) => (a.data_renovacao || a.data_vencimento).localeCompare(b.data_renovacao || b.data_vencimento))
+    .map(
+      (l) => `
+        <tr>
+          <td>${escapeHtml(l.nome)}</td>
+          <td>${escapeHtml(l.whatsapp || "-")}</td>
+          <td>${formatDateBR(l.data_renovacao || l.data_vencimento)}</td>
+          <td>${simNao(l.entrei_contato)}</td>
+          <td>${simNao(l.respondeu)}</td>
+          <td>${simNao(l.agendou_reuniao)}</td>
+          <td>${simNao(l.renovou)}</td>
+        </tr>`
+    )
+    .join("");
 }
 
 /* ---------- Init ---------- */
