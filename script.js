@@ -312,9 +312,7 @@ const cancellationMotivoSelect = document.getElementById("cancellation-motivo");
 const cancellationDataInput = document.getElementById("cancellation-data");
 const cancellationConfirmBtn = document.getElementById("cancellation-confirm-btn");
 const cancellationCancelBtn = document.getElementById("cancellation-cancel-btn");
-const cancellationModalTitle = document.getElementById("cancellation-modal-title");
 let pendingCancellationMentoradoId = null;
-let pendingCancellationStatus = "cancelado";
 
 let leadsCache = [];
 let confirmedStatusValue = "prospect";
@@ -645,10 +643,8 @@ lostCancelBtn.addEventListener("click", () => {
 
 /* ---------- Modal de cancelamento de mentorado ---------- */
 
-function openCancellationModal(mentoradoId, status = "cancelado") {
+function openCancellationModal(mentoradoId) {
   pendingCancellationMentoradoId = mentoradoId;
-  pendingCancellationStatus = status;
-  cancellationModalTitle.textContent = status === "nao_renovou" ? "Não renovou" : "Cancelar mentorado";
   cancellationMotivoSelect.value = "";
   cancellationDataInput.value = todayISO();
   cancellationModal.hidden = false;
@@ -673,7 +669,7 @@ cancellationConfirmBtn.addEventListener("click", async () => {
   }
 
   const { error } = await sb.from("leads").update({
-    status: pendingCancellationStatus,
+    status: "cancelado",
     motivo_cancelamento: motivo,
     data_cancelamento: data
   }).eq("id", pendingCancellationMentoradoId);
@@ -1259,9 +1255,7 @@ function renderMentorados(leads) {
       <div class="mentorado-card" data-id="${l.id}" style="background: white; border: 1px solid #e0e0e0; border-radius: 8px; padding: 16px; cursor: pointer; margin-bottom: 8px;">
         <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px; gap: 8px;">
           <div class="mentorado-card-name" style="font-weight: 700; font-size: 16px; color: #1a1a1a; flex: 1;">${escapeHtml(l.nome)}</div>
-          <button type="button" class="btn btn-warning btn-small mentorado-cancel-btn" data-id="${l.id}" style="margin-left: 4px; padding: 4px 8px; font-size: 10px;">Cancelar</button>
-          <button type="button" class="btn btn-secondary btn-small mentorado-naorenovou-btn" data-id="${l.id}" style="margin-left: 4px; padding: 4px 8px; font-size: 10px;">Não renovou</button>
-          <button type="button" class="btn btn-danger btn-small mentorado-delete-btn" data-id="${l.id}" style="margin-left: 4px; padding: 4px 8px; font-size: 10px;">Excluir</button>
+          <button type="button" class="btn btn-warning btn-small mentorado-cancel-btn" data-id="${l.id}" style="margin-left: 4px; padding: 4px 8px; font-size: 10px;">Cancelar</button>          <button type="button" class="btn btn-danger btn-small mentorado-delete-btn" data-id="${l.id}" style="margin-left: 4px; padding: 4px 8px; font-size: 10px;">Excluir</button>
         </div>
         <div style="font-size: 12px; color: #6b6b6b; line-height: 1.6; margin-bottom: 4px;">Email: <span style="font-weight: 600; color: #1a1a1a;">${escapeHtml(l.email || "-")}</span></div>
         <div style="font-size: 12px; color: #6b6b6b; line-height: 1.6; margin-bottom: 4px;">WhatsApp: <span style="font-weight: 600; color: #1a1a1a;">${escapeHtml(l.whatsapp || "-")}</span></div>
@@ -1277,10 +1271,6 @@ function renderMentorados(leads) {
         const id = e.target.closest(".mentorado-cancel-btn").dataset.id;
         e.stopPropagation();
         openCancellationModal(id);
-      } else if (e.target.closest(".mentorado-naorenovou-btn")) {
-        const id = e.target.closest(".mentorado-naorenovou-btn").dataset.id;
-        e.stopPropagation();
-        openCancellationModal(id, "nao_renovou");
       } else if (e.target.closest(".mentorado-delete-btn")) {
         const id = e.target.closest(".mentorado-delete-btn").dataset.id;
         e.stopPropagation();
