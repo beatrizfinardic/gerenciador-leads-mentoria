@@ -68,6 +68,7 @@
         <input type="hidden" id="pagamento-parcelas" />
         <input type="hidden" id="dia-pagamento-value" />
         <input type="hidden" id="acordo-pagamento-value" />
+        <input type="hidden" id="valor-pago-value" />
         <input type="hidden" id="valor-fechado" />
         <input type="hidden" id="faturamento-3meses" />
         <input type="hidden" id="data-vencimento" />
@@ -992,6 +993,10 @@
         <label for="modal-dia-pagamento">Dia de pagamento (1 a 31)</label>
         <input type="number" id="modal-dia-pagamento" min="1" max="31" step="1" placeholder="Ex: 10" />
       </div>
+      <div class="field" id="modal-valor-pago-field" hidden>
+        <label for="modal-valor-pago">Valor pago até agora (R$)</label>
+        <input type="number" id="modal-valor-pago" min="0" step="0.01" placeholder="0,00" />
+      </div>
       <div class="field field-wide" id="modal-acordo-pagamento-field" hidden>
         <label for="modal-acordo-pagamento">Informações do acordo</label>
         <textarea id="modal-acordo-pagamento" rows="5" placeholder="Descreva o que foi combinado com a pessoa"></textarea>
@@ -1087,7 +1092,7 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="script.js?v=20261050"></script>
+  <script src="script.js?v=20261051"></script>
   <script src="eventos.js?v=5"></script>
 </body>
 </html>

@@ -301,6 +301,9 @@ const diaPagamentoValueInput = document.getElementById("dia-pagamento-value");
 const modalAcordoPagamentoField = document.getElementById("modal-acordo-pagamento-field");
 const modalAcordoPagamentoInput = document.getElementById("modal-acordo-pagamento");
 const acordoPagamentoValueInput = document.getElementById("acordo-pagamento-value");
+const modalValorPagoField = document.getElementById("modal-valor-pago-field");
+const modalValorPagoInput = document.getElementById("modal-valor-pago");
+const valorPagoValueInput = document.getElementById("valor-pago-value");
 const modalSinalValorField = document.getElementById("modal-sinal-valor-field");
 const modalSinalValorInput = document.getElementById("modal-sinal-valor");
 const modalSinalDataField = document.getElementById("modal-sinal-data-field");
@@ -546,6 +549,7 @@ function updateModalFormaFields() {
   modalRecorrenciaValorField.hidden = forma !== "recorrente_cartao";
   modalDiaPagamentoField.hidden = forma !== "pix_recorrente";
   modalAcordoPagamentoField.hidden = forma !== "a_acertar";
+  modalValorPagoField.hidden = forma !== "pix_recorrente";
   modalSinalValorField.hidden = forma !== "sinal";
   modalSinalDataField.hidden = forma !== "sinal";
 }
@@ -568,6 +572,7 @@ function openPaymentModal() {
   modalParcelasSelect.value = pagamentoParcelasInput.value || "2";
   modalDiaPagamentoInput.value = diaPagamentoValueInput.value || "";
   modalAcordoPagamentoInput.value = acordoPagamentoValueInput.value || "";
+  modalValorPagoInput.value = valorPagoValueInput.value || "";
   if (modalFormaSelect.value === "recorrente_cartao" || modalFormaSelect.value === "pix_recorrente") {
     const quantidade = Number(pagamentoParcelasInput.value) || "";
     modalRecorrenciaQuantidadeInput.value = quantidade;
@@ -608,6 +613,7 @@ modalConfirmBtn.addEventListener("click", () => {
   } else if (modalFormaSelect.value === "pix_recorrente") {
     pagamentoParcelasInput.value = modalRecorrenciaQuantidadeInput.value;
     diaPagamentoValueInput.value = modalDiaPagamentoInput.value;
+    valorPagoValueInput.value = modalValorPagoInput.value;
   } else if (modalFormaSelect.value === "a_acertar") {
     pagamentoParcelasInput.value = "";
     acordoPagamentoValueInput.value = modalAcordoPagamentoInput.value.trim();
@@ -719,6 +725,7 @@ function resetForm() {
   tipoMentoriaInput.value = "";
   diaPagamentoValueInput.value = "";
   acordoPagamentoValueInput.value = "";
+  valorPagoValueInput.value = "";
   formValorFechadoInput.value = "";
   formDataVencimentoInput.value = "";
   formFechadoPorInput.value = "";
@@ -833,7 +840,13 @@ function renderFaturamento(leads) {
       const meta = FORMA_PAGAMENTO_META[formaKey] || FORMA_PAGAMENTO_META.a_vista;
       const isRecorrente = formaKey === "recorrente_cartao";
       const isSinal = formaKey === "sinal";
-      const bruto = isSinal ? Number(l.pagamento_parcelas) || 0 : isRecorrente ? l.valor_fechado / (l.pagamento_parcelas || 1) : l.valor_fechado;
+      const bruto = isSinal
+        ? Number(l.pagamento_parcelas) || 0
+        : formaKey === "pix_recorrente"
+        ? Number(l.valor_pago) || 0
+        : isRecorrente
+        ? l.valor_fechado / (l.pagamento_parcelas || 1)
+        : l.valor_fechado;
       const bruteTotal = isRecorrente ? l.valor_fechado : bruto;
       const ciclos = isRecorrente ? 1 : (meta.taxaFixaPorCiclo ? l.pagamento_parcelas || 1 : 1);
       const liquido = Math.max(0, bruto - bruto * meta.taxaPercentual - meta.taxaFixa * ciclos);
@@ -1602,6 +1615,7 @@ form.addEventListener("submit", async (e) => {
     dia_pagamento:
       statusInput.value === "convertido" && diaPagamentoValueInput.value ? Number(diaPagamentoValueInput.value) : null,
     acordo_pagamento: statusInput.value === "convertido" ? acordoPagamentoValueInput.value || null : null,
+    valor_pago: statusInput.value === "convertido" && valorPagoValueInput.value ? Number(valorPagoValueInput.value) : null,
     perdido_motivo: statusInput.value === "perdido" ? perdidoMotivoInput.value || null : null,
     perdido_followup: statusInput.value === "perdido" ? perdidoFollowupInput.value || null : null,
     perdido_followup_data:
@@ -1720,6 +1734,7 @@ function loadLeadIntoForm(lead) {
   pagamentoParcelasInput.value = lead.pagamento_parcelas || "";
   diaPagamentoValueInput.value = lead.dia_pagamento || "";
   acordoPagamentoValueInput.value = lead.acordo_pagamento || "";
+  valorPagoValueInput.value = lead.valor_pago ?? "";
   formValorFechadoInput.value = lead.valor_fechado || "";
   formDataVencimentoInput.value = lead.data_vencimento || "";
   formFechadoPorInput.value = lead.fechado_por || "";
