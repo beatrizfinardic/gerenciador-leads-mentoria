@@ -462,7 +462,11 @@ formPagamentoFormaInput.addEventListener("change", () => {
 });
 
 formPagamentoParcelasInput.addEventListener("input", () => {
-  pagamentoParcelasInput.value = formPagamentoParcelasInput.value;
+  if (pagamentoFormaInput.value !== "sinal") pagamentoParcelasInput.value = formPagamentoParcelasInput.value;
+});
+
+sinalValorInput.addEventListener("input", () => {
+  if (pagamentoFormaInput.value === "sinal") pagamentoParcelasInput.value = sinalValorInput.value;
 });
 
 formFechadoPorInput.addEventListener("change", () => {
