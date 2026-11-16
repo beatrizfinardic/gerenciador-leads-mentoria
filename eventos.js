@@ -3,6 +3,7 @@ const eventoTipoInput = document.getElementById("evento-tipo");
 const eventoTemaInput = document.getElementById("evento-tema");
 const eventoLocalInput = document.getElementById("evento-local");
 const eventoOrganizadorInput = document.getElementById("evento-organizador");
+const eventoContatoInput = document.getElementById("evento-contato");
 const eventoDataInput = document.getElementById("evento-data");
 const eventoTempoInput = document.getElementById("evento-tempo");
 const eventosTbody = document.getElementById("eventos-tbody");
@@ -41,6 +42,7 @@ function renderEventos(eventos) {
           <td>${escapeHtml(e.tema)}</td>
           <td>${escapeHtml(e.local_cidade || "-")}</td>
           <td>${escapeHtml(e.organizador || "-")}</td>
+          <td>${escapeHtml(e.contato || "-")}</td>
           <td>${escapeHtml(e.tempo || "-")}</td>
           <td><button class="btn btn-danger btn-small" data-action="excluir-evento" data-id="${e.id}">Excluir</button></td>
         </tr>`;
@@ -56,6 +58,7 @@ eventosForm.addEventListener("submit", async (e) => {
     tema: eventoTemaInput.value.trim(),
     local_cidade: eventoLocalInput.value.trim() || null,
     organizador: eventoOrganizadorInput.value.trim() || null,
+    contato: eventoContatoInput.value.trim() || null,
     data: eventoDataInput.value,
     tempo: eventoTempoInput.value.trim() || null,
   };

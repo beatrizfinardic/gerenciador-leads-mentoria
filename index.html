@@ -759,6 +759,10 @@
               <input type="text" id="evento-organizador" />
             </div>
             <div class="field">
+              <label for="evento-contato">Contato do organizador (nome e telefone)</label>
+              <input type="text" id="evento-contato" placeholder="Ex: Maria - (11) 99999-9999" />
+            </div>
+            <div class="field">
               <label for="evento-data">Data *</label>
               <input type="date" id="evento-data" required />
             </div>
@@ -781,6 +785,7 @@
                 <th>Tema</th>
                 <th>Local/Cidade</th>
                 <th>Organizador</th>
+                <th>Contato</th>
                 <th>Tempo</th>
                 <th>Ações</th>
               </tr>
@@ -1014,6 +1019,6 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="script.js?v=20261039"></script>
-  <script src="eventos.js?v=1"></script>
+  <script src="eventos.js?v=2"></script>
 </body>
 </html>

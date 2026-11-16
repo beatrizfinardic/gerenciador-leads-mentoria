@@ -6,10 +6,13 @@ create table if not exists eventos (
   tema text not null,
   local_cidade text,
   organizador text,
+  contato text,
   data date not null,
   tempo text,
   created_at timestamptz not null default now()
 );
+
+alter table eventos add column if not exists contato text;
 
 alter table eventos enable row level security;
 
