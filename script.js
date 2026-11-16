@@ -964,6 +964,7 @@ function renderRenewals(leads) {
 /* ---------- Alertas de reuniões e renovações ---------- */
 
 const ALERTA_ANTECEDENCIA_DIAS = 20;
+const ALERTA_3M_ENTRADA_A_PARTIR_DE = "2026-07-01";
 
 function addMonthsToDate(date, months) {
   return new Date(date.getFullYear(), date.getMonth() + months, date.getDate());
@@ -1009,7 +1010,12 @@ function situacaoBadge(dias) {
 function renderAlertas(leads) {
   const titulares = leads.filter((l) => l.tipo_mentoria === "Mentoria Titulares");
   const emeritos = leads.filter((l) => l.tipo_mentoria === "Mentoria Eméritos");
-  const reunioes3m = alertasReuniao(titulares, 3, "reuniao_3m_feita");
+  const entradaMinima = new Date(ALERTA_3M_ENTRADA_A_PARTIR_DE + "T00:00:00");
+  const titularesComReuniao3m = titulares.filter((l) => {
+    const entrada = parseTimestamp(l.created_at);
+    return entrada && entrada >= entradaMinima;
+  });
+  const reunioes3m = alertasReuniao(titularesComReuniao3m, 3, "reuniao_3m_feita");
   const reunioes12m = alertasReuniao(emeritos, 12, "reuniao_12m_feita");
   const reunioes6m = titulares
     .filter((l) => l.status === "convertido" && l.data_vencimento && l.renovou !== true && l.reuniao_6m_feita !== true)
