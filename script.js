@@ -346,6 +346,27 @@ async function refreshLeads() {
   renderAll();
 }
 
+const LEADS_POR_PAGINA = 20;
+let leadsPagina = 1;
+let leadsFiltroAnterior = "";
+const leadsPaginacaoEl = document.getElementById("leads-paginacao");
+
+leadsPaginacaoEl.addEventListener("click", (e) => {
+  const btn = e.target.closest("button[data-pagina]");
+  if (!btn || btn.disabled) return;
+  leadsPagina = parseInt(btn.dataset.pagina, 10);
+  renderTable(leadsCache);
+});
+
+const AVATAR_CORES = ["#dbeafe", "#dcfce7", "#fef3c7", "#fce7f3", "#ede9fe", "#ccfbf1", "#ffedd5"];
+
+function avatarNome(nome) {
+  const partes = (nome || "?").trim().split(/\s+/);
+  const iniciais = ((partes[0]?.[0] || "") + (partes.length > 1 ? partes[partes.length - 1][0] : "")).toUpperCase();
+  const cor = AVATAR_CORES[(nome || "").charCodeAt(0) % AVATAR_CORES.length];
+  return `<span class="nome-com-avatar"><span class="avatar" style="background:${cor}">${escapeHtml(iniciais)}</span>${escapeHtml(nome)}</span>`;
+}
+
 function escapeHtml(str) {
   const div = document.createElement("div");
   div.textContent = str == null ? "" : str;
@@ -793,7 +814,7 @@ function renderLeadsToday(leads) {
       return `
         <tr data-id="${l.id}" class="clickable-row">
           <td>${formatDateTimeBR(l.agendamento_em)}</td>
-          <td>${escapeHtml(l.nome)}</td>
+          <td>${avatarNome(l.nome)}</td>
           <td>${escapeHtml(l.instagram || "-")}</td>
           <td>${escapeHtml(l.email || "-")}</td>
           <td>${escapeHtml(l.whatsapp || "-")}</td>
@@ -1073,7 +1094,7 @@ function renderRenewals(leads) {
       const urgente = l.diasRestantes <= 5;
       return `
         <tr class="clickable-row" data-id="${l.id}">
-          <td>${escapeHtml(l.nome)}</td>
+          <td>${avatarNome(l.nome)}</td>
           <td>${escapeHtml(l.email || "-")}</td>
           <td>${escapeHtml(l.whatsapp || "-")}</td>
           <td>${escapeHtml(l.tipo_mentoria || "-")}</td>
@@ -1416,7 +1437,7 @@ function renderMentorados(leads) {
   mentoradosSaidosTbody.innerHTML = mentoradosCancelados
     .map((l) => `
       <tr>
-        <td>${escapeHtml(l.nome)}</td>
+        <td>${avatarNome(l.nome)}</td>
         <td>${escapeHtml(l.email || "-")}</td>
         <td>${formatDateBR(l.created_at)}</td>
         <td>${formatDateBR(l.data_cancelamento || "-")}</td>
@@ -1435,7 +1456,7 @@ function renderMentorados(leads) {
   mentoradosNaoRenovadosTbody.innerHTML = mentoradosNaoRenovados
     .map((l) => `
       <tr>
-        <td>${escapeHtml(l.nome)}</td>
+        <td>${avatarNome(l.nome)}</td>
         <td>${escapeHtml(l.email || "-")}</td>
         <td>${escapeHtml(l.whatsapp || "-")}</td>
         <td>${formatDateBR(l.created_at)}</td>
@@ -1555,9 +1576,29 @@ function renderTable(leads) {
   tbody.innerHTML = "";
   emptyState.hidden = filtered.length !== 0;
 
-  filtered
-    .slice()
-    .sort((a, b) => parseTimestamp(b.created_at) - parseTimestamp(a.created_at))
+  const filtroAtual = JSON.stringify([origemValue, abordadoValue, activeStatusTab, searchValue]);
+  if (filtroAtual !== leadsFiltroAnterior) {
+    leadsPagina = 1;
+    leadsFiltroAnterior = filtroAtual;
+  }
+
+  const ordenados = filtered.slice().sort((a, b) => parseTimestamp(b.created_at) - parseTimestamp(a.created_at));
+  const totalPaginas = Math.max(1, Math.ceil(ordenados.length / LEADS_POR_PAGINA));
+  leadsPagina = Math.min(leadsPagina, totalPaginas);
+  const inicio = (leadsPagina - 1) * LEADS_POR_PAGINA;
+  const pagina = ordenados.slice(inicio, inicio + LEADS_POR_PAGINA);
+
+  leadsPaginacaoEl.innerHTML = ordenados.length
+    ? `
+      <span class="paginacao-info">Mostrando ${inicio + 1} a ${inicio + pagina.length} de ${ordenados.length}</span>
+      <div class="paginacao-botoes">
+        <button type="button" class="btn btn-secondary btn-small" data-pagina="${leadsPagina - 1}" ${leadsPagina === 1 ? "disabled" : ""}>Anterior</button>
+        <span class="paginacao-atual">${leadsPagina} / ${totalPaginas}</span>
+        <button type="button" class="btn btn-secondary btn-small" data-pagina="${leadsPagina + 1}" ${leadsPagina === totalPaginas ? "disabled" : ""}>Próxima</button>
+      </div>`
+    : "";
+
+  pagina
     .forEach((lead) => {
       const tr = document.createElement("tr");
       const meta = STATUS_META[lead.status];
@@ -1567,7 +1608,7 @@ function renderTable(leads) {
           <button class="btn btn-secondary btn-small" data-action="edit" data-id="${lead.id}">Editar</button>
           <button class="btn btn-danger btn-small" data-action="delete" data-id="${lead.id}">Deletar</button>
         </td>
-        <td>${escapeHtml(lead.nome)}</td>
+        <td>${avatarNome(lead.nome)}</td>
         <td>${escapeHtml(lead.email)}</td>
         <td>${escapeHtml(lead.whatsapp || "-")}</td>
         <td>${escapeHtml(lead.profissao)}</td>
@@ -1999,7 +2040,7 @@ function calcularReunioesPeríodo() {
       return `
         <tr>
           <td>${formatDateTimeBR(l.agendamento_em || l.data_venda || l.created_at)}</td>
-          <td>${escapeHtml(l.nome)}</td>
+          <td>${avatarNome(l.nome)}</td>
           <td><span class="badge" style="background:${meta.bg};color:${meta.text}">${escapeHtml(meta.label)}</span></td>
           <td>${escapeHtml(l.origem || "-")}</td>
           <td>${escapeHtml(l.abordado_por || "-")}</td>
@@ -2084,7 +2125,7 @@ function renderDashboardRenovacoes() {
     .map(
       (l) => `
         <tr>
-          <td>${escapeHtml(l.nome)}</td>
+          <td>${avatarNome(l.nome)}</td>
           <td>${escapeHtml(l.whatsapp || "-")}</td>
           <td>${formatDateBR(l.data_renovacao || l.data_vencimento)}</td>
           <td>${simNao(l.entrei_contato)}</td>
