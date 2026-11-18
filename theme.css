@@ -444,3 +444,49 @@ textarea::placeholder {
 #progresso-details-section .subsection-title {
   color: #9a3412;
 }
+
+.evento-bloco-titulo {
+  margin: 20px 0 12px;
+  padding: 8px 12px;
+  border-left: 4px solid #111827;
+  background: #f3f4f6;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #111827;
+}
+
+.eventos-tabela-wrapper {
+  overflow-x: auto;
+}
+
+.eventos-tabela {
+  min-width: 960px;
+  font-size: 13px;
+}
+
+.eventos-tabela td {
+  vertical-align: top;
+  line-height: 1.45;
+}
+
+.eventos-tabela td:nth-child(1) {
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.eventos-tabela td:nth-child(3) {
+  min-width: 220px;
+  font-weight: 500;
+}
+
+.eventos-tabela td:nth-child(8) {
+  min-width: 200px;
+  white-space: pre-wrap;
+}
+
+.eventos-tabela td:nth-child(10) {
+  white-space: nowrap;
+}

@@ -36,7 +36,7 @@ function renderEventos(eventos) {
 
   eventosTbody.innerHTML = eventos
     .map((e) => {
-      const estilo = e === proxima ? "font-weight:700" : e.data < hoje ? "opacity:0.5" : "";
+      const estilo = e === proxima ? "background:#f0fdf4;font-weight:600" : e.data < hoje ? "color:#9ca3af" : "";
       return `
         <tr style="${estilo}">
           <td>${formatDateBR(e.data)}</td>
