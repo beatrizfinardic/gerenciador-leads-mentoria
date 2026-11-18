@@ -12,7 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css?v=20261028" />
   <link rel="stylesheet" href="faturamento.css?v=2" />
-  <link rel="stylesheet" href="theme.css?v=8" />
+  <link rel="stylesheet" href="theme.css?v=9" />
   <link rel="icon" type="image/png" href="assets/logo.png" />
 </head>
 <body>
@@ -792,10 +792,11 @@
     <div id="section-eventos" class="section-container" hidden>
       <section class="card">
         <h2 class="section-title">Calendário de cursos e palestras</h2>
-        <p id="eventos-proxima" class="empty-state"></p>
+        <div id="eventos-proxima" class="evento-proxima"></div>
 
         <form id="evento-form">
           <div class="form-grid">
+            <div class="form-bloco-titulo">Evento</div>
             <div class="field">
               <label for="evento-tipo">Palestra ou Curso *</label>
               <select id="evento-tipo" required>
@@ -807,6 +808,7 @@
               <label for="evento-tema">Tema *</label>
               <input type="text" id="evento-tema" required />
             </div>
+            <div class="form-bloco-titulo">Local e contato</div>
             <div class="field">
               <label for="evento-local">Local/Cidade</label>
               <input type="text" id="evento-local" />
@@ -819,10 +821,12 @@
               <label for="evento-contato">Telefone do organizador</label>
               <input type="text" id="evento-contato" placeholder="Ex: (11) 99999-9999" />
             </div>
+            <div class="form-bloco-titulo">Pagamento e acordo</div>
             <div class="field">
               <label for="evento-pagamento">Forma de pagamento</label>
               <input type="text" id="evento-pagamento" placeholder="Ex: Gratuito, PIX, cartão em 3x" />
             </div>
+            <div class="form-bloco-titulo">Data e duração</div>
             <div class="field">
               <label for="evento-data">Data *</label>
               <input type="date" id="evento-data" required />
@@ -1119,7 +1123,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-  <script src="script.js?v=20261058"></script>
+  <script src="script.js?v=20261059"></script>
   <script src="eventos.js?v=5"></script>
 </body>
 </html>

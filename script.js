@@ -1134,7 +1134,7 @@ function alertasReuniao(leads, meses, feitaKey) {
 
 function nomeAlertaCell(l) {
   const detalhes = [l.profissao, l.instagram].filter(Boolean).map(escapeHtml).join(" · ");
-  return `${escapeHtml(l.nome)}${detalhes ? `<br /><small>${detalhes}</small>` : ""}`;
+  return `<div class="nome-alerta">${avatarNome(l.nome)}${detalhes ? `<small>${detalhes}</small>` : ""}</div>`;
 }
 
 function contatoAlertaCell(l) {
@@ -1148,8 +1148,8 @@ function contatoAlertaCell(l) {
 
 function situacaoBadge(dias) {
   const texto = dias < 0 ? `Atrasada há ${-dias} dias` : dias === 0 ? "Vence hoje" : `Faltam ${dias} dias`;
-  const cor = dias <= 15 ? "#ef4444" : "#fb923c";
-  return `<span class="badge" style="background:${cor};color:#ffffff">${texto}</span>`;
+  const estilo = dias <= 15 ? "background:#fee2e2;color:#b91c1c" : "background:#ffedd5;color:#9a3412";
+  return `<span class="situacao-pill" style="${estilo}">${texto}</span>`;
 }
 
 function renderAlertas(leads) {

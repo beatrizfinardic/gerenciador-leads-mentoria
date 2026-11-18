@@ -259,3 +259,55 @@ textarea::placeholder {
   opacity: 0.45;
   cursor: not-allowed;
 }
+
+.nome-alerta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.nome-alerta small {
+  color: #6b7280;
+  font-size: 12px;
+  margin-left: 42px;
+}
+
+.situacao-pill {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.table-wrapper td a {
+  color: #15803d;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.table-wrapper td a:hover {
+  text-decoration: underline;
+}
+
+.table-wrapper td small {
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.evento-proxima {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-left: 4px solid #16a34a;
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin: 8px 0 16px;
+  color: #14532d;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.evento-proxima:empty {
+  display: none;
+}
