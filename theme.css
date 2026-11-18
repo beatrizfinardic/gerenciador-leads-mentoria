@@ -408,3 +408,39 @@ textarea::placeholder {
   border-left-color: #7c3aed;
   color: #5b21b6;
 }
+
+.form-bloco-titulo {
+  background: #eff6ff;
+  border-left-color: #2563eb;
+  color: #1e3a8a;
+}
+
+.form-bloco-titulo.bloco-pagamento {
+  background: #f0fdf4;
+  border-left-color: #16a34a;
+  color: #14532d;
+}
+
+.form-bloco-titulo.bloco-acomp {
+  background: #fff7ed;
+  border-left-color: #ea580c;
+  color: #9a3412;
+}
+
+#pagamento-details-section {
+  border-top: 3px solid #16a34a;
+}
+
+#pagamento-details-section .subsection-title {
+  color: #14532d;
+}
+
+#renovacao-details-section,
+#progresso-details-section {
+  border-top: 3px solid #ea580c;
+}
+
+#renovacao-details-section .subsection-title,
+#progresso-details-section .subsection-title {
+  color: #9a3412;
+}
