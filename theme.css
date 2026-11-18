@@ -999,3 +999,15 @@ textarea::placeholder {
 #fat-transacoes-table tbody tr:hover td {
   background: #f8fafc;
 }
+
+.brand-logo {
+  width: 150px;
+  height: auto;
+  max-height: 110px;
+}
+
+.login-logo {
+  width: 200px;
+  height: auto;
+  max-height: 140px;
+}
