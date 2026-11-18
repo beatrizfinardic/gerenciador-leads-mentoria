@@ -75,3 +75,45 @@ textarea::placeholder {
 .mentorado-card-name {
   font-size: 17px !important;
 }
+
+.lead-colunas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.lead-colunas > div {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-content: flex-start;
+}
+
+.lead-colunas > div[hidden] {
+  display: none;
+}
+
+.lead-colunas .subsection-title {
+  margin: 8px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid #e5e7eb;
+  font-size: 14px;
+  font-weight: 700;
+  color: #111827;
+  text-transform: none;
+}
+
+.lead-colunas > div > .subsection-title:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+.lead-colunas .field {
+  margin: 0;
+}
