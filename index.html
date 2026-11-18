@@ -12,7 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css?v=20261028" />
   <link rel="stylesheet" href="faturamento.css?v=2" />
-  <link rel="stylesheet" href="theme.css?v=4" />
+  <link rel="stylesheet" href="theme.css?v=5" />
   <link rel="icon" type="image/png" href="assets/logo.png" />
 </head>
 <body>
@@ -590,6 +590,7 @@
       <p style="color: #666; margin-bottom: 20px;">Preencha os dados principais do mentorado ativo</p>
       <form id="mentorado-form">
         <div class="form-grid">
+          <div class="form-bloco-titulo">Dados do mentorado</div>
           <div class="field">
             <label for="mentorado-nome">Nome *</label>
             <input type="text" id="mentorado-nome" placeholder="Nome do mentorado" required />
@@ -602,6 +603,7 @@
             <label for="mentorado-whatsapp">WhatsApp *</label>
             <input type="tel" id="mentorado-whatsapp" placeholder="(00) 00000-0000" required />
           </div>
+          <div class="form-bloco-titulo">Contrato e pagamento</div>
           <div class="field">
             <label for="mentorado-tipo">Tipo de Mentoria *</label>
             <select id="mentorado-tipo" required>
@@ -636,6 +638,7 @@
             <label for="mentorado-data-restante">Data para Acertar o Restante</label>
             <input type="date" id="mentorado-data-restante" />
           </div>
+          <div class="form-bloco-titulo">Acompanhamento</div>
           <div class="field">
             <label for="mentorado-faturamento">Faturamento Atual do Mentorado (R$)</label>
             <input type="number" id="mentorado-faturamento" min="0" step="0.01" placeholder="0,00" />

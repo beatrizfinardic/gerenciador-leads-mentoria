@@ -62,3 +62,16 @@ textarea::placeholder {
 .resumo-dia {
   margin-bottom: 20px;
 }
+
+.mentorado-card {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+  transition: box-shadow 0.15s ease;
+}
+
+.mentorado-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+}
+
+.mentorado-card-name {
+  font-size: 17px !important;
+}
