@@ -1037,7 +1037,7 @@ function renderFaturamento(leads) {
   const end = new Date(endDate + "T23:59:59");
 
   const vendasNormais = leads
-    .filter((l) => !RECORRENTES.includes(l.pagamento_forma))
+    .filter((l) => !(RECORRENTES.includes(l.pagamento_forma) && l.data_primeiro_pagamento))
     .filter((l) => l.status === "convertido" && typeof l.valor_fechado === "number")
     .filter((l) => {
       if (fatOrigemTab === "fluxo") return l.origem && l.origem.startsWith("Fluxo");
