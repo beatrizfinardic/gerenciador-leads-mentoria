@@ -772,3 +772,15 @@ textarea::placeholder {
   margin: 24px 0 14px;
   border-radius: 8px;
 }
+
+.form-bloco-titulo.bloco-origem {
+  background: #f5f3ff;
+  border-left-color: #7c3aed;
+  color: #5b21b6;
+}
+
+.form-bloco-titulo.bloco-agendamento {
+  background: #ecfeff;
+  border-left-color: #0891b2;
+  color: #155e75;
+}
