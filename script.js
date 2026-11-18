@@ -1152,6 +1152,8 @@ function situacaoBadge(dias) {
   return `<span class="situacao-pill" style="${estilo}">${texto}</span>`;
 }
 
+let alertasContagem = { m3: 0, m6: 0, m12: 0 };
+
 function renderAlertas(leads) {
   const titulares = leads.filter((l) => l.tipo_mentoria === "Mentoria Titulares");
   const emeritos = leads.filter((l) => l.tipo_mentoria === "Mentoria Eméritos");
@@ -1168,6 +1170,7 @@ function renderAlertas(leads) {
     .filter((a) => a.dias <= ALERTA_ANTECEDENCIA_DIAS)
     .sort((a, b) => a.dias - b.dias);
 
+  alertasContagem = { m3: reunioes3m.length, m6: reunioes6m.length, m12: reunioes12m.length };
   document.getElementById("alert-3m-empty").hidden = reunioes3m.length !== 0;
   document.getElementById("alert-3m-tbody").innerHTML = reunioes3m
     .map((a) => `
@@ -1771,6 +1774,7 @@ function renderResumoDia(leads) {
 function renderAll() {
   const secoes = [
     () => renderResumoDia(leadsCache),
+    () => renderHome(leadsCache),
     () => renderDashboards(leadsCache),
     () => renderTable(leadsCache),
     () => renderRenewals(leadsCache),

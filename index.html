@@ -12,7 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css?v=20261028" />
   <link rel="stylesheet" href="faturamento.css?v=2" />
-  <link rel="stylesheet" href="theme.css?v=13" />
+  <link rel="stylesheet" href="theme.css?v=14" />
   <link rel="icon" type="image/png" href="assets/logo.png" />
 </head>
 <body>
@@ -50,7 +50,8 @@
 
     <!-- NAVEGAÇÃO PRINCIPAL -->
     <nav class="main-nav">
-      <button class="nav-tab active" data-section="leads">Agendamentos</button>
+      <button class="nav-tab active" data-section="home">Visão geral</button>
+      <button class="nav-tab" data-section="leads">Agendamentos</button>
       <button class="nav-tab" data-section="mentorados">Mentorados</button>
       <button class="nav-tab" data-section="dashboard-renovacoes">Dashboard Renovações</button>
       <button class="nav-tab" data-section="alertas">Alertas</button>
@@ -59,7 +60,25 @@
     </nav>
 
     <!-- SEÇÃO: LEADS -->
-    <div id="section-leads" class="section-container">
+    <div id="section-home" class="section-container">
+      <section class="card">
+        <h2 class="section-title">Visão geral</h2>
+        <div id="home-resumo" class="summary-grid"></div>
+        <div id="home-pendencias" class="home-pendencias"></div>
+        <div class="home-duas-colunas">
+          <div>
+            <h3 class="subsection-title">Calendário</h3>
+            <div id="home-calendario"></div>
+          </div>
+          <div>
+            <h3 class="subsection-title">Próximos eventos</h3>
+            <div id="home-proximos"></div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div id="section-leads" class="section-container" hidden>
 
     <div id="resumo-dia" class="summary-grid resumo-dia"></div>
 
@@ -1158,7 +1177,8 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-  <script src="script.js?v=20261061"></script>
+  <script src="home.js?v=1"></script>
+  <script src="script.js?v=20261062"></script>
   <script src="eventos.js?v=6"></script>
 </body>
 </html>
