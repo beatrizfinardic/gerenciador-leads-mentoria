@@ -852,3 +852,16 @@ textarea::placeholder {
   margin-bottom: 0;
   scroll-snap-align: start;
 }
+
+.lead-colunas {
+  scrollbar-width: none;
+}
+
+.lead-colunas::-webkit-scrollbar {
+  display: none;
+}
+
+.lead-colunas > div {
+  flex: 0 0 100%;
+  max-width: 100%;
+}

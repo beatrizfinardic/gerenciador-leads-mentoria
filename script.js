@@ -2241,10 +2241,10 @@ document.getElementById("alertas-tabs").addEventListener("click", (e) => {
 
 const leadColunasEl = document.querySelector(".lead-colunas");
 document.getElementById("col-anterior").addEventListener("click", () => {
-  leadColunasEl.scrollBy({ left: -leadColunasEl.clientWidth * 0.8, behavior: "smooth" });
+  leadColunasEl.scrollBy({ left: -leadColunasEl.clientWidth, behavior: "smooth" });
 });
 document.getElementById("col-proxima").addEventListener("click", () => {
-  leadColunasEl.scrollBy({ left: leadColunasEl.clientWidth * 0.8, behavior: "smooth" });
+  leadColunasEl.scrollBy({ left: leadColunasEl.clientWidth, behavior: "smooth" });
 });
 
 const evtProximosCarrosselEl = document.getElementById("evt-proximos");
