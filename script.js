@@ -2246,3 +2246,11 @@ document.getElementById("col-anterior").addEventListener("click", () => {
 document.getElementById("col-proxima").addEventListener("click", () => {
   leadColunasEl.scrollBy({ left: leadColunasEl.clientWidth * 0.8, behavior: "smooth" });
 });
+
+const evtProximosCarrosselEl = document.getElementById("evt-proximos");
+document.getElementById("prox-anterior").addEventListener("click", () => {
+  evtProximosCarrosselEl.scrollBy({ left: -evtProximosCarrosselEl.clientWidth * 0.8, behavior: "smooth" });
+});
+document.getElementById("prox-proxima").addEventListener("click", () => {
+  evtProximosCarrosselEl.scrollBy({ left: evtProximosCarrosselEl.clientWidth * 0.8, behavior: "smooth" });
+});

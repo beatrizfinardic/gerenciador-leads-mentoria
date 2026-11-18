@@ -826,3 +826,29 @@ textarea::placeholder {
   scroll-snap-align: start;
   max-width: 100%;
 }
+
+.carrossel-cabecalho {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.carrossel-setas {
+  display: flex;
+  gap: 6px;
+}
+
+.carrossel-cards {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  gap: 12px;
+  padding-bottom: 6px;
+}
+
+.carrossel-cards .home-evento {
+  flex: 0 0 240px;
+  margin-bottom: 0;
+  scroll-snap-align: start;
+}
