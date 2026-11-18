@@ -873,3 +873,57 @@ textarea::placeholder {
 #reuniao6m-details-section .subsection-title {
   color: #9a3412;
 }
+
+#leads-table-wrapper,
+#leads-table {
+  overflow-x: auto;
+}
+
+#leads-table {
+  min-width: 1100px;
+}
+
+#leads-table td,
+#leads-table th {
+  padding: 10px 12px;
+  vertical-align: middle;
+}
+
+#leads-table td:nth-child(1) {
+  white-space: nowrap;
+}
+
+#leads-table td:nth-child(1) .btn {
+  margin: 0 4px 0 0;
+  padding: 6px 10px;
+}
+
+#leads-table td:nth-child(2) {
+  min-width: 200px;
+}
+
+#leads-table td:nth-child(3) {
+  min-width: 180px;
+  max-width: 220px;
+  word-break: break-all;
+  font-size: 12px;
+}
+
+#leads-table td:nth-child(4) {
+  white-space: nowrap;
+}
+
+#leads-table td:nth-child(5) {
+  min-width: 170px;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+#leads-table td:nth-child(10),
+#leads-table td:nth-child(9) {
+  white-space: nowrap;
+}
+
+#leads-table td:nth-child(8) {
+  white-space: nowrap;
+}
