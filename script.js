@@ -1749,34 +1749,8 @@ tbody.addEventListener("click", (e) => {
   }
 });
 
-const resumoDiaEl = document.getElementById("resumo-dia");
-
-function renderResumoDia(leads) {
-  const hojeLeads = leads.filter((l) => isToday(l.agendamento_em));
-  const reunioesHoje = hojeLeads.filter(
-    (l) => l.status !== "agendado" && l.status !== "nao_compareceu" && l.status !== "nao_respondeu" && l.status !== "desqualificado"
-  ).length;
-
-  resumoDiaEl.innerHTML = [
-    { label: "Agendamentos hoje", value: hojeLeads.length },
-    { label: "Reuniões feitas hoje", value: reunioesHoje },
-    { label: "Não compareceram hoje", value: hojeLeads.filter((l) => l.status === "nao_compareceu").length },
-    { label: "Follow ups pendentes", value: leads.filter((l) => l.status === "follow_up").length },
-  ]
-    .map(
-      (t) => `
-        <div class="summary-tile">
-          <span class="label">${t.label}</span>
-          <span class="value">${t.value}</span>
-        </div>
-      `
-    )
-    .join("");
-}
-
 function renderAll() {
   const secoes = [
-    () => renderResumoDia(leadsCache),
     () => renderHome(leadsCache),
     () => renderDashboards(leadsCache),
     () => renderTable(leadsCache),
