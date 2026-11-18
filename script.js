@@ -2311,3 +2311,7 @@ document.getElementById("prox-anterior").addEventListener("click", () => {
 document.getElementById("prox-proxima").addEventListener("click", () => {
   evtProximosCarrosselEl.scrollBy({ left: evtProximosCarrosselEl.clientWidth * 0.8, behavior: "smooth" });
 });
+
+document.querySelector('.nav-tab[data-section="faturamento"]').addEventListener("click", () => {
+  window.dispatchEvent(new Event("resize"));
+});
