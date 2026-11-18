@@ -865,3 +865,11 @@ textarea::placeholder {
   flex: 0 0 100%;
   max-width: 100%;
 }
+
+#reuniao6m-details-section {
+  border-top: 3px solid #ea580c;
+}
+
+#reuniao6m-details-section .subsection-title {
+  color: #9a3412;
+}

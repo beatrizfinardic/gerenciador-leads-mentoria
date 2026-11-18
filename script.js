@@ -198,6 +198,7 @@ const followupDataField = document.getElementById("followup-data-field");
 const followupDataInput = document.getElementById("followup-data");
 const followupDataValueInput = document.getElementById("followup-data-value");
 const renovacaoDetailsSection = document.getElementById("renovacao-details-section");
+const reuniao6mDetailsSection = document.getElementById("reuniao6m-details-section");
 const entreiContatoInput = document.getElementById("entrei-contato");
 const respondeuInput = document.getElementById("respondeu");
 const agendouReuniaoInput = document.getElementById("agendou-reuniao");
@@ -1977,9 +1978,11 @@ function loadLeadIntoForm(lead) {
     pagamentoDetailsSection.hidden = false;
     if (lead.status === "convertido") {
       renovacaoDetailsSection.hidden = false;
+      reuniao6mDetailsSection.hidden = false;
       progressoDetailsSection.hidden = false;
     } else {
       renovacaoDetailsSection.hidden = true;
+      reuniao6mDetailsSection.hidden = true;
       progressoDetailsSection.hidden = true;
     }
 
@@ -1996,6 +1999,7 @@ function loadLeadIntoForm(lead) {
     followupDataField.hidden = false;
     pagamentoDetailsSection.hidden = true;
     renovacaoDetailsSection.hidden = true;
+    reuniao6mDetailsSection.hidden = true;
     progressoDetailsSection.hidden = true;
     sinalValorField.hidden = true;
     sinalDataField.hidden = true;
@@ -2004,6 +2008,7 @@ function loadLeadIntoForm(lead) {
     pagamentoDetailsSection.hidden = true;
     followupDataField.hidden = true;
     renovacaoDetailsSection.hidden = true;
+    reuniao6mDetailsSection.hidden = true;
     progressoDetailsSection.hidden = true;
     sinalValorField.hidden = true;
     sinalDataField.hidden = true;
