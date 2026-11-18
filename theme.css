@@ -1070,3 +1070,46 @@ textarea::placeholder {
 #fat-transacoes-table td:last-child {
   white-space: nowrap;
 }
+
+#fat-transacoes-table {
+  min-width: 0;
+  width: 100%;
+  font-size: 12px;
+  table-layout: auto;
+}
+
+#fat-transacoes-table th,
+#fat-transacoes-table td {
+  padding: 8px 6px;
+  white-space: normal;
+}
+
+#fat-transacoes-table th {
+  font-size: 10px;
+  letter-spacing: 0.02em;
+}
+
+#fat-transacoes-table td:nth-child(1) .nome-com-avatar {
+  gap: 6px;
+}
+
+#fat-transacoes-table .avatar {
+  width: 24px;
+  height: 24px;
+  font-size: 10px;
+}
+
+#fat-transacoes-table .badge,
+#fat-transacoes-table .situacao-pill {
+  padding: 2px 6px;
+  font-size: 10px;
+}
+
+#fat-transacoes-table td:nth-child(10),
+#fat-transacoes-table th:nth-child(10) {
+  white-space: nowrap;
+}
+
+.table-wrapper:has(#fat-transacoes-table) {
+  overflow-x: hidden;
+}
