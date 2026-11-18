@@ -823,6 +823,68 @@ leadsTodayOrigemTabsEl.addEventListener("click", (e) => {
 
 /* ---------- Faturamento ---------- */
 
+let fatChartMes = null;
+let fatChartForma = null;
+
+function renderFaturamentoGraficos(vendas) {
+  if (typeof Chart === "undefined") return;
+
+  const porMes = {};
+  vendas.forEach((v) => {
+    const d = parseTimestamp(v.data_venda || v.created_at);
+    if (!d) return;
+    const chave = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+    porMes[chave] = (porMes[chave] || 0) + v.bruto;
+  });
+  const chavesMes = Object.keys(porMes).sort();
+  const labelsMes = chavesMes.map((c) => {
+    const [ano, mes] = c.split("-");
+    return `${mes}/${ano}`;
+  });
+  const valoresMes = chavesMes.map((c) => porMes[c]);
+
+  const porForma = {};
+  vendas.forEach((v) => {
+    porForma[v.formaLabel] = (porForma[v.formaLabel] || 0) + v.bruto;
+  });
+  const labelsForma = Object.keys(porForma);
+  const valoresForma = labelsForma.map((k) => porForma[k]);
+
+  const corTexto = "#94a3b8";
+  const cores = ["#22c55e", "#3b82f6", "#f59e0b", "#ec4899", "#8b5cf6", "#06b6d4", "#f97316", "#84cc16"];
+
+  if (fatChartMes) fatChartMes.destroy();
+  fatChartMes = new Chart(document.getElementById("fat-chart-mes"), {
+    type: "bar",
+    data: {
+      labels: labelsMes,
+      datasets: [{ label: "Faturamento bruto (R$)", data: valoresMes, backgroundColor: "#22c55e", borderRadius: 6 }],
+    },
+    options: {
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { color: corTexto } },
+        y: { ticks: { color: corTexto, callback: (v) => formatBRL(v) }, grid: { color: "#1e293b" } },
+      },
+    },
+  });
+
+  if (fatChartForma) fatChartForma.destroy();
+  fatChartForma = new Chart(document.getElementById("fat-chart-forma"), {
+    type: "doughnut",
+    data: {
+      labels: labelsForma,
+      datasets: [{ data: valoresForma, backgroundColor: cores, borderWidth: 0 }],
+    },
+    options: {
+      plugins: {
+        legend: { position: "bottom", labels: { color: corTexto } },
+        tooltip: { callbacks: { label: (ctx) => `${ctx.label}: ${formatBRL(ctx.raw)}` } },
+      },
+    },
+  });
+}
+
 function renderFaturamento(leads) {
   const startDate = fatDataInicialInput.value;
   const endDate = fatDataFinalInput.value;
@@ -942,6 +1004,8 @@ function renderFaturamento(leads) {
       `;
     })
     .join("");
+
+  renderFaturamentoGraficos(vendas);
 
   fatTransacoesEmptyState.hidden = vendas.length !== 0;
   fatTransacoesTbody.innerHTML = vendas

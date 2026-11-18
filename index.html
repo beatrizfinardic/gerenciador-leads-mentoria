@@ -11,6 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css?v=20261028" />
+  <link rel="stylesheet" href="faturamento.css?v=1" />
   <link rel="icon" type="image/png" href="assets/logo.png" />
 </head>
 <body>
@@ -445,7 +446,7 @@
     </section>
 
     <!-- FATURAMENTO -->
-    <section class="card">
+    <section class="card faturamento-dark">
       <h2 class="section-title">Faturamento</h2>
 
       <div class="status-tabs" id="fat-origem-tabs">
@@ -467,6 +468,17 @@
       </div>
 
       <div id="fat-resumo" class="summary-grid"></div>
+
+      <div class="fat-graficos">
+        <div class="fat-grafico-box">
+          <h3 class="subsection-title">Faturamento por mês</h3>
+          <canvas id="fat-chart-mes"></canvas>
+        </div>
+        <div class="fat-grafico-box">
+          <h3 class="subsection-title">Vendas por forma de pagamento</h3>
+          <canvas id="fat-chart-forma"></canvas>
+        </div>
+      </div>
 
       <h3 class="subsection-title">Detalhamento por forma de pagamento</h3>
       <div class="table-wrapper">
@@ -1092,7 +1104,8 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="script.js?v=20261054"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <script src="script.js?v=20261055"></script>
   <script src="eventos.js?v=5"></script>
 </body>
 </html>
