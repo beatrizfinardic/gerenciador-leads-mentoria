@@ -1037,7 +1037,7 @@ function renderFaturamento(leads) {
       (v) => `
         <tr>
           <td>${avatarNome(v.nome)}</td>
-          <td>${escapeHtml(v.origem || "-")}</td>
+          <td><span class="situacao-pill" style="background:#ecfeff;color:#155e75">${escapeHtml(v.origem || "-")}</span></td>
           <td>${mentoriaBadge(v.tipo_mentoria)}</td>
           <td>${pessoaBadge(v.abordado_por)}</td>
           <td>${pessoaBadge(v.fechado_por)}</td>

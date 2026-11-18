@@ -984,3 +984,18 @@ textarea::placeholder {
 #fat-mentoria-table tfoot td {
   font-weight: 700;
 }
+
+#fat-transacoes-table td:nth-child(8),
+#fat-transacoes-table th:nth-child(8) {
+  text-align: center;
+}
+
+#fat-transacoes-table td:nth-child(10),
+#fat-transacoes-table th:nth-child(10) {
+  white-space: nowrap;
+  color: #374151;
+}
+
+#fat-transacoes-table tbody tr:hover td {
+  background: #f8fafc;
+}
