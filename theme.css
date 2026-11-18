@@ -666,3 +666,60 @@ textarea::placeholder {
   font-weight: 700;
   color: #5b21b6;
 }
+
+.cal-dia-clicavel {
+  cursor: pointer;
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.cal-dia-clicavel:hover {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
+}
+
+.cal-selecionado {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px #bfdbfe;
+}
+
+.dia-detalhes {
+  margin-top: 16px;
+}
+
+.dia-detalhes-cabecalho {
+  font-size: 15px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 10px;
+}
+
+.dia-bloco {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-left: 4px solid #6b7280;
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 10px;
+}
+
+.dia-bloco-titulo {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #374151;
+  margin-bottom: 6px;
+}
+
+.dia-item {
+  display: flex;
+  flex-direction: column;
+  padding: 6px 0;
+  border-top: 1px solid #f1f5f9;
+  font-size: 13px;
+}
+
+.dia-item span {
+  color: #6b7280;
+  font-size: 12px;
+}

@@ -22,6 +22,7 @@ async function carregarEventos() {
     return;
   }
   renderEventos(data);
+  if (typeof renderHome === "function") renderHome(leadsCache);
 }
 
 function renderEventos(eventos) {

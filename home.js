@@ -4,7 +4,9 @@ let homeMes = new Date();
 let homeLeads = [];
 let homeEventos = [];
 
-const homeCalendarioEl = document.getElementById("home-calendario");
+const homeCalendarioEl = document.getElementById("evt-calendario");
+const evtDiaDetalhesEl = document.getElementById("evt-dia-detalhes");
+let diaSelecionado = null;
 const homeProximosEl = document.getElementById("home-proximos");
 const homeResumoEl = document.getElementById("home-resumo");
 const homePendenciasEl = document.getElementById("home-pendencias");
@@ -115,7 +117,7 @@ function renderHomeCalendario(leads, eventos) {
     const chave = isoFromDate(new Date(ano, mes, dia));
     const m = mapa[chave] || {};
     html += `
-      <div class="cal-dia${chave === hoje ? " cal-hoje" : ""}">
+      <div class="cal-dia cal-dia-clicavel${chave === hoje ? " cal-hoje" : ""}${chave === diaSelecionado ? " cal-selecionado" : ""}" data-dia="${chave}">
         <span class="cal-numero">${dia}</span>
         <div class="cal-marcas">
           ${m.agendamento ? `<span class="marca marca-ag">${m.agendamento}</span>` : ""}
@@ -180,4 +182,35 @@ homeCalendarioEl.addEventListener("click", (e) => {
   if (!btn) return;
   homeMes = new Date(homeMes.getFullYear(), homeMes.getMonth() + parseInt(btn.dataset.mes, 10), 1);
   renderHomeCalendario(homeLeads, homeEventos);
+});
+
+function renderDiaDetalhes(chave) {
+  const agendamentos = homeLeads.filter((l) => {
+    if (!l.agendamento_em) return false;
+    const d = parseTimestamp(l.agendamento_em);
+    return d && isoFromDate(d) === chave;
+  });
+  const eventosDia = homeEventos.filter((e) => e.data === chave);
+  const renovacoes = homeLeads.filter((l) => l.status === "convertido" && prazoRenovacao(l) === chave);
+
+  const bloco = (titulo, cor, itens) => `
+    <div class="dia-bloco" style="border-left-color:${cor}">
+      <div class="dia-bloco-titulo">${titulo} (${itens.length})</div>
+      ${itens.length ? itens.join("") : `<p class="empty-state">Nada neste dia.</p>`}
+    </div>`;
+
+  evtDiaDetalhesEl.innerHTML = `
+    <div class="dia-detalhes-cabecalho">Dia ${formatDateBR(chave)}</div>
+    ${bloco("Agendamentos", "#2563eb", agendamentos.map((l) => `<div class="dia-item"><strong>${escapeHtml(l.nome)}</strong><span>${escapeHtml(l.origem || "-")} · ${escapeHtml(l.status_label || (STATUS_META[l.status] || {}).label || l.status)}</span></div>`))}
+    ${bloco("Eventos", "#7c3aed", eventosDia.map((e) => `<div class="dia-item"><strong>${escapeHtml(e.tema)}</strong><span>${escapeHtml(e.tipo)}${e.local_cidade ? " · " + escapeHtml(e.local_cidade) : ""}${e.organizador ? " · " + escapeHtml(e.organizador) : ""}</span></div>`))}
+    ${bloco("Renovações", "#ea580c", renovacoes.map((l) => `<div class="dia-item"><strong>${escapeHtml(l.nome)}</strong><span>${escapeHtml(l.tipo_mentoria || "-")}</span></div>`))}
+  `;
+}
+
+homeCalendarioEl.addEventListener("click", (e) => {
+  const dia = e.target.closest("[data-dia]");
+  if (!dia) return;
+  diaSelecionado = dia.dataset.dia;
+  renderHomeCalendario(homeLeads, homeEventos);
+  renderDiaDetalhes(diaSelecionado);
 });
