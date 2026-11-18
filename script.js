@@ -850,7 +850,7 @@ function renderFaturamentoGraficos(vendas) {
   const labelsForma = Object.keys(porForma);
   const valoresForma = labelsForma.map((k) => porForma[k]);
 
-  const corTexto = "#94a3b8";
+  const corTexto = "#6b7280";
   const cores = ["#22c55e", "#3b82f6", "#f59e0b", "#ec4899", "#8b5cf6", "#06b6d4", "#f97316", "#84cc16"];
 
   if (fatChartMes) fatChartMes.destroy();
@@ -864,7 +864,7 @@ function renderFaturamentoGraficos(vendas) {
       plugins: { legend: { display: false } },
       scales: {
         x: { ticks: { color: corTexto } },
-        y: { ticks: { color: corTexto, callback: (v) => formatBRL(v) }, grid: { color: "#1e293b" } },
+        y: { ticks: { color: corTexto, callback: (v) => formatBRL(v) }, grid: { color: "#e5e7eb" } },
       },
     },
   });
