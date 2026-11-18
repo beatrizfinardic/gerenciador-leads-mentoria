@@ -759,31 +759,40 @@
         <h2 class="section-title">Alertas</h2>
         <p class="empty-state">Avisos com 20 dias de antecedência. Clique no mentorado para registrar a reunião.</p>
 
-        <h3 class="subsection-title">Reunião de 3 meses pendente</h3>
-        <div class="table-wrapper">
-          <table>
-            <thead><tr><th>Mentorado</th><th>Contato</th><th>Entrada</th><th>Data prevista</th><th>Situação</th></tr></thead>
-            <tbody id="alert-3m-tbody"></tbody>
-          </table>
-          <p id="alert-3m-empty" class="empty-state" hidden>Nenhuma reunião de 3 meses pendente.</p>
+        <div class="status-tabs" id="alertas-tabs">
+          <button type="button" class="status-tab active" data-alerta="3m">Alinhamento (3 meses)</button>
+          <button type="button" class="status-tab" data-alerta="6m">Renovação (6 meses)</button>
         </div>
 
-        <h3 class="subsection-title">Reunião de renovação (6 meses)</h3>
-        <div class="table-wrapper">
-          <table>
-            <thead><tr><th>Mentorado</th><th>Contato</th><th>Vencimento</th><th>Situação</th></tr></thead>
-            <tbody id="alert-6m-tbody"></tbody>
-          </table>
-          <p id="alert-6m-empty" class="empty-state" hidden>Nenhuma reunião de renovação pendente.</p>
+        <div id="alertas-3m">
+          <h3 class="subsection-title">Reunião de alinhamento (3 meses)</h3>
+          <div class="table-wrapper">
+            <table>
+              <thead><tr><th>Mentorado</th><th>Contato</th><th>Entrada</th><th>Data prevista</th><th>Situação</th></tr></thead>
+              <tbody id="alert-3m-tbody"></tbody>
+            </table>
+            <p id="alert-3m-empty" class="empty-state" hidden>Nenhuma reunião de 3 meses pendente.</p>
+          </div>
         </div>
 
-        <h3 class="subsection-title">Reunião de 12 meses pendente (Eméritos)</h3>
-        <div class="table-wrapper">
-          <table>
-            <thead><tr><th>Mentorado</th><th>Contato</th><th>Entrada</th><th>Data prevista</th><th>Situação</th></tr></thead>
-            <tbody id="alert-12m-tbody"></tbody>
-          </table>
-          <p id="alert-12m-empty" class="empty-state" hidden>Nenhuma reunião de 12 meses pendente.</p>
+        <div id="alertas-6m" hidden>
+          <h3 class="subsection-title">Reunião de renovação (6 meses)</h3>
+          <div class="table-wrapper">
+            <table>
+              <thead><tr><th>Mentorado</th><th>Contato</th><th>Vencimento</th><th>Situação</th></tr></thead>
+              <tbody id="alert-6m-tbody"></tbody>
+            </table>
+            <p id="alert-6m-empty" class="empty-state" hidden>Nenhuma reunião de renovação pendente.</p>
+          </div>
+
+          <h3 class="subsection-title">Eméritos: reunião de 12 meses</h3>
+          <div class="table-wrapper">
+            <table>
+              <thead><tr><th>Mentorado</th><th>Contato</th><th>Entrada</th><th>Data prevista</th><th>Situação</th></tr></thead>
+              <tbody id="alert-12m-tbody"></tbody>
+            </table>
+            <p id="alert-12m-empty" class="empty-state" hidden>Nenhuma reunião de 12 meses pendente.</p>
+          </div>
         </div>
       </section>
     </div>
@@ -1123,7 +1132,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-  <script src="script.js?v=20261059"></script>
+  <script src="script.js?v=20261060"></script>
   <script src="eventos.js?v=5"></script>
 </body>
 </html>
