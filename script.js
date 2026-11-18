@@ -213,7 +213,10 @@ const dataRenovacaoInput = document.getElementById("data-renovacao");
 const upgradeEmeritosInput = document.getElementById("upgrade-emeritos");
 const progressoDetailsSection = document.getElementById("progresso-details-section");
 const faturamentoAtualInput = document.getElementById("faturamento-atual");
-const faturamentoRenovacaoInput = document.getElementById("faturamento-renovacao");
+const alunosPresencial3mInput = document.getElementById("alunos-presencial-3m");
+const alunosOnline3mInput = document.getElementById("alunos-online-3m");
+const alunosPresencial6mInput = document.getElementById("alunos-presencial-6m");
+const alunosOnline6mInput = document.getElementById("alunos-online-6m");
 const alunosPresencialInput = document.getElementById("alunos-presencial");
 const alunosOnlineInput = document.getElementById("alunos-online");
 const informacoesGeraisInput = document.getElementById("informacoes-gerais");
@@ -1434,7 +1437,7 @@ function renderMentorados(leads) {
   const totalFaturamento = mentorados.reduce((sum, l) => sum + (l.valor_fechado || 0), 0);
   const ticketMedioVenda = totalConvertidos ? totalFaturamento / totalConvertidos : 0;
 
-  const totalFaturamentoRenovacao = mentorados.reduce((sum, l) => sum + (l.faturamento_renovacao || 0), 0);
+  const totalFaturamentoRenovacao = mentorados.reduce((sum, l) => sum + (l.faturamento_6meses || 0), 0);
   const ticketMedioRenovacao = totalConvertidos ? totalFaturamentoRenovacao / totalConvertidos : 0;
 
   const titularesCount = leads.filter((l) => l.status === "convertido" && l.tipo_mentoria === "Mentoria Titulares").length;
@@ -1856,7 +1859,10 @@ form.addEventListener("submit", async (e) => {
     data_renovacao: statusInput.value === "convertido" ? dataRenovacaoInput.value || null : null,
     upgrade_emeritos: statusInput.value === "convertido" ? upgradeEmeritosInput.checked : null,
     faturamento_atual: statusInput.value === "convertido" && faturamentoAtualInput.value ? Number(faturamentoAtualInput.value) : null,
-    faturamento_renovacao: statusInput.value === "convertido" && faturamentoRenovacaoInput.value ? Number(faturamentoRenovacaoInput.value) : null,
+    alunos_presencial_3m: statusInput.value === "convertido" && alunosPresencial3mInput.value ? Number(alunosPresencial3mInput.value) : null,
+    alunos_online_3m: statusInput.value === "convertido" && alunosOnline3mInput.value ? Number(alunosOnline3mInput.value) : null,
+    alunos_presencial_6m: statusInput.value === "convertido" && alunosPresencial6mInput.value ? Number(alunosPresencial6mInput.value) : null,
+    alunos_online_6m: statusInput.value === "convertido" && alunosOnline6mInput.value ? Number(alunosOnline6mInput.value) : null,
     alunos_presencial: statusInput.value === "convertido" && alunosPresencialInput.value ? Number(alunosPresencialInput.value) : null,
     alunos_online: statusInput.value === "convertido" && alunosOnlineInput.value ? Number(alunosOnlineInput.value) : null,
     informacoes_gerais: statusInput.value === "convertido" ? informacoesGeraisInput.value.trim() || null : null,
@@ -1984,7 +1990,10 @@ function loadLeadIntoForm(lead) {
   dataRenovacaoInput.value = lead.data_renovacao || "";
   upgradeEmeritosInput.checked = lead.upgrade_emeritos === true;
   faturamentoAtualInput.value = lead.faturamento_atual || "";
-  faturamentoRenovacaoInput.value = lead.faturamento_renovacao || "";
+  alunosPresencial3mInput.value = lead.alunos_presencial_3m ?? "";
+  alunosOnline3mInput.value = lead.alunos_online_3m ?? "";
+  alunosPresencial6mInput.value = lead.alunos_presencial_6m ?? "";
+  alunosOnline6mInput.value = lead.alunos_online_6m ?? "";
   alunosPresencialInput.value = lead.alunos_presencial || "";
   alunosOnlineInput.value = lead.alunos_online || "";
   informacoesGeraisInput.value = lead.informacoes_gerais || "";

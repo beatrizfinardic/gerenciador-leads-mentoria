@@ -257,6 +257,14 @@
               <label for="faturamento-3meses-input">Faturamento - 3 meses (R$)</label>
               <input type="number" id="faturamento-3meses-input" min="0" step="0.01" placeholder="0,00" />
             </div>
+            <div class="field">
+              <label for="alunos-presencial-3m">Alunos presencial (3 meses)</label>
+              <input type="number" id="alunos-presencial-3m" min="0" step="1" placeholder="0" />
+            </div>
+            <div class="field">
+              <label for="alunos-online-3m">Alunos online (3 meses)</label>
+              <input type="number" id="alunos-online-3m" min="0" step="1" placeholder="0" />
+            </div>
             <div class="field field-wide">
               <label for="reuniao-3m-obs">Observações da reunião de 3 meses</label>
               <textarea id="reuniao-3m-obs" rows="3"></textarea>
@@ -298,6 +306,14 @@
               <label for="faturamento-6meses-input">Faturamento - 6 meses (R$)</label>
               <input type="number" id="faturamento-6meses-input" min="0" step="0.01" placeholder="0,00" />
             </div>
+            <div class="field">
+              <label for="alunos-presencial-6m">Alunos presencial (renovação)</label>
+              <input type="number" id="alunos-presencial-6m" min="0" step="1" placeholder="0" />
+            </div>
+            <div class="field">
+              <label for="alunos-online-6m">Alunos online (renovação)</label>
+              <input type="number" id="alunos-online-6m" min="0" step="1" placeholder="0" />
+            </div>
             <div class="field field-wide">
               <label for="reuniao-6m-obs">Observações da reunião de 6 meses</label>
               <textarea id="reuniao-6m-obs" rows="3"></textarea>
@@ -320,26 +336,22 @@
           </div>
 
           <div id="progresso-details-section" hidden>
-            <div class="subsection-title">Informações de Progresso do Mentorado</div>
+            <div class="subsection-title">Entrada na mentoria</div>
             <div class="field">
-              <label for="faturamento-atual">Faturamento inicial (ao entrar na mentoria, R$)</label>
+              <label for="faturamento-atual">Faturamento inicial (R$)</label>
               <input type="number" id="faturamento-atual" min="0" step="0.01" placeholder="0,00" />
             </div>
             <div class="field">
-              <label for="faturamento-renovacao">Faturamento na reunião de renovação (R$)</label>
-              <input type="number" id="faturamento-renovacao" min="0" step="0.01" placeholder="0,00" />
-            </div>
-            <div class="field">
-              <label for="alunos-presencial">Quantidade de alunos - Presencial</label>
+              <label for="alunos-presencial">Alunos presencial (entrada)</label>
               <input type="number" id="alunos-presencial" min="0" step="1" placeholder="0" />
             </div>
             <div class="field">
-              <label for="alunos-online">Quantidade de alunos - Online</label>
+              <label for="alunos-online">Alunos online (entrada)</label>
               <input type="number" id="alunos-online" min="0" step="1" placeholder="0" />
             </div>
             <div class="field field-wide">
-              <label for="informacoes-gerais">Informações gerais</label>
-              <textarea id="informacoes-gerais" rows="3" placeholder="Ex: Dificuldades, desafios, insights importantes..."></textarea>
+              <label for="informacoes-gerais">Observações da entrada</label>
+              <textarea id="informacoes-gerais" rows="3" placeholder="O que foi combinado na entrada, dificuldades, insights..."></textarea>
             </div>
           </div>
         </div>
@@ -1178,7 +1190,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
   <script src="home.js?v=1"></script>
-  <script src="script.js?v=20261062"></script>
+  <script src="script.js?v=20261063"></script>
   <script src="eventos.js?v=6"></script>
 </body>
 </html>
