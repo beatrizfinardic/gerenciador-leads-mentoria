@@ -723,3 +723,41 @@ textarea::placeholder {
   color: #6b7280;
   font-size: 12px;
 }
+
+#evt-calendario {
+  max-width: 560px;
+}
+
+#evt-calendario .cal-grade {
+  gap: 4px;
+}
+
+#evt-calendario .cal-dia {
+  min-height: 46px;
+  padding: 4px;
+  border-radius: 6px;
+  gap: 2px;
+}
+
+#evt-calendario .cal-numero {
+  font-size: 11px;
+}
+
+#evt-calendario .marca {
+  font-size: 9px;
+  padding: 0 4px;
+}
+
+#evt-calendario .cal-dia-semana {
+  font-size: 10px;
+  padding: 2px 0;
+}
+
+#evt-calendario .cal-cabecalho strong {
+  font-size: 14px;
+}
+
+#evt-calendario + .cal-legenda,
+#evt-calendario .cal-legenda {
+  font-size: 11px;
+}
