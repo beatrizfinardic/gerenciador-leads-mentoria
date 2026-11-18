@@ -419,8 +419,9 @@ function statusKeysForOrigem(origem) {
 function updateStatusSelectColor() {
   const meta = STATUS_META[statusInput.value];
   if (!meta) return;
-  statusInput.style.backgroundColor = meta.bg;
-  statusInput.style.color = meta.text;
+  statusInput.style.backgroundColor = "#ffffff";
+  statusInput.style.color = "#111827";
+  statusInput.style.borderLeft = `6px solid ${meta.bg}`;
 }
 
 function renderStatusOptions(preferredStatus) {
@@ -1627,8 +1628,34 @@ tbody.addEventListener("click", (e) => {
   }
 });
 
+const resumoDiaEl = document.getElementById("resumo-dia");
+
+function renderResumoDia(leads) {
+  const hojeLeads = leads.filter((l) => isToday(l.agendamento_em));
+  const reunioesHoje = hojeLeads.filter(
+    (l) => l.status !== "agendado" && l.status !== "nao_compareceu" && l.status !== "nao_respondeu" && l.status !== "desqualificado"
+  ).length;
+
+  resumoDiaEl.innerHTML = [
+    { label: "Agendamentos hoje", value: hojeLeads.length },
+    { label: "Reuniões feitas hoje", value: reunioesHoje },
+    { label: "Não compareceram hoje", value: hojeLeads.filter((l) => l.status === "nao_compareceu").length },
+    { label: "Follow ups pendentes", value: leads.filter((l) => l.status === "follow_up").length },
+  ]
+    .map(
+      (t) => `
+        <div class="summary-tile">
+          <span class="label">${t.label}</span>
+          <span class="value">${t.value}</span>
+        </div>
+      `
+    )
+    .join("");
+}
+
 function renderAll() {
   const secoes = [
+    () => renderResumoDia(leadsCache),
     () => renderDashboards(leadsCache),
     () => renderTable(leadsCache),
     () => renderRenewals(leadsCache),
@@ -1915,6 +1942,7 @@ renewalsTbody.addEventListener("click", (e) => {
 });
 
 cancelEditBtn.addEventListener("click", resetForm);
+document.getElementById("clear-form-btn").addEventListener("click", resetForm);
 
 /* ---------- Cálculo de Reuniões por Período ---------- */
 
