@@ -2238,3 +2238,11 @@ document.getElementById("alertas-tabs").addEventListener("click", (e) => {
   document.getElementById("alertas-3m").hidden = btn.dataset.alerta !== "3m";
   document.getElementById("alertas-6m").hidden = btn.dataset.alerta !== "6m";
 });
+
+const leadColunasEl = document.querySelector(".lead-colunas");
+document.getElementById("col-anterior").addEventListener("click", () => {
+  leadColunasEl.scrollBy({ left: -leadColunasEl.clientWidth * 0.8, behavior: "smooth" });
+});
+document.getElementById("col-proxima").addEventListener("click", () => {
+  leadColunasEl.scrollBy({ left: leadColunasEl.clientWidth * 0.8, behavior: "smooth" });
+});
