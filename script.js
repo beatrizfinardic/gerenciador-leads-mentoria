@@ -1215,24 +1215,98 @@ document.getElementById("section-alertas").addEventListener("click", (e) => {
 
 /* ---------- Dashboards (automáticos, calculados a partir da tabela) ---------- */
 
-function dashboardCardHtml(key, leads) {
-  const meta = STATUS_META[key];
-  const count = leads.filter((l) => l.status === key).length;
-  return `
-    <div class="dashboard-card" style="background:${meta.cardBg};color:${meta.cardText}">
-      <span class="label">${meta.label}</span>
-      <span class="count">${count}</span>
-    </div>
-  `;
+const DASH_LABELS = {
+  agendado: "Agendado",
+  follow_up: "Follow up",
+  convertido: "Convertido",
+  formacao: "Formação",
+  nao_compareceu: "Não compareceu",
+  nao_respondeu: "Não respondeu",
+  desqualificado: "Desqualificado",
+  perdido: "Perdido",
+  desistencia: "Desistência",
+};
+
+const DASH_GRUPOS = [
+  { titulo: "Em andamento", cor: "#2563eb", keys: ["agendado", "follow_up"] },
+  { titulo: "Vendas", cor: "#16a34a", keys: ["convertido", "formacao"] },
+  { titulo: "Perdas", cor: "#dc2626", keys: ["nao_compareceu", "nao_respondeu", "desqualificado", "perdido", "desistencia"] },
+];
+
+const dshInicioInput = document.getElementById("dsh-data-inicial");
+const dshFimInput = document.getElementById("dsh-data-final");
+let dashChart = null;
+
+function dashboardGruposHtml(leads, total) {
+  return DASH_GRUPOS.map(
+    (g) => `
+      <div class="dash-grupo" style="border-top: 3px solid ${g.cor}">
+        <div class="dash-grupo-titulo">${g.titulo}</div>
+        <div class="dash-cards">
+          ${g.keys
+            .map((k) => {
+              const count = leads.filter((l) => l.status === k).length;
+              const pct = total ? Math.round((count / total) * 100) : 0;
+              return `
+                <div class="dash-card">
+                  <span class="dash-card-label">${DASH_LABELS[k]}</span>
+                  <span class="dash-card-valor">${count}</span>
+                  <span class="dash-card-pct">${pct}% do total</span>
+                </div>`;
+            })
+            .join("")}
+        </div>
+      </div>`
+  ).join("");
 }
 
-function renderDashboards(leads) {
+function renderDashboardGrafico(organico, fluxo) {
+  if (typeof Chart === "undefined") return;
+  const keys = Object.keys(DASH_LABELS);
+  const contar = (lista) => keys.map((k) => lista.filter((l) => l.status === k).length);
+  if (dashChart) dashChart.destroy();
+  dashChart = new Chart(document.getElementById("dash-chart"), {
+    type: "bar",
+    data: {
+      labels: keys.map((k) => DASH_LABELS[k]),
+      datasets: [
+        { label: "Orgânico", data: contar(organico), backgroundColor: "#111827", borderRadius: 4 },
+        { label: "Fluxo", data: contar(fluxo), backgroundColor: "#2563eb", borderRadius: 4 },
+      ],
+    },
+    options: {
+      plugins: { legend: { position: "bottom" } },
+      scales: { y: { beginAtZero: true, ticks: { precision: 0 }, grid: { color: "#e5e7eb" } } },
+    },
+  });
+}
+
+function renderDashboards(todosLeads) {
+  const inicio = dshInicioInput.value ? new Date(dshInicioInput.value + "T00:00:00") : null;
+  const fim = dshFimInput.value ? new Date(dshFimInput.value + "T23:59:59") : null;
+  const leads = todosLeads.filter((l) => {
+    if (!inicio && !fim) return true;
+    const d = parseTimestamp(l.agendamento_em || l.created_at);
+    if (!d) return false;
+    return (!inicio || d >= inicio) && (!fim || d <= fim);
+  });
+
   const organico = leads.filter((l) => !l.origem || !l.origem.startsWith("Fluxo"));
   const fluxo = leads.filter((l) => l.origem && l.origem.startsWith("Fluxo"));
 
-  dashboardOrganicoEl.innerHTML = ORGANICO_STATUSES.map((key) => dashboardCardHtml(key, organico)).join("");
-  dashboardFluxoEl.innerHTML = FLUXO_STATUSES.map((key) => dashboardCardHtml(key, fluxo)).join("");
+  dashboardOrganicoEl.innerHTML =
+    `<div class="dash-total">Total: <strong>${organico.length}</strong></div>` + dashboardGruposHtml(organico, organico.length);
+  dashboardFluxoEl.innerHTML =
+    `<div class="dash-total">Total: <strong>${fluxo.length}</strong></div>` + dashboardGruposHtml(fluxo, fluxo.length);
+  renderDashboardGrafico(organico, fluxo);
 }
+
+document.getElementById("dsh-aplicar-btn").addEventListener("click", () => renderDashboards(leadsCache));
+document.getElementById("dsh-limpar-btn").addEventListener("click", () => {
+  dshInicioInput.value = "";
+  dshFimInput.value = "";
+  renderDashboards(leadsCache);
+});
 
 /* ---------- Custo de tráfego (Fluxo) ---------- */
 

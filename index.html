@@ -12,7 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css?v=20261028" />
   <link rel="stylesheet" href="faturamento.css?v=2" />
-  <link rel="stylesheet" href="theme.css?v=9" />
+  <link rel="stylesheet" href="theme.css?v=10" />
   <link rel="icon" type="image/png" href="assets/logo.png" />
 </head>
 <body>
@@ -547,16 +547,38 @@
     </section>
 
     <!-- RENOVAÇÕES PRÓXIMAS -->
-    <!-- DASHBOARD ORGÂNICO -->
+    <!-- DASHBOARDS DE LEADS -->
     <section class="card">
-      <h2 class="section-title">Dashboard orgânico</h2>
-      <div id="dashboard-organico" class="dashboard-grid"></div>
-    </section>
+      <h2 class="section-title">Dashboards de leads</h2>
+      <div class="filters">
+        <div class="field">
+          <label for="dsh-data-inicial">Data inicial</label>
+          <input type="date" id="dsh-data-inicial" />
+        </div>
+        <div class="field">
+          <label for="dsh-data-final">Data final</label>
+          <input type="date" id="dsh-data-final" />
+        </div>
+        <button type="button" id="dsh-aplicar-btn" class="btn btn-primary">Aplicar</button>
+        <button type="button" id="dsh-limpar-btn" class="btn btn-secondary">Ver tudo</button>
+      </div>
+      <p class="empty-state">Período pela data do agendamento. Sem período, mostra todo o histórico.</p>
 
-    <!-- DASHBOARD FLUXO -->
-    <section class="card">
-      <h2 class="section-title">Dashboard fluxo</h2>
-      <div id="dashboard-fluxo" class="dashboard-grid"></div>
+      <div class="dash-comparativo">
+        <div class="dash-coluna">
+          <h3 class="subsection-title">Orgânico</h3>
+          <div id="dashboard-organico"></div>
+        </div>
+        <div class="dash-coluna">
+          <h3 class="subsection-title">Fluxo</h3>
+          <div id="dashboard-fluxo"></div>
+        </div>
+      </div>
+
+      <div class="dash-grafico-box">
+        <h3 class="subsection-title">Orgânico x Fluxo por status</h3>
+        <canvas id="dash-chart"></canvas>
+      </div>
     </section>
 
     <!-- CUSTO DE TRÁFEGO -->
@@ -1132,7 +1154,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-  <script src="script.js?v=20261060"></script>
+  <script src="script.js?v=20261061"></script>
   <script src="eventos.js?v=5"></script>
 </body>
 </html>
