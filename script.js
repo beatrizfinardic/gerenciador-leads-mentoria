@@ -154,6 +154,7 @@ const FORMA_PAGAMENTO_META = {
   parcelado_eduzz: { label: "Eduzz", taxaFixa: 2.49, taxaPercentual: 0.0459 },
   parcelado_sumup: { label: "Sumup", taxaFixa: 0, taxaPercentual: 0 },
   parcelado_sumup_novo: { label: "Sumup (novo link)", taxaFixa: 0, taxaPercentual: 0 },
+  sumup_sem_juros: { label: "Cartão Sumup sem juros", taxaFixa: 0, taxaPercentual: 0 },
   recorrente_cartao: { label: "Cartão Recorrente", taxaFixa: 2.49, taxaPercentual: 0.0459, taxaFixaPorCiclo: true },
   pix_recorrente: { label: "Pix recorrente", taxaFixa: 0, taxaPercentual: 0 },
   a_acertar: { label: "A acertar", taxaFixa: 0, taxaPercentual: 0 },
@@ -582,7 +583,7 @@ statusInput.addEventListener("change", () => {
 
 function updateModalFormaFields() {
   const forma = modalFormaSelect.value;
-  modalParcelasField.hidden = !["parcelado_eduzz", "parcelado_sumup", "parcelado_sumup_novo"].includes(forma);
+  modalParcelasField.hidden = !["parcelado_eduzz", "parcelado_sumup", "parcelado_sumup_novo", "sumup_sem_juros"].includes(forma);
   modalRecorrenciaField.hidden = !["recorrente_cartao", "pix_recorrente"].includes(forma);
   modalRecorrenciaValorField.hidden = forma !== "recorrente_cartao";
   modalDiaPagamentoField.hidden = forma !== "pix_recorrente";
