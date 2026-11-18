@@ -156,6 +156,7 @@ const FORMA_PAGAMENTO_META = {
   parcelado_sumup_novo: { label: "Sumup (novo link)", taxaFixa: 0, taxaPercentual: 0 },
   sumup_sem_juros: { label: "Cartão Sumup sem juros", taxaFixa: 0, taxaPercentual: 0 },
   recorrente_cartao: { label: "Cartão Recorrente", taxaFixa: 2.49, taxaPercentual: 0.0459, taxaFixaPorCiclo: true },
+  recorrente_sumup_sem_juros: { label: "Cartão recorrente sem juros (Sumup)", taxaFixa: 0, taxaPercentual: 0 },
   pix_recorrente: { label: "Pix recorrente", taxaFixa: 0, taxaPercentual: 0 },
   a_acertar: { label: "A acertar", taxaFixa: 0, taxaPercentual: 0 },
 };
@@ -303,8 +304,8 @@ const modalDiaPagamentoInput = document.getElementById("modal-dia-pagamento");
 const modalPrimeiroPagamentoField = document.getElementById("modal-primeiro-pagamento-field");
 const modalPrimeiroPagamentoInput = document.getElementById("modal-primeiro-pagamento");
 const primeiroPagamentoValueInput = document.getElementById("primeiro-pagamento-value");
-const RECORRENTES = ["recorrente_cartao", "pix_recorrente"];
-const RECORRENTE_AUTOMATICA = ["recorrente_cartao"];
+const RECORRENTES = ["recorrente_cartao", "recorrente_sumup_sem_juros", "pix_recorrente"];
+const RECORRENTE_AUTOMATICA = ["recorrente_cartao", "recorrente_sumup_sem_juros"];
 let parcelasPagas = new Set();
 const diaPagamentoValueInput = document.getElementById("dia-pagamento-value");
 const modalAcordoPagamentoField = document.getElementById("modal-acordo-pagamento-field");
@@ -584,7 +585,7 @@ statusInput.addEventListener("change", () => {
 function updateModalFormaFields() {
   const forma = modalFormaSelect.value;
   modalParcelasField.hidden = !["parcelado_eduzz", "parcelado_sumup", "parcelado_sumup_novo", "sumup_sem_juros"].includes(forma);
-  modalRecorrenciaField.hidden = !["recorrente_cartao", "pix_recorrente"].includes(forma);
+  modalRecorrenciaField.hidden = !["recorrente_cartao", "recorrente_sumup_sem_juros", "pix_recorrente"].includes(forma);
   modalRecorrenciaValorField.hidden = forma !== "recorrente_cartao";
   modalDiaPagamentoField.hidden = forma !== "pix_recorrente";
   modalPrimeiroPagamentoField.hidden = !RECORRENTES.includes(forma);
@@ -614,7 +615,7 @@ function openPaymentModal() {
   modalPrimeiroPagamentoInput.value = primeiroPagamentoValueInput.value || "";
   modalAcordoPagamentoInput.value = acordoPagamentoValueInput.value || "";
   modalValorPagoInput.value = valorPagoValueInput.value || "";
-  if (modalFormaSelect.value === "recorrente_cartao" || modalFormaSelect.value === "pix_recorrente") {
+  if (["recorrente_cartao", "recorrente_sumup_sem_juros", "pix_recorrente"].includes(modalFormaSelect.value)) {
     const quantidade = Number(pagamentoParcelasInput.value) || "";
     modalRecorrenciaQuantidadeInput.value = quantidade;
     modalRecorrenciaValorInput.value =
@@ -649,7 +650,7 @@ modalConfirmBtn.addEventListener("click", () => {
   valorFechadoInput.value = modalValorFechadoInput.value;
   dataVencimentoInput.value = modalDataVencimentoInput.value;
   pagamentoFormaInput.value = modalFormaSelect.value;
-  if (modalFormaSelect.value === "recorrente_cartao") {
+  if (modalFormaSelect.value === "recorrente_cartao" || modalFormaSelect.value === "recorrente_sumup_sem_juros") {
     pagamentoParcelasInput.value = modalRecorrenciaQuantidadeInput.value;
   } else if (modalFormaSelect.value === "pix_recorrente") {
     pagamentoParcelasInput.value = modalRecorrenciaQuantidadeInput.value;
