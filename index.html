@@ -566,40 +566,6 @@
     </section>
 
     <!-- RENOVAÇÕES PRÓXIMAS -->
-    <!-- DASHBOARDS DE LEADS -->
-    <section class="card">
-      <h2 class="section-title">Dashboards de leads</h2>
-      <div class="filters">
-        <div class="field">
-          <label for="dsh-data-inicial">Data inicial</label>
-          <input type="date" id="dsh-data-inicial" />
-        </div>
-        <div class="field">
-          <label for="dsh-data-final">Data final</label>
-          <input type="date" id="dsh-data-final" />
-        </div>
-        <button type="button" id="dsh-aplicar-btn" class="btn btn-primary">Aplicar</button>
-        <button type="button" id="dsh-limpar-btn" class="btn btn-secondary">Ver tudo</button>
-      </div>
-      <p class="empty-state">Período pela data do agendamento. Sem período, mostra todo o histórico.</p>
-
-      <div class="dash-comparativo">
-        <div class="dash-coluna">
-          <h3 class="subsection-title">Orgânico</h3>
-          <div id="dashboard-organico"></div>
-        </div>
-        <div class="dash-coluna">
-          <h3 class="subsection-title">Fluxo</h3>
-          <div id="dashboard-fluxo"></div>
-        </div>
-      </div>
-
-      <div class="dash-grafico-box">
-        <h3 class="subsection-title">Orgânico x Fluxo por status</h3>
-        <canvas id="dash-chart"></canvas>
-      </div>
-    </section>
-
     <!-- CUSTO DE TRÁFEGO -->
     <section class="card">
       <h2 class="section-title">Custo de tráfego (Fluxo)</h2>
@@ -623,13 +589,18 @@
 
       <div class="subsection-title" style="margin-top: 32px;">Distribuição de Status</div>
       <div id="custo-faturamento" class="summary-grid"></div>
+
+      <div class="dash-grafico-box">
+        <h3 class="subsection-title">Leads do fluxo por status no período</h3>
+        <canvas id="cust-chart"></canvas>
+      </div>
     </section>
 
     </div>
 
     <!-- SEÇÃO: AGENDAMENTOS -->
     <!-- SEÇÃO: MENTORADOS (CRM) -->
-    <div id="section-mentorados" class="section-container">
+    <div id="section-mentorados" class="section-container" hidden>
     <section class="card">
       <h2 class="section-title">Adicionar Mentorado Ativo</h2>
       <p style="color: #666; margin-bottom: 20px;">Preencha os dados principais do mentorado ativo</p>
@@ -1196,7 +1167,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
   <script src="home.js?v=5"></script>
-  <script src="script.js?v=20261070"></script>
+  <script src="script.js?v=20261071"></script>
   <script src="eventos.js?v=7"></script>
 </body>
 </html>

@@ -244,8 +244,6 @@ const leadsCalcularBtn = document.getElementById("leads-calcular-btn");
 const leadsReunioesResumoEl = document.getElementById("leads-reunioes-resumo");
 const leadsReunioesTableWrapper = document.getElementById("leads-reunioes-table-wrapper");
 const leadsReunioesTableBody = document.getElementById("leads-reunioes-tbody");
-const dashboardOrganicoEl = document.getElementById("dashboard-organico");
-const dashboardFluxoEl = document.getElementById("dashboard-fluxo");
 const custoDataInicialInput = document.getElementById("custo-data-inicial");
 const custoDataFinalInput = document.getElementById("custo-data-final");
 const custoValorInvestidoInput = document.getElementById("custo-valor-investido");
@@ -1038,13 +1036,13 @@ function renderFaturamento(leads) {
     .map(
       (v) => `
         <tr>
-          <td>${escapeHtml(v.nome)}</td>
+          <td>${avatarNome(v.nome)}</td>
           <td>${escapeHtml(v.origem || "-")}</td>
           <td>${mentoriaBadge(v.tipo_mentoria)}</td>
           <td>${pessoaBadge(v.abordado_por)}</td>
           <td>${pessoaBadge(v.fechado_por)}</td>
           <td>${formatBRL(v.bruto)}</td>
-          <td>${v.formaLabel}</td>
+          <td><span class="situacao-pill" style="background:#f3f4f6;color:#374151">${v.formaLabel}</span></td>
           <td>${v.pagamento_parcelas || "-"}</td>
           <td>${formatBRL(v.liquido)}</td>
           <td>${formatDateBR(v.data_venda || v.created_at)}</td>
@@ -1220,101 +1218,6 @@ document.getElementById("section-alertas").addEventListener("click", (e) => {
   window.scrollTo(0, 0);
 });
 
-/* ---------- Dashboards (automáticos, calculados a partir da tabela) ---------- */
-
-const DASH_LABELS = {
-  agendado: "Agendado",
-  follow_up: "Follow up",
-  convertido: "Convertido",
-  formacao: "Formação",
-  nao_compareceu: "Não compareceu",
-  nao_respondeu: "Não respondeu",
-  desqualificado: "Desqualificado",
-  perdido: "Perdido",
-  desistencia: "Desistência",
-};
-
-const DASH_GRUPOS = [
-  { titulo: "Em andamento", cor: "#2563eb", keys: ["agendado", "follow_up"] },
-  { titulo: "Vendas", cor: "#16a34a", keys: ["convertido", "formacao"] },
-  { titulo: "Perdas", cor: "#dc2626", keys: ["nao_compareceu", "nao_respondeu", "desqualificado", "perdido", "desistencia"] },
-];
-
-const dshInicioInput = document.getElementById("dsh-data-inicial");
-const dshFimInput = document.getElementById("dsh-data-final");
-let dashChart = null;
-
-function dashboardGruposHtml(leads, total) {
-  return DASH_GRUPOS.map(
-    (g) => `
-      <div class="dash-grupo" style="border-top: 3px solid ${g.cor}">
-        <div class="dash-grupo-titulo">${g.titulo}</div>
-        <div class="dash-cards">
-          ${g.keys
-            .map((k) => {
-              const count = leads.filter((l) => l.status === k).length;
-              const pct = total ? Math.round((count / total) * 100) : 0;
-              return `
-                <div class="dash-card">
-                  <span class="dash-card-label">${DASH_LABELS[k]}</span>
-                  <span class="dash-card-valor">${count}</span>
-                  <span class="dash-card-pct">${pct}% do total</span>
-                </div>`;
-            })
-            .join("")}
-        </div>
-      </div>`
-  ).join("");
-}
-
-function renderDashboardGrafico(organico, fluxo) {
-  if (typeof Chart === "undefined") return;
-  const keys = Object.keys(DASH_LABELS);
-  const contar = (lista) => keys.map((k) => lista.filter((l) => l.status === k).length);
-  if (dashChart) dashChart.destroy();
-  dashChart = new Chart(document.getElementById("dash-chart"), {
-    type: "bar",
-    data: {
-      labels: keys.map((k) => DASH_LABELS[k]),
-      datasets: [
-        { label: "Orgânico", data: contar(organico), backgroundColor: "#111827", borderRadius: 4 },
-        { label: "Fluxo", data: contar(fluxo), backgroundColor: "#2563eb", borderRadius: 4 },
-      ],
-    },
-    options: {
-      plugins: { legend: { position: "bottom" } },
-      scales: { y: { beginAtZero: true, ticks: { precision: 0 }, grid: { color: "#e5e7eb" } } },
-    },
-  });
-}
-
-function renderDashboards(todosLeads) {
-  const inicio = dshInicioInput.value ? new Date(dshInicioInput.value + "T00:00:00") : null;
-  const fim = dshFimInput.value ? new Date(dshFimInput.value + "T23:59:59") : null;
-  const leads = todosLeads.filter((l) => {
-    if (!inicio && !fim) return true;
-    const d = parseTimestamp(l.agendamento_em || l.created_at);
-    if (!d) return false;
-    return (!inicio || d >= inicio) && (!fim || d <= fim);
-  });
-
-  const organico = leads.filter((l) => !l.origem || !l.origem.startsWith("Fluxo"));
-  const fluxo = leads.filter((l) => l.origem && l.origem.startsWith("Fluxo"));
-
-  dashboardOrganicoEl.innerHTML =
-    `<div class="dash-total">Total: <strong>${organico.length}</strong></div>` + dashboardGruposHtml(organico, organico.length);
-  dashboardFluxoEl.innerHTML =
-    `<div class="dash-total">Total: <strong>${fluxo.length}</strong></div>` + dashboardGruposHtml(fluxo, fluxo.length);
-  renderDashboardGrafico(organico, fluxo);
-}
-
-document.getElementById("dsh-aplicar-btn").addEventListener("click", () => renderDashboards(leadsCache));
-document.getElementById("dsh-limpar-btn").addEventListener("click", () => {
-  dshInicioInput.value = "";
-  dshFimInput.value = "";
-  renderDashboards(leadsCache);
-});
-
 /* ---------- Custo de tráfego (Fluxo) ---------- */
 
 function getCurrentCostPeriodDates() {
@@ -1324,6 +1227,24 @@ function getCurrentCostPeriodDates() {
   const end = day >= 15 ? new Date(now.getFullYear(), now.getMonth() + 1, 15) : new Date(now.getFullYear(), now.getMonth(), 15);
   const toISO = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
   return { start: toISO(start), end: toISO(end) };
+}
+
+let custoChart = null;
+
+function renderCustoGrafico(fluxoPeriodo) {
+  if (typeof Chart === "undefined") return;
+  const statusKeys = ["agendado", "follow_up", "convertido", "formacao", "nao_compareceu", "nao_respondeu", "desqualificado", "perdido", "desistencia"];
+  const labels = ["Agendado", "Follow up", "Convertido", "Formação", "Não compareceu", "Não respondeu", "Desqualificado", "Perdido", "Desistência"];
+  const dados = statusKeys.map((k) => fluxoPeriodo.filter((l) => l.status === k).length);
+  if (custoChart) custoChart.destroy();
+  custoChart = new Chart(document.getElementById("cust-chart"), {
+    type: "bar",
+    data: { labels, datasets: [{ label: "Leads", data: dados, backgroundColor: "#2563eb", borderRadius: 4 }] },
+    options: {
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true, ticks: { precision: 0 }, grid: { color: "#e5e7eb" } } },
+    },
+  });
 }
 
 function renderCusto(leads) {
@@ -1402,6 +1323,8 @@ function renderCusto(leads) {
     perdido: "Perdido",
     desistencia: "Desistência",
   };
+
+  renderCustoGrafico(fluxoPeriodo);
 
   const custoResumoEl2 = document.getElementById("custo-faturamento");
   if (custoResumoEl2) {
@@ -1753,7 +1676,6 @@ tbody.addEventListener("click", (e) => {
 function renderAll() {
   const secoes = [
     () => renderHome(leadsCache),
-    () => renderDashboards(leadsCache),
     () => renderTable(leadsCache),
     () => renderRenewals(leadsCache),
     () => renderAlertas(leadsCache),
