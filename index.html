@@ -53,7 +53,6 @@
       <button class="nav-tab active" data-section="leads">Agendamentos</button>
       <button class="nav-tab" data-section="faturamento">Faturamento</button>
       <button class="nav-tab" data-section="mentorados">Mentorados</button>
-      <button class="nav-tab" data-section="dashboard-renovacoes">Dashboard Renovações</button>
       <button class="nav-tab" data-section="alertas">Alertas</button>
       <button class="nav-tab" data-section="materiais">Materiais</button>
       <button class="nav-tab" data-section="eventos">Calendário</button>
@@ -801,6 +800,7 @@
         <div class="status-tabs" id="alertas-tabs">
           <button type="button" class="status-tab active" data-alerta="3m">Alinhamento (3 meses)</button>
           <button type="button" class="status-tab" data-alerta="6m">Renovação (6 meses)</button>
+          <button type="button" class="status-tab" data-alerta="dash">Dashboard de renovações</button>
         </div>
 
         <div id="alertas-3m">
@@ -831,6 +831,42 @@
               <tbody id="alert-12m-tbody"></tbody>
             </table>
             <p id="alert-12m-empty" class="empty-state" hidden>Nenhuma reunião de 12 meses pendente.</p>
+          </div>
+        </div>
+        <div id="alertas-dash" hidden>
+  <h3 class="subsection-title">Dashboard de renovações</h3>
+  
+          <div class="filters">
+            <div class="field">
+              <label for="dash-data-inicial">Data inicial</label>
+              <input type="date" id="dash-data-inicial" />
+            </div>
+            <div class="field">
+              <label for="dash-data-final">Data final</label>
+              <input type="date" id="dash-data-final" />
+            </div>
+            <button type="button" id="dash-atualizar-btn" class="btn btn-primary">Atualizar</button>
+          </div>
+  
+          <div id="dash-resumo" class="summary-grid"></div>
+  
+          <h3 class="subsection-title">Mentorados do período</h3>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>WhatsApp</th>
+                  <th>Data da renovação</th>
+                  <th>Entrei em contato?</th>
+                  <th>Respondeu?</th>
+                  <th>Agendou reunião?</th>
+                  <th>Renovou?</th>
+                </tr>
+              </thead>
+              <tbody id="dash-lista-tbody"></tbody>
+            </table>
+            <p id="dash-lista-empty" class="empty-state" hidden>Nenhum mentorado com renovação no período.</p>
           </div>
         </div>
       </section>
@@ -990,45 +1026,6 @@
       </section>
     </div>
 
-    <!-- SEÇÃO: DASHBOARD DE RENOVAÇÕES -->
-    <div id="section-dashboard-renovacoes" class="section-container" hidden>
-      <section class="card">
-        <h2 class="section-title">Dashboard de Renovações</h2>
-
-        <div class="filters">
-          <div class="field">
-            <label for="dash-data-inicial">Data inicial</label>
-            <input type="date" id="dash-data-inicial" />
-          </div>
-          <div class="field">
-            <label for="dash-data-final">Data final</label>
-            <input type="date" id="dash-data-final" />
-          </div>
-          <button type="button" id="dash-atualizar-btn" class="btn btn-primary">Atualizar</button>
-        </div>
-
-        <div id="dash-resumo" class="summary-grid"></div>
-
-        <h3 class="subsection-title">Mentorados do período</h3>
-        <div class="table-wrapper">
-          <table>
-            <thead>
-              <tr>
-                <th>Nome</th>
-                <th>WhatsApp</th>
-                <th>Data da renovação</th>
-                <th>Entrei em contato?</th>
-                <th>Respondeu?</th>
-                <th>Agendou reunião?</th>
-                <th>Renovou?</th>
-              </tr>
-            </thead>
-            <tbody id="dash-lista-tbody"></tbody>
-          </table>
-          <p id="dash-lista-empty" class="empty-state" hidden>Nenhum mentorado com renovação no período.</p>
-        </div>
-      </section>
-    </div>
 
   <!-- MODAL: forma de pagamento ao converter -->
   <div id="payment-modal" class="modal-overlay" hidden>
@@ -1200,7 +1197,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
   <script src="home.js?v=5"></script>
-  <script src="script.js?v=20261076"></script>
+  <script src="script.js?v=20261077"></script>
   <script src="eventos.js?v=7"></script>
 </body>
 </html>

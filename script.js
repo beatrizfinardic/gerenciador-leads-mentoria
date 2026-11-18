@@ -2292,8 +2292,9 @@ document.getElementById("alertas-tabs").addEventListener("click", (e) => {
   const btn = e.target.closest(".status-tab");
   if (!btn) return;
   document.querySelectorAll("#alertas-tabs .status-tab").forEach((el) => el.classList.toggle("active", el === btn));
-  document.getElementById("alertas-3m").hidden = btn.dataset.alerta !== "3m";
-  document.getElementById("alertas-6m").hidden = btn.dataset.alerta !== "6m";
+  ["3m", "6m", "dash"].forEach((k) => {
+    document.getElementById(`alertas-${k}`).hidden = btn.dataset.alerta !== k;
+  });
 });
 
 const leadColunasEl = document.querySelector(".lead-colunas");
