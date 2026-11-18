@@ -784,3 +784,16 @@ textarea::placeholder {
   border-left-color: #0891b2;
   color: #155e75;
 }
+
+.evt-cal-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 560px) minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .evt-cal-layout {
+    grid-template-columns: 1fr;
+  }
+}

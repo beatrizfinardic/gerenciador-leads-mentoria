@@ -6,6 +6,7 @@ let homeEventos = [];
 
 const homeCalendarioEl = document.getElementById("evt-calendario");
 const evtDiaDetalhesEl = document.getElementById("evt-dia-detalhes");
+const evtProximosEl = document.getElementById("evt-proximos");
 let diaSelecionado = null;
 
 
@@ -84,6 +85,7 @@ async function renderHome(leads) {
   try {
     await carregarEventosHome();
     renderHomeCalendario(homeLeads, homeEventos);
+    renderEvtProximos(homeEventos);
   } catch (erro) {
     console.error(erro);
   }
@@ -126,3 +128,23 @@ homeCalendarioEl.addEventListener("click", (e) => {
   renderHomeCalendario(homeLeads, homeEventos);
   renderDiaDetalhes(diaSelecionado);
 });
+
+function renderEvtProximos(eventos) {
+  const hoje = todayISO();
+  const proximos = eventos.filter((e) => e.data >= hoje).slice(0, 8);
+  evtProximosEl.innerHTML = proximos.length
+    ? proximos
+        .map(
+          (e) => `
+            <div class="home-evento">
+              <div class="home-evento-data">${formatDateBR(e.data)}</div>
+              <div class="home-evento-info">
+                <strong>${escapeHtml(e.tema)}</strong>
+                <span>${escapeHtml(e.tipo)}${e.local_cidade ? " · " + escapeHtml(e.local_cidade) : ""}</span>
+              </div>
+              <div class="home-evento-dias">${daysUntil(e.data) === 0 ? "Hoje" : daysUntil(e.data) + " dias"}</div>
+            </div>`
+        )
+        .join("")
+    : `<p class="empty-state">Nenhum evento futuro cadastrado.</p>`;
+}
