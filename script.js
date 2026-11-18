@@ -150,14 +150,15 @@ function mentoriaBadge(tipo) {
 // Eduzz cobra taxa fixa + percentual por transacao no credito (juros da parcela fica com o cliente).
 // No cartao recorrente a taxa fixa incide a cada cobranca mensal (taxaFixaPorCiclo), nao uma vez so no total.
 const FORMA_PAGAMENTO_META = {
-  a_vista: { label: "PIX", taxaFixa: 0, taxaPercentual: 0 },
+  a_vista: { label: "PIX à vista", taxaFixa: 0, taxaPercentual: 0 },
+  sinal: { label: "PIX sinal", taxaFixa: 0, taxaPercentual: 0 },
   parcelado_eduzz: { label: "Eduzz", taxaFixa: 2.49, taxaPercentual: 0.0459 },
   parcelado_sumup: { label: "Sumup", taxaFixa: 0, taxaPercentual: 0 },
   parcelado_sumup_novo: { label: "Sumup (novo link)", taxaFixa: 0, taxaPercentual: 0 },
   sumup_sem_juros: { label: "Cartão Sumup sem juros", taxaFixa: 0, taxaPercentual: 0 },
   recorrente_cartao: { label: "Cartão Recorrente", taxaFixa: 2.49, taxaPercentual: 0.0459, taxaFixaPorCiclo: true },
   recorrente_sumup_sem_juros: { label: "Cartão recorrente sem juros (Sumup)", taxaFixa: 0, taxaPercentual: 0 },
-  pix_recorrente: { label: "Pix recorrente", taxaFixa: 0, taxaPercentual: 0 },
+  pix_recorrente: { label: "PIX recorrente", taxaFixa: 0, taxaPercentual: 0 },
   a_acertar: { label: "A acertar", taxaFixa: 0, taxaPercentual: 0 },
 };
 
