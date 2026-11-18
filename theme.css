@@ -927,3 +927,60 @@ textarea::placeholder {
 #leads-table td:nth-child(8) {
   white-space: nowrap;
 }
+
+#fat-transacoes-table {
+  min-width: 1000px;
+}
+
+#fat-transacoes-table td,
+#fat-transacoes-table th,
+#fat-formas-table td,
+#fat-formas-table th,
+#fat-mentoria-table td,
+#fat-mentoria-table th {
+  padding: 10px 12px;
+}
+
+#fat-transacoes-table td:nth-child(6),
+#fat-transacoes-table td:nth-child(9),
+#fat-formas-table td:nth-child(2),
+#fat-formas-table td:nth-child(3),
+#fat-formas-table td:nth-child(4),
+#fat-formas-table td:nth-child(5),
+#fat-mentoria-table td:nth-child(2),
+#fat-mentoria-table td:nth-child(3),
+#fat-mentoria-table td:nth-child(4),
+#fat-transacoes-table th:nth-child(6),
+#fat-transacoes-table th:nth-child(9),
+#fat-formas-table th:nth-child(2),
+#fat-formas-table th:nth-child(3),
+#fat-formas-table th:nth-child(4),
+#fat-formas-table th:nth-child(5),
+#fat-mentoria-table th:nth-child(2),
+#fat-mentoria-table th:nth-child(3),
+#fat-mentoria-table th:nth-child(4) {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#fat-transacoes-table td:nth-child(8),
+#fat-transacoes-table td:nth-child(10),
+#fat-transacoes-table td:nth-child(10) {
+  white-space: nowrap;
+}
+
+#fat-transacoes-table tbody tr:nth-child(even) td,
+#fat-formas-table tbody tr:nth-child(even) td,
+#fat-mentoria-table tbody tr:nth-child(even) td {
+  background: #fafafa;
+}
+
+#fat-transacoes-table tbody td:nth-child(1) {
+  font-weight: 500;
+  color: #111827;
+}
+
+#fat-formas-table tfoot td,
+#fat-mentoria-table tfoot td {
+  font-weight: 700;
+}
