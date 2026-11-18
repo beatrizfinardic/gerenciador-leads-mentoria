@@ -390,3 +390,21 @@ textarea::placeholder {
     grid-template-columns: 1fr;
   }
 }
+
+.form-bloco-titulo.bloco-azul {
+  background: #eff6ff;
+  border-left-color: #2563eb;
+  color: #1e3a8a;
+}
+
+.form-bloco-titulo.bloco-laranja {
+  background: #fff7ed;
+  border-left-color: #ea580c;
+  color: #9a3412;
+}
+
+.form-bloco-titulo.bloco-roxo {
+  background: #f5f3ff;
+  border-left-color: #7c3aed;
+  color: #5b21b6;
+}
