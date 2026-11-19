@@ -1313,3 +1313,22 @@ textarea::placeholder {
   outline: none;
   border-color: #111827;
 }
+
+.modo-detalhe > *:not(#mentorado-detalhe) {
+  display: none !important;
+}
+
+.mentorado-detalhe {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mentorado-detalhe[hidden] {
+  display: none;
+}
+
+.detalhe-cabecalho {
+  display: flex;
+  justify-content: flex-start;
+}

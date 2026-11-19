@@ -1846,19 +1846,26 @@ async function deleteMentorado(leadId) {
   await refreshLeads();
 }
 
+function devolverFormulario() {
+  const detalhe = document.getElementById("mentorado-detalhe");
+  if (detalhe.hidden) return;
+  const leadsSection = document.getElementById("section-leads");
+  leadsSection.insertBefore(document.getElementById("lead-form-card"), leadsSection.firstChild);
+  detalhe.hidden = true;
+  document.getElementById("section-mentorados").classList.remove("modo-detalhe");
+}
+
 window.clickMentorado = function(leadId) {
   const lead = leadsCache.find((l) => l.id === leadId);
-  if (lead) {
-    const leadsTab = document.querySelector('.nav-tab[data-section="leads"]');
-    if (leadsTab) leadsTab.click();
-    loadLeadIntoForm(lead);
-    const leadsSection = document.querySelector("#section-leads");
-    if (leadsSection) {
-      leadsSection.classList.add("modo-mentorado");
-      leadsSection.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  }
+  if (!lead) return;
+  document.getElementById("mentorado-detalhe-slot").appendChild(document.getElementById("lead-form-card"));
+  document.getElementById("mentorado-detalhe").hidden = false;
+  document.getElementById("section-mentorados").classList.add("modo-detalhe");
+  loadLeadIntoForm(lead);
+  document.getElementById("mentorado-detalhe").scrollIntoView({ behavior: "smooth", block: "start" });
 };
+
+document.getElementById("detalhe-voltar").addEventListener("click", devolverFormulario);
 
 
 mentoradosPaginationEl.addEventListener("click", (e) => {
@@ -2521,6 +2528,7 @@ function renderDashboardRenovacoes() {
 document.querySelectorAll(".nav-tab").forEach((btn) => {
   btn.addEventListener("click", () => {
     const section = btn.dataset.section;
+    devolverFormulario();
 
     document.querySelectorAll(".nav-tab").forEach((b) => b.classList.remove("active"));
     document.querySelectorAll(".section-container").forEach((s) => s.hidden = true);
