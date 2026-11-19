@@ -12,7 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css?v=20261028" />
   <link rel="stylesheet" href="faturamento.css?v=2" />
-  <link rel="stylesheet" href="theme.css?v=33" />
+  <link rel="stylesheet" href="theme.css?v=34" />
   <link rel="icon" type="image/png" href="assets/conterato-logo.png" />
 </head>
 <body>
@@ -161,69 +161,71 @@
           </div>
         </div>
 
-        <div class="lead-colunas">
+        <div class="faixa-horizontal">
           <div id="pagamento-details-section" hidden>
-            <div class="subsection-title">Informações de Pagamento</div>
-            <div class="field">
-              <label for="form-valor-fechado">Valor fechado (R$)</label>
-              <input type="number" id="form-valor-fechado" min="0" step="0.01" placeholder="0,00" />
+              <div class="subsection-title">Informações de Pagamento</div>
+              <div class="field">
+                <label for="form-valor-fechado">Valor fechado (R$)</label>
+                <input type="number" id="form-valor-fechado" min="0" step="0.01" placeholder="0,00" />
+              </div>
+              <div class="field">
+                <label for="form-pagamento-forma">Forma de pagamento</label>
+                <select id="form-pagamento-forma">
+                  <option value="">Selecione...</option>
+                  <option value="sinal">Sinal</option>
+                  <option value="a_vista">PIX</option>
+                  <option value="parcelado_eduzz">Eduzz</option>
+                  <option value="parcelado_sumup">Sumup</option>
+                  <option value="parcelado_sumup_novo">Sumup (novo link)</option>
+                  <option value="sumup_sem_juros">Cartão Sumup sem juros</option>
+                  <option value="recorrente_cartao">Cartão Recorrente</option>
+                  <option value="recorrente_sumup_sem_juros">Cartão recorrente sem juros (Sumup)</option>
+                  <option value="pix_recorrente">Pix recorrente</option>
+                  <option value="a_acertar">A acertar</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="form-pagamento-parcelas">Parcelas / Recorrência</label>
+                <input type="number" id="form-pagamento-parcelas" min="1" placeholder="1" />
+              </div>
+              <div class="field">
+                <label for="form-fechado-por">Quem fechou</label>
+                <select id="form-fechado-por">
+                  <option value="">Selecione...</option>
+                  <option value="Paulo" hidden>Paulo</option>
+                  <option value="Igor">Igor</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="form-tipo-mentoria">Tipo de mentoria</label>
+                <select id="form-tipo-mentoria">
+                  <option value="">Selecione...</option>
+                  <option value="Mentoria Titulares">Mentoria Titulares</option>
+                  <option value="Mentoria Eméritos">Mentoria Eméritos</option>
+                </select>
+              </div>
+              <div class="field" id="formacao-tipo-field" hidden>
+                <label for="formacao-tipo">Tipo de Formação</label>
+                <select id="formacao-tipo">
+                  <option value="Formação">Formação</option>
+                  <option value="Última Chance">Última Chance</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="form-data-vencimento">Data de vencimento (renovação)</label>
+                <input type="date" id="form-data-vencimento" />
+              </div>
+              <div class="field" id="sinal-valor-field" hidden>
+                <label for="sinal-valor-input">Valor do Sinal (R$)</label>
+                <input type="number" id="sinal-valor-input" min="0" step="0.01" placeholder="0,00" />
+              </div>
+              <div class="field" id="sinal-data-field" hidden>
+                <label for="sinal-data-input">Data para Acertar Restante</label>
+                <input type="date" id="sinal-data-input" />
+              </div>
             </div>
-            <div class="field">
-              <label for="form-pagamento-forma">Forma de pagamento</label>
-              <select id="form-pagamento-forma">
-                <option value="">Selecione...</option>
-                <option value="sinal">Sinal</option>
-                <option value="a_vista">PIX</option>
-                <option value="parcelado_eduzz">Eduzz</option>
-                <option value="parcelado_sumup">Sumup</option>
-                <option value="parcelado_sumup_novo">Sumup (novo link)</option>
-                <option value="sumup_sem_juros">Cartão Sumup sem juros</option>
-                <option value="recorrente_cartao">Cartão Recorrente</option>
-                <option value="recorrente_sumup_sem_juros">Cartão recorrente sem juros (Sumup)</option>
-                <option value="pix_recorrente">Pix recorrente</option>
-                <option value="a_acertar">A acertar</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="form-pagamento-parcelas">Parcelas / Recorrência</label>
-              <input type="number" id="form-pagamento-parcelas" min="1" placeholder="1" />
-            </div>
-            <div class="field">
-              <label for="form-fechado-por">Quem fechou</label>
-              <select id="form-fechado-por">
-                <option value="">Selecione...</option>
-                <option value="Paulo" hidden>Paulo</option>
-                <option value="Igor">Igor</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="form-tipo-mentoria">Tipo de mentoria</label>
-              <select id="form-tipo-mentoria">
-                <option value="">Selecione...</option>
-                <option value="Mentoria Titulares">Mentoria Titulares</option>
-                <option value="Mentoria Eméritos">Mentoria Eméritos</option>
-              </select>
-            </div>
-            <div class="field" id="formacao-tipo-field" hidden>
-              <label for="formacao-tipo">Tipo de Formação</label>
-              <select id="formacao-tipo">
-                <option value="Formação">Formação</option>
-                <option value="Última Chance">Última Chance</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="form-data-vencimento">Data de vencimento (renovação)</label>
-              <input type="date" id="form-data-vencimento" />
-            </div>
-            <div class="field" id="sinal-valor-field" hidden>
-              <label for="sinal-valor-input">Valor do Sinal (R$)</label>
-              <input type="number" id="sinal-valor-input" min="0" step="0.01" placeholder="0,00" />
-            </div>
-            <div class="field" id="sinal-data-field" hidden>
-              <label for="sinal-data-input">Data para Acertar Restante</label>
-              <input type="date" id="sinal-data-input" />
-            </div>
-          </div>
+        </div>
+        <div class="lead-colunas">
 
           <div id="progresso-details-section" hidden>
             <div class="subsection-title">Entrada na mentoria</div>
@@ -322,33 +324,6 @@
               <label for="reuniao-6m-obs">Observações da reunião de 6 meses</label>
               <textarea id="reuniao-6m-obs" rows="3"></textarea>
             </div>
-            <div class="subsection-title">Pagamento da renovação</div>
-            <div class="field">
-              <label for="valor-renovacao-input">Valor da renovação (R$)</label>
-              <input type="number" id="valor-renovacao-input" min="0" step="0.01" placeholder="0,00" />
-            </div>
-            <div class="field">
-              <label for="forma-renovacao">Forma de pagamento</label>
-              <select id="forma-renovacao">
-                <option value="">Selecione...</option>
-                <option value="a_vista">PIX à vista</option>
-                <option value="sinal">PIX sinal</option>
-                <option value="parcelado_eduzz">Eduzz</option>
-                <option value="parcelado_sumup">Sumup</option>
-                <option value="parcelado_sumup_novo">Sumup (novo link)</option>
-                <option value="sumup_sem_juros">Cartão Sumup sem juros</option>
-                <option value="recorrente_cartao">Cartão Recorrente</option>
-                <option value="recorrente_sumup_sem_juros">Cartão recorrente sem juros (Sumup)</option>
-                <option value="pix_recorrente">PIX recorrente</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="data-pagamento-renovacao">Data do pagamento agendado (vazio = pago na reunião)</label>
-              <input type="date" id="data-pagamento-renovacao" />
-            </div>
-            <div class="field">
-              <label><input type="checkbox" id="renovacao-paga" /> Pagamento da renovação confirmado</label>
-            </div>
             <div class="field">
               <label for="renovou">Renovou?</label>
               <select id="renovou">
@@ -366,6 +341,35 @@
             </div>
           </div>
 
+        </div>
+        <div id="renovacao-pagamento-section" class="faixa-horizontal" hidden>
+          <div class="subsection-title">Pagamento da renovação</div>
+          <div class="field">
+            <label for="valor-renovacao-input">Valor da renovação (R$)</label>
+            <input type="number" id="valor-renovacao-input" min="0" step="0.01" placeholder="0,00" />
+          </div>
+          <div class="field">
+            <label for="forma-renovacao">Forma de pagamento</label>
+            <select id="forma-renovacao">
+              <option value="">Selecione...</option>
+              <option value="a_vista">PIX à vista</option>
+              <option value="sinal">PIX sinal</option>
+              <option value="parcelado_eduzz">Eduzz</option>
+              <option value="parcelado_sumup">Sumup</option>
+              <option value="parcelado_sumup_novo">Sumup (novo link)</option>
+              <option value="sumup_sem_juros">Cartão Sumup sem juros</option>
+              <option value="recorrente_cartao">Cartão Recorrente</option>
+              <option value="recorrente_sumup_sem_juros">Cartão recorrente sem juros (Sumup)</option>
+              <option value="pix_recorrente">PIX recorrente</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="data-pagamento-renovacao">Data do pagamento agendado (vazio = pago na reunião)</label>
+            <input type="date" id="data-pagamento-renovacao" />
+          </div>
+          <div class="field">
+            <label><input type="checkbox" id="renovacao-paga" /> Pagamento da renovação confirmado</label>
+          </div>
         </div>
         <div class="evolucao-box">
           <h3 class="subsection-title">Evolução do mentorado</h3>
@@ -1222,7 +1226,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
   <script src="home.js?v=5"></script>
-  <script src="script.js?v=20261081"></script>
+  <script src="script.js?v=20261082"></script>
   <script src="eventos.js?v=7"></script>
 </body>
 </html>
