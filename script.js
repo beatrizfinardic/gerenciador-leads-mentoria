@@ -1110,19 +1110,10 @@ function renovacaoDoLead(l) {
 let dataEntradaAtual = null;
 
 function atualizarProximaRenovacao() {
-  const reuniao6m = document.getElementById("reuniao-6m-data").value;
-  let base;
-  if (reuniao6m) {
-    base = new Date(reuniao6m + "T00:00:00");
-  } else if (dataEntradaAtual) {
-    base = addMonthsToDate(new Date(dataEntradaAtual.getFullYear(), dataEntradaAtual.getMonth(), dataEntradaAtual.getDate()), 6);
-  } else {
-    return;
-  }
-  dataRenovacaoInput.value = isoFromDate(addMonthsToDate(base, 6));
+  if (!dataEntradaAtual) return;
+  const entrada = new Date(dataEntradaAtual.getFullYear(), dataEntradaAtual.getMonth(), dataEntradaAtual.getDate());
+  dataRenovacaoInput.value = isoFromDate(addMonthsToDate(entrada, 12));
 }
-
-document.getElementById("reuniao-6m-data").addEventListener("input", atualizarProximaRenovacao);
 
 let evolucaoAlunosChart = null;
 let evolucaoFaturamentoChart = null;
