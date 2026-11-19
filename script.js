@@ -1496,6 +1496,29 @@ function situacaoBadge(dias) {
 
 let alertasContagem = { m3: 0, m6: 0, m12: 0 };
 
+function agendaControle(l, tipo) {
+  const agendada = l[`reuniao_${tipo}_agendada`] === true;
+  const data = l[`reuniao_${tipo}_agendada_data`] || "";
+  return `<div class="agenda-controle">
+    <label><input type="checkbox" data-agenda-id="${l.id}" data-agenda-tipo="${tipo}" data-agenda-campo="check" ${agendada ? "checked" : ""} /> Agendada</label>
+    <input type="date" data-agenda-id="${l.id}" data-agenda-tipo="${tipo}" data-agenda-campo="data" value="${data}" />
+  </div>`;
+}
+
+document.getElementById("section-alertas").addEventListener("change", async (e) => {
+  const el = e.target.closest("[data-agenda-id]");
+  if (!el) return;
+  const tipo = el.dataset.agendaTipo;
+  const campo = el.dataset.agendaCampo === "check" ? `reuniao_${tipo}_agendada` : `reuniao_${tipo}_agendada_data`;
+  const valor = el.dataset.agendaCampo === "check" ? el.checked : el.value || null;
+  const { error } = await sb.from("leads").update({ [campo]: valor }).eq("id", el.dataset.agendaId);
+  if (error) {
+    alert("Erro ao salvar agendamento: " + error.message);
+    return;
+  }
+  await refreshLeads();
+});
+
 function renderAlertas(leads) {
   const titulares = leads.filter((l) => l.tipo_mentoria === "Mentoria Titulares");
   const emeritos = leads.filter((l) => l.tipo_mentoria === "Mentoria Eméritos");
@@ -1522,6 +1545,7 @@ function renderAlertas(leads) {
         <td>${formatDateBR(a.entrada)}</td>
         <td>${formatDateBR(a.prevista)}</td>
         <td>${situacaoBadge(a.dias)}</td>
+              <td>${agendaControle(a.lead, "3m")}</td>
       </tr>`)
     .join("");
 
@@ -1533,6 +1557,7 @@ function renderAlertas(leads) {
         <td>${contatoAlertaCell(a.lead)}</td>
         <td>${formatDateBR(a.lead.data_vencimento)}</td>
         <td>${situacaoBadge(a.dias)}</td>
+              <td>${agendaControle(a.lead, "6m")}</td>
       </tr>`)
     .join("");
 
@@ -1550,7 +1575,7 @@ function renderAlertas(leads) {
 }
 
 document.getElementById("section-alertas").addEventListener("click", (e) => {
-  if (e.target.closest("a")) return;
+  if (e.target.closest("a, input, label")) return;
   const row = e.target.closest("tr[data-id]");
   if (!row) return;
   loadLeadIntoForm(leadsCache.find((l) => l.id === row.dataset.id));

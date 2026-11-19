@@ -1241,3 +1241,23 @@ textarea::placeholder {
 .modo-mentorado section.card:not(:has(#lead-form)) {
   display: none;
 }
+
+.agenda-controle {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+}
+
+.agenda-controle label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #374151;
+  font-weight: 600;
+}
+
+.agenda-controle input[type="date"] {
+  font-size: 12px;
+  padding: 4px 6px;
+}
