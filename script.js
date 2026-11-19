@@ -2090,7 +2090,12 @@ function loadLeadIntoForm(lead) {
   reuniao6mDataInput.value = lead.reuniao_6m_data || "";
   reuniao6mObsInput.value = lead.reuniao_6m_obs || "";
   faturamento6mesesInput.value = lead.faturamento_6meses || "";
-  dataRenovacaoInput.value = lead.data_renovacao || "";
+  if (lead.created_at) {
+    const entrada = parseTimestamp(lead.created_at);
+    dataRenovacaoInput.value = isoFromDate(addMonthsToDate(new Date(entrada.getFullYear(), entrada.getMonth(), entrada.getDate()), 6));
+  } else {
+    dataRenovacaoInput.value = lead.data_renovacao || "";
+  }
   upgradeEmeritosInput.checked = lead.upgrade_emeritos === true;
   faturamentoAtualInput.value = lead.faturamento_atual || "";
   alunosPresencial3mInput.value = lead.alunos_presencial_3m ?? "";
