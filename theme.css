@@ -1194,3 +1194,12 @@ textarea::placeholder {
 .faixa-horizontal:has(> #pagamento-details-section[hidden]) {
   display: none;
 }
+
+.faixa-horizontal:has(> #pagamento-details-section) {
+  display: block;
+}
+
+#pagamento-details-section {
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  width: 100%;
+}
