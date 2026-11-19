@@ -1261,3 +1261,55 @@ textarea::placeholder {
   font-size: 12px;
   padding: 4px 6px;
 }
+
+.agenda-controle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: nowrap;
+  min-width: 230px;
+}
+
+.agenda-controle label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  color: #374151;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.agenda-controle label:has(input:checked) {
+  background: #dcfce7;
+  border-color: #86efac;
+  color: #166534;
+}
+
+.agenda-controle input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+  accent-color: #16a34a;
+  margin: 0;
+}
+
+.agenda-controle input[type="date"] {
+  height: 32px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  font-size: 12px;
+  color: #111827;
+}
+
+.agenda-controle input[type="date"]:focus {
+  outline: none;
+  border-color: #111827;
+}
