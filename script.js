@@ -1106,31 +1106,41 @@ function renovacaoDoLead(l) {
   return [{ lead: l, numero: 1, n: 1, data, valor, automatica: false, paga, renov: true, forma: l.forma_renovacao }];
 }
 
+let evolucaoAlunosChart = null;
+let evolucaoFaturamentoChart = null;
+
 function renderEvolucaoGrafico() {
   if (typeof Chart === "undefined") return;
   const v = (id) => Number(document.getElementById(id).value) || 0;
   const labels = ["Entrada", "3 meses", "Renovação 6m"];
-  const dados = {
-    presencial: [v("alunos-presencial"), v("alunos-presencial-3m"), v("alunos-presencial-6m")],
-    online: [v("alunos-online"), v("alunos-online-3m"), v("alunos-online-6m")],
-    faturamento: [v("faturamento-atual"), v("faturamento-3meses-input"), v("faturamento-6meses-input")],
-  };
-  if (evolucaoChart) evolucaoChart.destroy();
-  evolucaoChart = new Chart(document.getElementById("evolucao-chart"), {
+  const presencial = [v("alunos-presencial"), v("alunos-presencial-3m"), v("alunos-presencial-6m")];
+  const online = [v("alunos-online"), v("alunos-online-3m"), v("alunos-online-6m")];
+  const faturamento = [v("faturamento-atual"), v("faturamento-3meses-input"), v("faturamento-6meses-input")];
+  if (evolucaoAlunosChart) evolucaoAlunosChart.destroy();
+  if (evolucaoFaturamentoChart) evolucaoFaturamentoChart.destroy();
+  evolucaoAlunosChart = new Chart(document.getElementById("evolucao-alunos"), {
+    type: "bar",
     data: {
       labels,
       datasets: [
-        { type: "bar", label: "Alunos presencial", data: dados.presencial, backgroundColor: "#111827", yAxisID: "y", borderRadius: 4 },
-        { type: "bar", label: "Alunos online", data: dados.online, backgroundColor: "#2563eb", yAxisID: "y", borderRadius: 4 },
-        { type: "line", label: "Faturamento (R$)", data: dados.faturamento, borderColor: "#16a34a", backgroundColor: "#16a34a", yAxisID: "y1", tension: 0.3 },
+        { label: "Presencial", data: presencial, backgroundColor: "#111827", borderRadius: 4 },
+        { label: "Online", data: online, backgroundColor: "#2563eb", borderRadius: 4 },
       ],
     },
     options: {
       plugins: { legend: { position: "bottom" } },
-      scales: {
-        y: { beginAtZero: true, position: "left", ticks: { precision: 0 }, title: { display: true, text: "Alunos" } },
-        y1: { beginAtZero: true, position: "right", grid: { drawOnChartArea: false }, title: { display: true, text: "R$" } },
-      },
+      scales: { y: { beginAtZero: true, ticks: { precision: 0 }, grid: { color: "#e5e7eb" } } },
+    },
+  });
+  evolucaoFaturamentoChart = new Chart(document.getElementById("evolucao-faturamento"), {
+    type: "bar",
+    data: {
+      labels,
+      datasets: [{ label: "Faturamento (R$)", data: faturamento, backgroundColor: "#16a34a", borderRadius: 4 }],
+    },
+    options: {
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true, grid: { color: "#e5e7eb" } } },
     },
   });
 }
