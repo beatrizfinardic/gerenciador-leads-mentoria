@@ -783,6 +783,7 @@ function resetForm() {
   dataPagamentoRenovacaoInput.value = "";
   renovacaoPagaInput.checked = false;
   renderRenovacoesExtras();
+  document.getElementById("section-leads").classList.remove("modo-mentorado");
   valorPagoValueInput.value = "";
   formValorFechadoInput.value = "";
   formDataVencimentoInput.value = "";
@@ -1827,7 +1828,10 @@ window.clickMentorado = function(leadId) {
     if (leadsTab) leadsTab.click();
     loadLeadIntoForm(lead);
     const leadsSection = document.querySelector("#section-leads");
-    if (leadsSection) leadsSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (leadsSection) {
+      leadsSection.classList.add("modo-mentorado");
+      leadsSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   }
 };
 
@@ -2498,6 +2502,7 @@ document.querySelectorAll(".nav-tab").forEach((btn) => {
 
     btn.classList.add("active");
     document.getElementById(`section-${section}`).hidden = false;
+    if (section === "leads") document.getElementById("section-leads").classList.remove("modo-mentorado");
   });
 });
 

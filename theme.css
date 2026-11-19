@@ -1237,3 +1237,7 @@ textarea::placeholder {
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 20px;
 }
+
+.modo-mentorado section.card:not(:has(#lead-form)) {
+  display: none;
+}
