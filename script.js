@@ -361,6 +361,7 @@ async function fetchLeads() {
 async function refreshLeads() {
   leadsCache = await fetchLeads();
   await carregarParcelasPagas();
+  await carregarRenovacoesExtras();
   renderAll();
 }
 
@@ -781,6 +782,7 @@ function resetForm() {
   formaRenovacaoInput.value = "";
   dataPagamentoRenovacaoInput.value = "";
   renovacaoPagaInput.checked = false;
+  renderRenovacoesExtras();
   valorPagoValueInput.value = "";
   formValorFechadoInput.value = "";
   formDataVencimentoInput.value = "";
@@ -973,6 +975,129 @@ function parcelasDoLead(l) {
   return lista;
 }
 
+let renovacoesExtrasCache = [];
+const renovacoesExtrasEl = document.getElementById("renovacoes-extras");
+
+async function carregarRenovacoesExtras() {
+  const { data, error } = await sb.from("renovacoes").select("*").order("numero", { ascending: true });
+  if (error) {
+    console.error(error);
+    return;
+  }
+  renovacoesExtrasCache = data;
+}
+
+function proximaRenovacaoDe(dataReuniao) {
+  if (!dataReuniao) return "";
+  return isoFromDate(addMonthsToDate(new Date(dataReuniao + "T00:00:00"), 6));
+}
+
+function renovacoesExtrasDoLead(l) {
+  return renovacoesExtrasCache
+    .filter((r) => r.lead_id === l.id)
+    .flatMap((r) => {
+      const data = r.data_pagamento || r.data_reuniao;
+      if (!r.valor || !r.forma || !data) return [];
+      return [
+        {
+          lead: l,
+          numero: r.numero,
+          n: 1,
+          data,
+          valor: Number(r.valor),
+          automatica: false,
+          paga: !r.data_pagamento || r.paga === true,
+          renov: true,
+          renovExtra: true,
+          forma: r.forma,
+        },
+      ];
+    });
+}
+
+function renderRenovacoesExtras() {
+  const leadId = leadIdInput.value;
+  const lista = leadId ? renovacoesExtrasCache.filter((r) => r.lead_id === leadId) : [];
+  renovacoesExtrasEl.innerHTML = lista
+    .map(
+      (r) => `
+      <div class="renovacao-bloco" data-numero="${r.numero}">
+        <div class="subsection-title">Renovação ${r.numero}</div>
+        <div class="field">
+          <label>Data da reunião</label>
+          <input type="date" data-campo="data_reuniao" value="${r.data_reuniao || ""}" />
+        </div>
+        <div class="field">
+          <label>Valor (R$)</label>
+          <input type="number" min="0" step="0.01" data-campo="valor" value="${r.valor ?? ""}" placeholder="0,00" />
+        </div>
+        <div class="field">
+          <label>Forma de pagamento</label>
+          <select data-campo="forma">${formaRenovacaoInput.innerHTML}</select>
+        </div>
+        <div class="field">
+          <label>Data do pagamento agendado (vazio = pago na reunião)</label>
+          <input type="date" data-campo="data_pagamento" value="${r.data_pagamento || ""}" />
+        </div>
+        <div class="field">
+          <label><input type="checkbox" data-campo="paga" ${r.paga ? "checked" : ""} /> Pagamento confirmado</label>
+        </div>
+        <div class="field">
+          <label>Próxima renovação (automática: 6 meses)</label>
+          <input type="date" disabled value="${proximaRenovacaoDe(r.data_reuniao)}" />
+        </div>
+        <div class="field">
+          <button type="button" class="btn btn-primary btn-small" data-salvar-renov="${r.numero}">Salvar renovação ${r.numero}</button>
+        </div>
+      </div>`
+    )
+    .join("");
+  renovacoesExtrasEl.querySelectorAll("select[data-campo='forma']").forEach((sel, i) => {
+    sel.value = lista[i].forma || "";
+  });
+}
+
+document.getElementById("add-renovacao-btn").addEventListener("click", async () => {
+  const leadId = leadIdInput.value;
+  if (!leadId) {
+    alert("Abra um mentorado para adicionar renovação.");
+    return;
+  }
+  const existentes = renovacoesExtrasCache.filter((r) => r.lead_id === leadId);
+  const numero = Math.max(1, ...existentes.map((r) => r.numero)) + 1;
+  const anterior = existentes[existentes.length - 1];
+  const base = numero === 2 ? dataRenovacaoInput.value : proximaRenovacaoDe(anterior?.data_reuniao);
+  const { error } = await sb.from("renovacoes").insert([{ lead_id: leadId, numero, data_reuniao: base || null }]);
+  if (error) {
+    alert("Erro ao adicionar renovação: " + error.message);
+    return;
+  }
+  await carregarRenovacoesExtras();
+  renderRenovacoesExtras();
+});
+
+renovacoesExtrasEl.addEventListener("click", async (e) => {
+  const btn = e.target.closest("button[data-salvar-renov]");
+  if (!btn) return;
+  const bloco = btn.closest(".renovacao-bloco");
+  const campo = (nome) => bloco.querySelector(`[data-campo="${nome}"]`);
+  const registro = {
+    lead_id: leadIdInput.value,
+    numero: Number(btn.dataset.salvarRenov),
+    data_reuniao: campo("data_reuniao").value || null,
+    valor: campo("valor").value ? Number(campo("valor").value) : null,
+    forma: campo("forma").value || null,
+    data_pagamento: campo("data_pagamento").value || null,
+    paga: campo("paga").checked,
+  };
+  const { error } = await sb.from("renovacoes").upsert([registro], { onConflict: "lead_id,numero" });
+  if (error) {
+    alert("Erro ao salvar renovação: " + error.message);
+    return;
+  }
+  await refreshLeads();
+});
+
 function renovacaoDoLead(l) {
   const valor = Number(l.valor_renovacao) || 0;
   const data = l.data_pagamento_renovacao || l.reuniao_6m_data;
@@ -1049,7 +1174,7 @@ function renderParcelasTabela(parcelas) {
       const acao = p.renov
         ? p.paga
           ? ""
-          : `<button type="button" class="btn btn-primary btn-small" data-parcela-acao="renov" data-lead="${p.lead.id}" data-numero="${p.numero}">Confirmar pagamento</button>`
+          : `<button type="button" class="btn btn-primary btn-small" data-parcela-acao="${p.renovExtra ? "renov-extra" : "renov"}" data-lead="${p.lead.id}" data-numero="${p.numero}">Confirmar pagamento</button>`
         : p.automatica
         ? ""
         : p.paga
@@ -1058,7 +1183,7 @@ function renderParcelasTabela(parcelas) {
       return `
         <tr>
           <td>${avatarNome(p.lead.nome)}</td>
-          <td>${p.renov ? "Renovação" : `${p.numero}/${p.n}`}</td>
+          <td>${p.renov ? (p.renovExtra ? `Renovação ${p.numero}` : "Renovação 1") : `${p.numero}/${p.n}`}</td>
           <td>${formatDateBR(p.data)}</td>
           <td>${escapeHtml(FORMA_PAGAMENTO_META[p.lead.pagamento_forma]?.label || "-")}</td>
           <td style="text-align:right">${formatBRL(p.valor)}</td>
@@ -1074,6 +1199,15 @@ document.getElementById("fat-parcelas-tbody").addEventListener("click", async (e
   if (!btn) return;
   const leadId = btn.dataset.lead;
   const numero = Number(btn.dataset.numero);
+  if (btn.dataset.parcelaAcao === "renov-extra") {
+    const r = await sb.from("renovacoes").update({ paga: true }).eq("lead_id", leadId).eq("numero", numero);
+    if (r.error) {
+      alert("Erro ao confirmar pagamento: " + r.error.message);
+      return;
+    }
+    await refreshLeads();
+    return;
+  }
   if (btn.dataset.parcelaAcao === "renov") {
     const r = await sb.from("leads").update({ renovacao_paga: true }).eq("id", leadId);
     if (r.error) {
@@ -1135,7 +1269,7 @@ function renderFaturamento(leads) {
     .sort((a, b) => parseTimestamp(b.data_venda || b.created_at) - parseTimestamp(a.data_venda || a.created_at));
 
   const parcelasPeriodo = leads
-    .flatMap((l) => [...parcelasDoLead(l), ...renovacaoDoLead(l)])
+    .flatMap((l) => [...parcelasDoLead(l), ...renovacaoDoLead(l), ...renovacoesExtrasDoLead(l)])
     .filter((p) => p.data >= startDate && p.data <= endDate && origemNoFiltroFat(p.lead))
     .sort((a, b) => a.data.localeCompare(b.data));
   const vendas = [...vendasNormais, ...parcelasPeriodo.filter((p) => p.paga).map(parcelaParaFaturamento)].sort(
@@ -2063,6 +2197,7 @@ function loadLeadIntoForm(lead) {
   dataPagamentoRenovacaoInput.value = lead.data_pagamento_renovacao || "";
   renovacaoPagaInput.checked = lead.renovacao_paga === true;
   renderEvolucaoGrafico();
+  renderRenovacoesExtras();
   valorPagoValueInput.value = (lead.pagamento_forma === "sinal" ? lead.valor_pago ?? lead.pagamento_parcelas : lead.valor_pago) ?? "";
   formValorFechadoInput.value = lead.valor_fechado || "";
   formDataVencimentoInput.value = lead.data_vencimento || "";
