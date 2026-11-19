@@ -1190,3 +1190,7 @@ textarea::placeholder {
 #renovacao-pagamento-section > .subsection-title {
   margin: 0;
 }
+
+.faixa-horizontal:has(> #pagamento-details-section[hidden]) {
+  display: none;
+}
