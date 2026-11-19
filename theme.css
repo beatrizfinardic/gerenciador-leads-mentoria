@@ -1113,3 +1113,30 @@ textarea::placeholder {
 .table-wrapper:has(#fat-transacoes-table) {
   overflow-x: hidden;
 }
+
+.lead-colunas {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  overflow: visible !important;
+  scroll-snap-type: none !important;
+  gap: 16px;
+}
+
+.lead-colunas > div {
+  flex: initial !important;
+  max-width: none !important;
+}
+
+@media (max-width: 1000px) {
+  .lead-colunas {
+    grid-template-columns: 1fr;
+  }
+}
+
+.evolucao-box {
+  margin: 16px 0;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 16px;
+}

@@ -305,6 +305,11 @@ const modalDiaPagamentoInput = document.getElementById("modal-dia-pagamento");
 const modalPrimeiroPagamentoField = document.getElementById("modal-primeiro-pagamento-field");
 const modalPrimeiroPagamentoInput = document.getElementById("modal-primeiro-pagamento");
 const primeiroPagamentoValueInput = document.getElementById("primeiro-pagamento-value");
+const valorRenovacaoInput = document.getElementById("valor-renovacao-input");
+const formaRenovacaoInput = document.getElementById("forma-renovacao");
+const dataPagamentoRenovacaoInput = document.getElementById("data-pagamento-renovacao");
+const renovacaoPagaInput = document.getElementById("renovacao-paga");
+let evolucaoChart = null;
 const RECORRENTES = ["recorrente_cartao", "recorrente_sumup_sem_juros", "pix_recorrente"];
 const RECORRENTE_AUTOMATICA = ["recorrente_cartao", "recorrente_sumup_sem_juros"];
 let parcelasPagas = new Set();
@@ -770,6 +775,10 @@ function resetForm() {
   diaPagamentoValueInput.value = "";
   acordoPagamentoValueInput.value = "";
   primeiroPagamentoValueInput.value = "";
+  valorRenovacaoInput.value = "";
+  formaRenovacaoInput.value = "";
+  dataPagamentoRenovacaoInput.value = "";
+  renovacaoPagaInput.checked = false;
   valorPagoValueInput.value = "";
   formValorFechadoInput.value = "";
   formDataVencimentoInput.value = "";
@@ -962,21 +971,63 @@ function parcelasDoLead(l) {
   return lista;
 }
 
+function renovacaoDoLead(l) {
+  const valor = Number(l.valor_renovacao) || 0;
+  const data = l.data_pagamento_renovacao || l.reuniao_6m_data;
+  if (l.status !== "convertido" || !valor || !l.forma_renovacao || !data) return [];
+  const paga = !l.data_pagamento_renovacao || l.renovacao_paga === true;
+  return [{ lead: l, numero: 1, n: 1, data, valor, automatica: false, paga, renov: true, forma: l.forma_renovacao }];
+}
+
+function renderEvolucaoGrafico() {
+  if (typeof Chart === "undefined") return;
+  const v = (id) => Number(document.getElementById(id).value) || 0;
+  const labels = ["Entrada", "3 meses", "Renovação 6m"];
+  const dados = {
+    presencial: [v("alunos-presencial"), v("alunos-presencial-3m"), v("alunos-presencial-6m")],
+    online: [v("alunos-online"), v("alunos-online-3m"), v("alunos-online-6m")],
+    faturamento: [v("faturamento-atual"), v("faturamento-3meses-input"), v("faturamento-6meses-input")],
+  };
+  if (evolucaoChart) evolucaoChart.destroy();
+  evolucaoChart = new Chart(document.getElementById("evolucao-chart"), {
+    data: {
+      labels,
+      datasets: [
+        { type: "bar", label: "Alunos presencial", data: dados.presencial, backgroundColor: "#111827", yAxisID: "y", borderRadius: 4 },
+        { type: "bar", label: "Alunos online", data: dados.online, backgroundColor: "#2563eb", yAxisID: "y", borderRadius: 4 },
+        { type: "line", label: "Faturamento (R$)", data: dados.faturamento, borderColor: "#16a34a", backgroundColor: "#16a34a", yAxisID: "y1", tension: 0.3 },
+      ],
+    },
+    options: {
+      plugins: { legend: { position: "bottom" } },
+      scales: {
+        y: { beginAtZero: true, position: "left", ticks: { precision: 0 }, title: { display: true, text: "Alunos" } },
+        y1: { beginAtZero: true, position: "right", grid: { drawOnChartArea: false }, title: { display: true, text: "R$" } },
+      },
+    },
+  });
+}
+
+["alunos-presencial", "alunos-online", "alunos-presencial-3m", "alunos-online-3m", "alunos-presencial-6m", "alunos-online-6m", "faturamento-atual", "faturamento-3meses-input", "faturamento-6meses-input"].forEach((id) => {
+  document.getElementById(id).addEventListener("input", renderEvolucaoGrafico);
+});
+
 function parcelaParaFaturamento(p) {
-  const meta = FORMA_PAGAMENTO_META[p.lead.pagamento_forma] || FORMA_PAGAMENTO_META.a_vista;
+  const forma = p.forma || p.lead.pagamento_forma;
+  const meta = FORMA_PAGAMENTO_META[forma] || FORMA_PAGAMENTO_META.a_vista;
   const bruto = p.valor;
   const liquido = Math.max(0, bruto - bruto * meta.taxaPercentual - meta.taxaFixa);
   const taxa = bruto ? (bruto - liquido) / bruto : 0;
   return {
     ...p.lead,
-    formaKey: p.lead.pagamento_forma,
+    formaKey: forma,
     formaLabel: meta.label,
     taxa,
     bruto,
     bruteTotal: bruto,
     liquido,
     data_venda: p.data,
-    pagamento_parcelas: `${p.numero}/${p.n}`,
+    pagamento_parcelas: p.renov ? "Renovação" : `${p.numero}/${p.n}`,
   };
 }
 
@@ -993,7 +1044,11 @@ function renderParcelasTabela(parcelas) {
         ? "Agendado (automático)"
         : "Agendado";
       const cor = p.paga ? "background:#dcfce7;color:#166534" : "background:#fef3c7;color:#92400e";
-      const acao = p.automatica
+      const acao = p.renov
+        ? p.paga
+          ? ""
+          : `<button type="button" class="btn btn-primary btn-small" data-parcela-acao="renov" data-lead="${p.lead.id}" data-numero="${p.numero}">Confirmar pagamento</button>`
+        : p.automatica
         ? ""
         : p.paga
         ? `<button type="button" class="btn btn-secondary btn-small" data-parcela-acao="desfazer" data-lead="${p.lead.id}" data-numero="${p.numero}">Desfazer</button>`
@@ -1001,7 +1056,7 @@ function renderParcelasTabela(parcelas) {
       return `
         <tr>
           <td>${avatarNome(p.lead.nome)}</td>
-          <td>${p.numero}/${p.n}</td>
+          <td>${p.renov ? "Renovação" : `${p.numero}/${p.n}`}</td>
           <td>${formatDateBR(p.data)}</td>
           <td>${escapeHtml(FORMA_PAGAMENTO_META[p.lead.pagamento_forma]?.label || "-")}</td>
           <td style="text-align:right">${formatBRL(p.valor)}</td>
@@ -1017,6 +1072,15 @@ document.getElementById("fat-parcelas-tbody").addEventListener("click", async (e
   if (!btn) return;
   const leadId = btn.dataset.lead;
   const numero = Number(btn.dataset.numero);
+  if (btn.dataset.parcelaAcao === "renov") {
+    const r = await sb.from("leads").update({ renovacao_paga: true }).eq("id", leadId);
+    if (r.error) {
+      alert("Erro ao confirmar pagamento: " + r.error.message);
+      return;
+    }
+    await refreshLeads();
+    return;
+  }
   const resultado =
     btn.dataset.parcelaAcao === "pagar"
       ? await sb.from("parcelas_pagas").insert([{ lead_id: leadId, numero, pago_em: todayISO() }])
@@ -1069,7 +1133,7 @@ function renderFaturamento(leads) {
     .sort((a, b) => parseTimestamp(b.data_venda || b.created_at) - parseTimestamp(a.data_venda || a.created_at));
 
   const parcelasPeriodo = leads
-    .flatMap(parcelasDoLead)
+    .flatMap((l) => [...parcelasDoLead(l), ...renovacaoDoLead(l)])
     .filter((p) => p.data >= startDate && p.data <= endDate && origemNoFiltroFat(p.lead))
     .sort((a, b) => a.data.localeCompare(b.data));
   const vendas = [...vendasNormais, ...parcelasPeriodo.filter((p) => p.paga).map(parcelaParaFaturamento)].sort(
@@ -1862,6 +1926,10 @@ form.addEventListener("submit", async (e) => {
       statusInput.value === "convertido" && diaPagamentoValueInput.value ? Number(diaPagamentoValueInput.value) : null,
     acordo_pagamento: statusInput.value === "convertido" ? acordoPagamentoValueInput.value || null : null,
     data_primeiro_pagamento: statusInput.value === "convertido" ? primeiroPagamentoValueInput.value || null : null,
+    valor_renovacao: statusInput.value === "convertido" && valorRenovacaoInput.value ? Number(valorRenovacaoInput.value) : null,
+    forma_renovacao: statusInput.value === "convertido" ? formaRenovacaoInput.value || null : null,
+    data_pagamento_renovacao: statusInput.value === "convertido" ? dataPagamentoRenovacaoInput.value || null : null,
+    renovacao_paga: statusInput.value === "convertido" ? renovacaoPagaInput.checked : false,
     valor_pago: statusInput.value === "convertido" && valorPagoValueInput.value ? Number(valorPagoValueInput.value) : null,
     perdido_motivo: statusInput.value === "perdido" ? perdidoMotivoInput.value || null : null,
     perdido_followup: statusInput.value === "perdido" ? perdidoFollowupInput.value || null : null,
@@ -1988,6 +2056,11 @@ function loadLeadIntoForm(lead) {
   diaPagamentoValueInput.value = lead.dia_pagamento || "";
   acordoPagamentoValueInput.value = lead.acordo_pagamento || "";
   primeiroPagamentoValueInput.value = lead.data_primeiro_pagamento || "";
+  valorRenovacaoInput.value = lead.valor_renovacao ?? "";
+  formaRenovacaoInput.value = lead.forma_renovacao || "";
+  dataPagamentoRenovacaoInput.value = lead.data_pagamento_renovacao || "";
+  renovacaoPagaInput.checked = lead.renovacao_paga === true;
+  renderEvolucaoGrafico();
   valorPagoValueInput.value = (lead.pagamento_forma === "sinal" ? lead.valor_pago ?? lead.pagamento_parcelas : lead.valor_pago) ?? "";
   formValorFechadoInput.value = lead.valor_fechado || "";
   formDataVencimentoInput.value = lead.data_vencimento || "";
@@ -2296,14 +2369,6 @@ document.getElementById("alertas-tabs").addEventListener("click", (e) => {
   ["3m", "6m", "dash"].forEach((k) => {
     document.getElementById(`alertas-${k}`).hidden = btn.dataset.alerta !== k;
   });
-});
-
-const leadColunasEl = document.querySelector(".lead-colunas");
-document.getElementById("col-anterior").addEventListener("click", () => {
-  leadColunasEl.scrollBy({ left: -leadColunasEl.clientWidth, behavior: "smooth" });
-});
-document.getElementById("col-proxima").addEventListener("click", () => {
-  leadColunasEl.scrollBy({ left: leadColunasEl.clientWidth, behavior: "smooth" });
 });
 
 const evtProximosCarrosselEl = document.getElementById("evt-proximos");
