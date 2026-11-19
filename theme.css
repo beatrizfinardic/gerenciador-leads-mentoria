@@ -1332,3 +1332,71 @@ textarea::placeholder {
   display: flex;
   justify-content: flex-start;
 }
+
+#section-leads section.card {
+  padding: 24px;
+  margin-bottom: 20px;
+  border-radius: 14px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+#section-leads .section-title {
+  font-size: 20px;
+  margin-bottom: 16px;
+  padding-left: 12px;
+  border-left: 4px solid #111827;
+  line-height: 1.2;
+}
+
+#section-leads .form-grid {
+  gap: 16px;
+}
+
+#section-leads .field label {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+
+#section-leads .form-actions {
+  display: flex;
+  gap: 10px;
+  padding-top: 12px;
+  margin-top: 8px;
+  border-top: 1px solid #f1f5f9;
+}
+
+#section-leads .filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-end;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 12px;
+  margin: 12px 0 16px;
+}
+
+#section-leads .filters .search-input {
+  flex: 1 1 280px;
+}
+
+#section-leads .filters select {
+  min-width: 180px;
+}
+
+#section-leads .status-tabs {
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+#section-leads .table-wrapper {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+#section-leads .table-wrapper th:first-child,
+#section-leads .table-wrapper td:first-child {
+  padding-left: 16px;
+}
