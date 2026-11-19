@@ -1107,6 +1107,23 @@ function renovacaoDoLead(l) {
   return [{ lead: l, numero: 1, n: 1, data, valor, automatica: false, paga, renov: true, forma: l.forma_renovacao }];
 }
 
+let dataEntradaAtual = null;
+
+function atualizarProximaRenovacao() {
+  const reuniao6m = document.getElementById("reuniao-6m-data").value;
+  let base;
+  if (reuniao6m) {
+    base = new Date(reuniao6m + "T00:00:00");
+  } else if (dataEntradaAtual) {
+    base = addMonthsToDate(new Date(dataEntradaAtual.getFullYear(), dataEntradaAtual.getMonth(), dataEntradaAtual.getDate()), 6);
+  } else {
+    return;
+  }
+  dataRenovacaoInput.value = isoFromDate(addMonthsToDate(base, 6));
+}
+
+document.getElementById("reuniao-6m-data").addEventListener("input", atualizarProximaRenovacao);
+
 let evolucaoAlunosChart = null;
 let evolucaoFaturamentoChart = null;
 
@@ -2271,9 +2288,9 @@ function loadLeadIntoForm(lead) {
   reuniao6mDataInput.value = lead.reuniao_6m_data || "";
   reuniao6mObsInput.value = lead.reuniao_6m_obs || "";
   faturamento6mesesInput.value = lead.faturamento_6meses || "";
-  if (lead.created_at) {
-    const entrada = parseTimestamp(lead.created_at);
-    dataRenovacaoInput.value = isoFromDate(addMonthsToDate(new Date(entrada.getFullYear(), entrada.getMonth(), entrada.getDate()), 6));
+  dataEntradaAtual = lead.created_at ? parseTimestamp(lead.created_at) : null;
+  if (dataEntradaAtual) {
+    atualizarProximaRenovacao();
   } else {
     dataRenovacaoInput.value = lead.data_renovacao || "";
   }
