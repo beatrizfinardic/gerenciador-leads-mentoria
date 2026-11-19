@@ -155,9 +155,9 @@ const FORMA_PAGAMENTO_META = {
   parcelado_eduzz: { label: "Eduzz", taxaFixa: 2.49, taxaPercentual: 0.0459 },
   parcelado_sumup: { label: "Sumup", taxaFixa: 0, taxaPercentual: 0 },
   parcelado_sumup_novo: { label: "Sumup (novo link)", taxaFixa: 0, taxaPercentual: 0 },
-  sumup_sem_juros: { label: "Cartão Sumup sem juros", taxaFixa: 0, taxaPercentual: 0 },
+  sumup_sem_juros: { label: "Cartão Sumup sem juros", taxaFixa: 0, taxaPercentual: 0.05 },
   recorrente_cartao: { label: "Cartão Recorrente", taxaFixa: 2.49, taxaPercentual: 0.0459, taxaFixaPorCiclo: true },
-  recorrente_sumup_sem_juros: { label: "Cartão recorrente sem juros (Sumup)", taxaFixa: 0, taxaPercentual: 0 },
+  recorrente_sumup_sem_juros: { label: "Cartão recorrente sem juros (Sumup)", taxaFixa: 0, taxaPercentual: 0.05 },
   pix_recorrente: { label: "PIX recorrente", taxaFixa: 0, taxaPercentual: 0 },
   a_acertar: { label: "A acertar", taxaFixa: 0, taxaPercentual: 0 },
 };
