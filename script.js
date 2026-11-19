@@ -461,6 +461,7 @@ function updateStatusSelectColor() {
   statusInput.style.backgroundColor = "#ffffff";
   statusInput.style.color = "#111827";
   statusInput.style.borderLeft = `6px solid ${meta.bg}`;
+  document.getElementById("evolucao-box").hidden = statusInput.value !== "convertido";
 }
 
 function renderStatusOptions(preferredStatus) {
