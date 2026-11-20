@@ -954,16 +954,17 @@ function origemNoFiltroFat(l) {
 
 function parcelasDoLead(l) {
   const n = Number(l.pagamento_parcelas) || 0;
+  const inicio = l.data_primeiro_pagamento || (l.created_at ? isoFromDate(parseTimestamp(l.created_at)) : null);
   if (
     l.status !== "convertido" ||
     !RECORRENTES.includes(l.pagamento_forma) ||
-    !l.data_primeiro_pagamento ||
+    !inicio ||
     n < 1 ||
     typeof l.valor_fechado !== "number"
   ) {
     return [];
   }
-  const primeiro = new Date(l.data_primeiro_pagamento + "T00:00:00");
+  const primeiro = new Date(inicio + "T00:00:00");
   const hoje = todayISO();
   const automatica = RECORRENTE_AUTOMATICA.includes(l.pagamento_forma);
   const valor = l.valor_fechado / n;
@@ -1256,7 +1257,7 @@ function renderFaturamento(leads) {
   const end = new Date(endDate + "T23:59:59");
 
   const vendasNormais = leads
-    .filter((l) => !(RECORRENTES.includes(l.pagamento_forma) && l.data_primeiro_pagamento))
+    .filter((l) => !RECORRENTES.includes(l.pagamento_forma))
     .filter((l) => l.status === "convertido" && typeof l.valor_fechado === "number")
     .filter((l) => {
       if (fatOrigemTab === "fluxo") return l.origem && l.origem.startsWith("Fluxo");
