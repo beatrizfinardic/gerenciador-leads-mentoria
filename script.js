@@ -2172,6 +2172,13 @@ form.addEventListener("submit", async (e) => {
     }
   }
 
+  if (editingId) {
+    await refreshLeads();
+    const atualizado = leadsCache.find((l) => l.id === editingId);
+    if (atualizado) loadLeadIntoForm(atualizado);
+    return;
+  }
+
   resetForm();
   await refreshLeads();
 });
