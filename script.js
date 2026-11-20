@@ -313,7 +313,7 @@ const renovacaoPagaInput = document.getElementById("renovacao-paga");
 let evolucaoChart = null;
 const RECORRENTES = ["recorrente_cartao", "recorrente_sumup_sem_juros", "pix_recorrente"];
 const RECORRENTE_AUTOMATICA = ["recorrente_cartao", "recorrente_sumup_sem_juros"];
-let parcelasPagas = new Set();
+let parcelasPagas = new Map();
 const diaPagamentoValueInput = document.getElementById("dia-pagamento-value");
 const modalAcordoPagamentoField = document.getElementById("modal-acordo-pagamento-field");
 const modalAcordoPagamentoInput = document.getElementById("modal-acordo-pagamento");
@@ -938,12 +938,12 @@ function renderFaturamentoGraficos(vendas) {
 }
 
 async function carregarParcelasPagas() {
-  const { data, error } = await sb.from("parcelas_pagas").select("lead_id, numero");
+  const { data, error } = await sb.from("parcelas_pagas").select("lead_id, numero, pago_em");
   if (error) {
     console.error(error);
     return;
   }
-  parcelasPagas = new Set(data.map((p) => `${p.lead_id}-${p.numero}`));
+  parcelasPagas = new Map(data.map((p) => [`${p.lead_id}-${p.numero}`, p.pago_em]));
 }
 
 function origemNoFiltroFat(l) {
@@ -972,7 +972,7 @@ function parcelasDoLead(l) {
   for (let k = 1; k <= n; k++) {
     const data = isoFromDate(addMonthsToDate(primeiro, k - 1));
     const paga = automatica ? data <= hoje : parcelasPagas.has(`${l.id}-${k}`);
-    lista.push({ lead: l, numero: k, n, data, valor, automatica, paga });
+    lista.push({ lead: l, numero: k, n, data, valor, automatica, paga, pagoEm: parcelasPagas.get(`${l.id}-${k}`) || null });
   }
   return lista;
 }
@@ -1197,9 +1197,7 @@ function renderParcelasTabela(parcelas) {
           : `<button type="button" class="btn btn-primary btn-small" data-parcela-acao="${p.renovExtra ? "renov-extra" : "renov"}" data-lead="${p.lead.id}" data-numero="${p.numero}">Confirmar pagamento</button>`
         : p.automatica
         ? ""
-        : p.paga
-        ? `<button type="button" class="btn btn-secondary btn-small" data-parcela-acao="desfazer" data-lead="${p.lead.id}" data-numero="${p.numero}">Desfazer</button>`
-        : `<button type="button" class="btn btn-primary btn-small" data-parcela-acao="pagar" data-lead="${p.lead.id}" data-numero="${p.numero}">Marcar como pago</button>`;
+        : `<div class="pago-controle"><label class="pago-check"><input type="checkbox" data-parcela-acao="toggle" data-lead="${p.lead.id}" data-numero="${p.numero}" ${p.paga ? "checked" : ""} /> Pago</label><input type="date" class="pago-data" data-parcela-acao="data" data-lead="${p.lead.id}" data-numero="${p.numero}" value="${p.pagoEm || ""}" ${p.paga ? "" : "disabled"} /></div>`;
       return `
         <tr>
           <td>${avatarNome(p.lead.nome)}</td>
@@ -1213,6 +1211,27 @@ function renderParcelasTabela(parcelas) {
     })
     .join("");
 }
+
+document.getElementById("fat-parcelas-tbody").addEventListener("change", async (e) => {
+  const el = e.target.closest("[data-parcela-acao='toggle'], [data-parcela-acao='data']");
+  if (!el) return;
+  const leadId = el.dataset.lead;
+  const numero = Number(el.dataset.numero);
+  let resultado;
+  if (el.dataset.parcelaAcao === "toggle") {
+    resultado = el.checked
+      ? await sb.from("parcelas_pagas").upsert([{ lead_id: leadId, numero, pago_em: todayISO() }], { onConflict: "lead_id,numero" })
+      : await sb.from("parcelas_pagas").delete().eq("lead_id", leadId).eq("numero", numero);
+  } else {
+    if (!el.value) return;
+    resultado = await sb.from("parcelas_pagas").update({ pago_em: el.value }).eq("lead_id", leadId).eq("numero", numero);
+  }
+  if (resultado.error) {
+    alert("Erro ao atualizar parcela: " + resultado.error.message);
+    return;
+  }
+  await refreshLeads();
+});
 
 document.getElementById("fat-parcelas-tbody").addEventListener("click", async (e) => {
   const btn = e.target.closest("button[data-parcela-acao]");

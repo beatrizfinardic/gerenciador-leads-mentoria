@@ -1438,3 +1438,50 @@ textarea::placeholder {
   margin-top: 8px;
   border-top: 1px solid #f1f5f9;
 }
+
+.pago-controle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: nowrap;
+}
+
+.pago-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  font-size: 12px;
+  font-weight: 600;
+  color: #374151;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.pago-check:has(input:checked) {
+  background: #dcfce7;
+  border-color: #86efac;
+  color: #166534;
+}
+
+.pago-check input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+  accent-color: #16a34a;
+  margin: 0;
+}
+
+.pago-data {
+  height: 30px;
+  padding: 3px 6px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  font-size: 12px;
+}
+
+.pago-data:disabled {
+  opacity: 0.5;
+}
