@@ -1537,11 +1537,11 @@ function renderAlertas(leads) {
   });
   const reunioes3m = alertasReuniao(titularesComReuniao3m, 3, "reuniao_3m_feita");
   const reunioes12m = alertasReuniao(emeritos, 12, "reuniao_12m_feita");
-  const reunioes6m = titulares
-    .filter((l) => l.status === "convertido" && l.data_vencimento && l.renovou !== true && l.reuniao_6m_feita !== true)
-    .map((l) => ({ lead: l, dias: daysUntil(l.data_vencimento) }))
-    .filter((a) => a.dias <= ALERTA_ANTECEDENCIA_DIAS)
-    .sort((a, b) => a.dias - b.dias);
+  const reunioes6m = alertasReuniao(
+    titulares.filter((l) => l.renovou !== true),
+    6,
+    "reuniao_6m_feita"
+  );
 
   alertasContagem = { m3: reunioes3m.length, m6: reunioes6m.length, m12: reunioes12m.length };
   document.getElementById("alert-3m-empty").hidden = reunioes3m.length !== 0;
@@ -1563,7 +1563,7 @@ function renderAlertas(leads) {
       <tr class="clickable-row" data-id="${a.lead.id}">
         <td>${nomeAlertaCell(a.lead)}</td>
         <td>${contatoAlertaCell(a.lead)}</td>
-        <td>${formatDateBR(a.lead.data_vencimento)}</td>
+        <td>${formatDateBR(a.prevista)}</td>
         <td>${situacaoBadge(a.dias)}</td>
               <td>${agendaControle(a.lead, "6m")}</td>
       </tr>`)
