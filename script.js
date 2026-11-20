@@ -2349,6 +2349,7 @@ function loadLeadIntoForm(lead) {
 
   submitBtn.textContent = "Salvar alterações";
   cancelEditBtn.hidden = false;
+  renderEvolucaoGrafico();
   nomeInput.focus();
   nomeInput.scrollIntoView({ behavior: "smooth", block: "center" });
 }
