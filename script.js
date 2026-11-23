@@ -1479,7 +1479,7 @@ function renderRenewals(leads) {
 /* ---------- Alertas de reuniões e renovações ---------- */
 
 const ALERTA_ANTECEDENCIA_DIAS = 20;
-const ALERTA_3M_ENTRADA_A_PARTIR_DE = "2026-07-01";
+const ALERTA_3M_ENTRADA_A_PARTIR_DE = "2026-09-04";
 
 function addMonthsToDate(date, months) {
   return new Date(date.getFullYear(), date.getMonth() + months, date.getDate());
