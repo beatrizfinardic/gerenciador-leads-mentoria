@@ -1489,7 +1489,7 @@ function isoFromDate(d) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
-function alertasReuniao(leads, meses, feitaKey) {
+function alertasReuniao(leads, meses, feitaKey, limiteDias = ALERTA_ANTECEDENCIA_DIAS) {
   return leads
     .filter((l) => l.status === "convertido" && l.created_at && l[feitaKey] !== true)
     .map((l) => {
@@ -1498,7 +1498,7 @@ function alertasReuniao(leads, meses, feitaKey) {
       const prevista = isoFromDate(addMonthsToDate(entradaLocal, meses));
       return { lead: l, entrada: isoFromDate(entradaLocal), prevista, dias: daysUntil(prevista) };
     })
-    .filter((a) => a.dias <= ALERTA_ANTECEDENCIA_DIAS)
+    .filter((a) => a.dias <= limiteDias)
     .sort((a, b) => a.dias - b.dias);
 }
 
@@ -1555,7 +1555,7 @@ function renderAlertas(leads) {
     const entrada = parseTimestamp(l.created_at);
     return entrada && entrada >= entradaMinima;
   });
-  const reunioes3m = alertasReuniao(titularesComReuniao3m, 3, "reuniao_3m_feita");
+  const reunioes3m = alertasReuniao(titularesComReuniao3m, 3, "reuniao_3m_feita", Infinity);
   const reunioes12m = alertasReuniao(emeritos, 12, "reuniao_12m_feita");
   const reunioes6m = alertasReuniao(
     titulares.filter((l) => l.renovou !== true),
