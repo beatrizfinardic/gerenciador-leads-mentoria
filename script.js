@@ -1555,7 +1555,7 @@ function renderAlertas(leads) {
     const entrada = parseTimestamp(l.created_at);
     return entrada && entrada >= entradaMinima;
   });
-  const reunioes3m = alertasReuniao(titularesComReuniao3m, 3, "reuniao_3m_feita", Infinity);
+  const reunioes3m = alertasReuniao(titularesComReuniao3m, 3, "reuniao_3m_feita", 30);
   const reunioes12m = alertasReuniao(emeritos, 12, "reuniao_12m_feita");
   const reunioes6m = alertasReuniao(
     titulares.filter((l) => l.renovou !== true),
