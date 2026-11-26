@@ -1111,7 +1111,8 @@ function renovacaoDoLead(l) {
 let dataEntradaAtual = null;
 
 function atualizarProximaRenovacao() {
-  const meses = formTipoMentoriaInput.value === "Mentoria Eméritos" ? 12 : 6;
+  const renovou = renovouInput.value === "true" ? true : renovouInput.value === "false" ? false : null;
+  const meses = mesesCicloMentoria(formTipoMentoriaInput.value, renovou);
   document.querySelector('label[for="data-renovacao"]').textContent = `Próxima renovação (automática: ${meses} meses da entrada)`;
   if (!dataEntradaAtual) return;
   const entrada = new Date(dataEntradaAtual.getFullYear(), dataEntradaAtual.getMonth(), dataEntradaAtual.getDate());
@@ -1119,6 +1120,7 @@ function atualizarProximaRenovacao() {
 }
 
 formTipoMentoriaInput.addEventListener("change", atualizarProximaRenovacao);
+renovouInput.addEventListener("change", atualizarProximaRenovacao);
 
 let evolucaoAlunosChart = null;
 let evolucaoFaturamentoChart = null;
@@ -1443,13 +1445,16 @@ function daysUntil(dateStr) {
   return Math.round((target - today) / 86400000);
 }
 
+function mesesCicloMentoria(tipo, renovou) {
+  const ciclo = tipo === "Mentoria Eméritos" ? 12 : 6;
+  return renovou === true ? ciclo * 2 : ciclo;
+}
+
 function prazoRenovacao(l) {
-  if (l.tipo_mentoria === "Mentoria Eméritos" && l.created_at) {
-    const entrada = parseTimestamp(l.created_at);
-    const entradaLocal = new Date(entrada.getFullYear(), entrada.getMonth(), entrada.getDate());
-    return isoFromDate(addMonthsToDate(entradaLocal, 12));
-  }
-  return l.data_vencimento;
+  if (!l.created_at) return l.data_vencimento;
+  const entrada = parseTimestamp(l.created_at);
+  const entradaLocal = new Date(entrada.getFullYear(), entrada.getMonth(), entrada.getDate());
+  return isoFromDate(addMonthsToDate(entradaLocal, mesesCicloMentoria(l.tipo_mentoria, l.renovou)));
 }
 
 function renderRenewals(leads) {
@@ -2383,6 +2388,7 @@ function loadLeadIntoForm(lead) {
 
   submitBtn.textContent = "Salvar alterações";
   cancelEditBtn.hidden = false;
+  atualizarProximaRenovacao();
   renderEvolucaoGrafico();
   nomeInput.focus();
   nomeInput.scrollIntoView({ behavior: "smooth", block: "center" });
