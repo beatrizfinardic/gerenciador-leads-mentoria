@@ -1836,7 +1836,13 @@ function renderMentorados(leads) {
     <button type="button" class="pagination-tab ${i + 1 === mentoradosCurrentPage ? "active" : ""}" data-page="${i + 1}">${i + 1}</button>
   `).join("");
 
-  const mentoradosCancelados = leads.filter((l) => l.status === "cancelado" && l.tipo_mentoria === mentoriaTypeTab);
+  const mentoradosCancelados = leads.filter(
+    (l) =>
+      l.status === "cancelado" &&
+      l.tipo_mentoria === mentoriaTypeTab &&
+      l.motivo_cancelamento !== "Upgrade para Eméritos" &&
+      l.upgrade_emeritos !== true
+  );
   mentoradosSaidosEmptyState.hidden = mentoradosCancelados.length !== 0;
   mentoradosSaidosTbody.innerHTML = mentoradosCancelados
     .map((l) => `
