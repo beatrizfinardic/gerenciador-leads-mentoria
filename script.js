@@ -1110,7 +1110,17 @@ function renovacaoDoLead(l) {
 
 let dataEntradaAtual = null;
 
+function aplicarRotulosTipo() {
+  const eme = formTipoMentoriaInput.value === "Mentoria Eméritos";
+  const meses = eme ? 12 : 6;
+  document.querySelector("#reuniao6m-details-section > .subsection-title").textContent = `Reunião de ${meses} meses`;
+  document.querySelector('label[for="faturamento-6meses-input"]').textContent = `Faturamento - ${meses} meses (R$)`;
+  document.querySelector('label[for="reuniao-6m-obs"]').textContent = `Observações da reunião de ${meses} meses`;
+  document.querySelector('label[for="reuniao-6m-data"]').textContent = "Data da reunião";
+}
+
 function atualizarProximaRenovacao() {
+  aplicarRotulosTipo();
   const renovou = renovouInput.value === "true" ? true : renovouInput.value === "false" ? false : null;
   const meses = mesesCicloMentoria(formTipoMentoriaInput.value, renovou);
   document.querySelector('label[for="data-renovacao"]').textContent = `Próxima renovação (automática: ${meses} meses da entrada)`;
