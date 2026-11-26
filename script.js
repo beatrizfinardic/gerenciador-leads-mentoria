@@ -1454,7 +1454,7 @@ function prazoRenovacao(l) {
 
 function renderRenewals(leads) {
   const upcoming = leads
-    .filter((l) => l.status === "convertido")
+    .filter((l) => l.status === "convertido" && l.renovou !== true && l.renovou !== false)
     .map((l) => ({ ...l, prazo: prazoRenovacao(l) }))
     .filter((l) => l.prazo)
     .map((l) => ({ ...l, diasRestantes: daysUntil(l.prazo) }))
@@ -2413,7 +2413,7 @@ tbody.addEventListener("click", async (e) => {
 renewalsTbody.addEventListener("click", (e) => {
   const row = e.target.closest("tr[data-id]");
   if (!row) return;
-  loadLeadIntoForm(leadsCache.find((l) => l.id === row.dataset.id));
+  window.clickMentorado(row.dataset.id);
 });
 
 cancelEditBtn.addEventListener("click", resetForm);
