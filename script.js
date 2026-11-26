@@ -1846,7 +1846,8 @@ function renderMentorados(leads) {
     .join("");
 
   const mentoradosNaoRenovados = leads.filter((l) =>
-    (l.status === "nao_renovou" || (l.status === "convertido" && l.renovou === false && l.upgrade_emeritos !== true)) &&
+    (l.status === "nao_renovou" || (l.status === "convertido" && l.renovou === false)) &&
+    l.upgrade_emeritos !== true &&
     l.tipo_mentoria === mentoriaTypeTab
   );
   mentoradosNaoRenovadosEmptyState.hidden = mentoradosNaoRenovados.length !== 0;
