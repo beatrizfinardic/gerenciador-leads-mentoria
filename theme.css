@@ -1485,3 +1485,36 @@ textarea::placeholder {
 .pago-data:disabled {
   opacity: 0.5;
 }
+
+#renovacao-pagamento-section {
+  background: #fff7ed;
+  border: 1px solid #fdba74;
+  border-left: 6px solid #ea580c;
+  border-radius: 14px;
+  padding: 20px 22px;
+  box-shadow: 0 2px 8px rgba(234, 88, 12, 0.10);
+  margin: 18px 0;
+}
+
+#renovacao-pagamento-section > .subsection-title {
+  font-size: 18px;
+  color: #9a3412;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #fed7aa;
+}
+
+#renovacao-pagamento-section .field label {
+  color: #7c2d12;
+  font-size: 11px;
+}
+
+#renovacao-pagamento-section input,
+#renovacao-pagamento-section select {
+  background: #ffffff;
+}
+
+#reuniao6m-details-section {
+  background: #fff7ed;
+  border-radius: 12px;
+  padding: 16px;
+}
