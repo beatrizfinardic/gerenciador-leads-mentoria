@@ -1518,3 +1518,62 @@ textarea::placeholder {
   border-radius: 12px;
   padding: 16px;
 }
+
+#reuniao6m-details-section .field:has(#renovou) {
+  background: #ffffff;
+  border: 2px solid #ea580c;
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-top: 6px;
+}
+
+#reuniao6m-details-section .field:has(#renovou) label {
+  color: #9a3412;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+#renovou {
+  height: 46px;
+  font-size: 15px;
+  font-weight: 600;
+  border: 2px solid #fdba74;
+  border-radius: 10px;
+  margin-top: 6px;
+}
+
+#renovou:focus {
+  border-color: #ea580c;
+  outline: none;
+}
+
+#reuniao6m-details-section .field:has(#data-renovacao) {
+  background: #ffedd5;
+  border-radius: 12px;
+  padding: 12px 14px;
+  border: 1px dashed #fb923c;
+}
+
+#reuniao6m-details-section .field:has(#data-renovacao) label {
+  color: #9a3412;
+  font-weight: 700;
+}
+
+#reuniao6m-details-section .field:has(#upgrade-emeritos) label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: #f5f3ff;
+  border: 1px solid #c4b5fd;
+  color: #5b21b6;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+#reuniao6m-details-section .field:has(#upgrade-emeritos) input[type="checkbox"] {
+  accent-color: #7c3aed;
+  width: 16px;
+  height: 16px;
+}
