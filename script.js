@@ -1111,10 +1111,14 @@ function renovacaoDoLead(l) {
 let dataEntradaAtual = null;
 
 function atualizarProximaRenovacao() {
+  const meses = formTipoMentoriaInput.value === "Mentoria Eméritos" ? 12 : 6;
+  document.querySelector('label[for="data-renovacao"]').textContent = `Próxima renovação (automática: ${meses} meses da entrada)`;
   if (!dataEntradaAtual) return;
   const entrada = new Date(dataEntradaAtual.getFullYear(), dataEntradaAtual.getMonth(), dataEntradaAtual.getDate());
-  dataRenovacaoInput.value = isoFromDate(addMonthsToDate(entrada, 12));
+  dataRenovacaoInput.value = isoFromDate(addMonthsToDate(entrada, meses));
 }
+
+formTipoMentoriaInput.addEventListener("change", atualizarProximaRenovacao);
 
 let evolucaoAlunosChart = null;
 let evolucaoFaturamentoChart = null;
