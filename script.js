@@ -1742,11 +1742,14 @@ custoAtualizarBtn.addEventListener("click", () => renderCusto(leadsCache));
 
 function renderMentorados(leads) {
   const searchTerm = document.getElementById("mentorados-search")?.value.toLowerCase() || "";
+  const telefoneBusca = searchTerm.replace(/\D/g, "");
   const mentorados = leads.filter((l) =>
     l.status === "convertido" &&
     !(l.renovou === false && l.upgrade_emeritos !== true) &&
     l.tipo_mentoria === mentoriaTypeTab &&
-    (searchTerm === "" || l.nome.toLowerCase().includes(searchTerm))
+    (searchTerm === "" ||
+      l.nome.toLowerCase().includes(searchTerm) ||
+      (telefoneBusca !== "" && (l.whatsapp || "").replace(/\D/g, "").includes(telefoneBusca)))
   );
 
   const ativos = mentorados;
