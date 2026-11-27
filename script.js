@@ -1578,7 +1578,7 @@ function renderAlertas(leads) {
   const reunioes3m = alertasReuniao(titularesComReuniao3m, 3, "reuniao_3m_feita", 30);
   const reunioes12m = alertasReuniao(emeritos, 12, "reuniao_12m_feita");
   const reunioes6m = alertasReuniao(
-    titulares.filter((l) => l.renovou !== true),
+    titulares.filter((l) => l.renovou !== true && l.renovou !== false && l.reuniao_6m_feita !== true),
     6,
     "reuniao_6m_feita"
   );
