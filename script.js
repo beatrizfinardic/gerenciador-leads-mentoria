@@ -1199,13 +1199,14 @@ function renderParcelasTabela(parcelas) {
   document.getElementById("fat-parcelas-empty").hidden = parcelas.length !== 0;
   tbody.innerHTML = parcelas
     .map((p) => {
+      const dataAgendada = formatDateBR(p.data);
       const situacao = p.paga
         ? p.automatica
-          ? "Cobrado (automático)"
-          : "Pago"
+          ? `Cobrado em ${dataAgendada}`
+          : `Pago em ${formatDateBR(p.pagoEm || p.data)}`
         : p.automatica
-        ? "Agendado (automático)"
-        : "Agendado";
+        ? `Agendado para ${dataAgendada} (automático)`
+        : `Agendado para ${dataAgendada}`;
       const cor = p.paga ? "background:#dcfce7;color:#166534" : "background:#fef3c7;color:#92400e";
       const acao = p.renov
         ? p.paga
