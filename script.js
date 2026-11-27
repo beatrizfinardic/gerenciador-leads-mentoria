@@ -1576,7 +1576,23 @@ function renderAlertas(leads) {
     return entrada && entrada >= entradaMinima;
   });
   const reunioes3m = alertasReuniao(titularesComReuniao3m, 3, "reuniao_3m_feita", 30);
-  const reunioes12m = alertasReuniao(emeritos, 12, "reuniao_12m_feita");
+  const reunioes12m = emeritos
+    .filter((l) => l.renovou !== false && l.created_at)
+    .map((l) => {
+      const entrada = parseTimestamp(l.created_at);
+      const base = new Date(entrada.getFullYear(), entrada.getMonth(), entrada.getDate());
+      const hoje = new Date(todayISO() + "T00:00:00");
+      let k = 1;
+      let proximo = addMonthsToDate(base, 12 * k);
+      while (proximo < hoje) {
+        k++;
+        proximo = addMonthsToDate(base, 12 * k);
+      }
+      const prevista = isoFromDate(proximo);
+      return { lead: l, entrada: isoFromDate(base), prevista, dias: daysUntil(prevista) };
+    })
+    .filter((a) => a.dias <= ALERTA_ANTECEDENCIA_DIAS)
+    .sort((a, b) => a.dias - b.dias);
   const reunioes6m = alertasReuniao(
     titulares.filter((l) => l.renovou !== true && l.renovou !== false && l.reuniao_6m_feita !== true),
     6,
