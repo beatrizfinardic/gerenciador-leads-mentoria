@@ -1594,7 +1594,7 @@ function renderAlertas(leads) {
     .filter((a) => a.dias <= ALERTA_ANTECEDENCIA_DIAS)
     .sort((a, b) => a.dias - b.dias);
   const reunioes6m = alertasReuniao(
-    titulares.filter((l) => l.renovou !== true && l.renovou !== false && l.reuniao_6m_feita !== true),
+    titulares.filter((l) => l.renovou !== true && l.renovou !== false),
     6,
     "reuniao_6m_feita"
   );
